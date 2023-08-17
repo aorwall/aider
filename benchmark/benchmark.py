@@ -8,6 +8,7 @@ import re
 import shutil
 import subprocess
 import time
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from json.decoder import JSONDecodeError
 from pathlib import Path
@@ -209,7 +210,7 @@ def show_stats(dirnames):
     # df.to_csv("tmp.benchmarks.csv")
 
 
-def resolve_dirname(dirname, use_single_prior, make_new):
+def resolve_dirname(dirname, use_single_prior, make_new, agent, model, edit_format):
     if len(dirname.parts) > 1:
         return dirname
 
@@ -228,7 +229,9 @@ def resolve_dirname(dirname, use_single_prior, make_new):
     if not re.match(r"\d\d\d\d-\d\d-\d\d-", str(dirname)):
         now = datetime.datetime.now()
         now = now.strftime("%Y-%m-%d-%H-%M-%S--")
-        dirname = now + dirname.name
+        dirname = now + agent + "--" + model
+        if edit_format:
+            dirname += "--" + edit_format
 
     dirname = BENCHMARK_DNAME / dirname
     return dirname
@@ -237,6 +240,7 @@ def resolve_dirname(dirname, use_single_prior, make_new):
 @app.command()
 def main(
     dirnames: List[str] = typer.Argument(..., help="Directory names"),
+    agent: str = typer.Option("aider", "--agent", "-a", help="Agent name"),
     model: str = typer.Option("gpt-3.5-turbo", "--model", "-m", help="Model name"),
     edit_format: str = typer.Option(None, "--edit-format", "-e", help="Edit format"),
     keywords: str = typer.Option(
@@ -270,7 +274,7 @@ def main(
     updated_dirnames = []
     for dirname in dirnames:
         dirname = Path(dirname)
-        dirname = resolve_dirname(dirname, stats_only or cont, make_new)
+        dirname = resolve_dirname(dirname, stats_only or cont, make_new, agent, model, edit_format)
         if not dirname:
             return 1
         updated_dirnames.append(dirname)
@@ -324,6 +328,7 @@ def main(
         for testname in test_dnames:
             results = run_test(
                 dirname / testname,
+                agent,
                 model,
                 edit_format,
                 tries,
@@ -443,7 +448,7 @@ def summarize_results(dirname):
         res.user_asks += results.get("num_user_asks", 0)
         res.exhausted_context_windows += results.get("num_exhausted_context_windows", 0)
 
-        for key in "model edit_format commit_hash".split():
+        for key in "agent model edit_format commit_hash".split():
             val = results.get(key)
             variants[key].add(val)
 
@@ -498,15 +503,13 @@ def summarize_results(dirname):
 
 
 def run_test(
-    testdir, model_name, edit_format, tries, no_unit_tests, no_aider, verbose, commit_hash
+    testdir, agent_name, model_name, edit_format, tries, no_unit_tests, no_aider, verbose, commit_hash
 ):
     if not os.path.isdir(testdir):
         print("Not a dir:", testdir)
         return
 
     testdir = Path(testdir)
-
-    history_fname = testdir / ".aider.chat.history.md"
 
     results_fname = testdir / ".aider.results.json"
     if results_fname.exists():
@@ -541,31 +544,15 @@ def run_test(
 
     instructions += prompts.instructions_addendum.format(file_list=file_list)
 
-    io = InputOutput(
-        pretty=True,
-        yes=False,
-        chat_history_file=history_fname,
-    )
-
-    main_model = models.Model(model_name)
-    edit_format = edit_format or main_model.edit_format
-
-    dump(main_model)
-    dump(edit_format)
     show_fnames = ",".join(map(str, fnames))
     print("fnames:", show_fnames)
 
-    openai.api_key = os.environ["OPENAI_API_KEY"]
-
-    coder = Coder.create(
-        main_model,
-        edit_format,
-        io,
+    agent: CodeAgent = AiderAgent(
+        testdir=testdir,
+        model_name=model_name,
+        edit_format=edit_format,
         fnames=fnames,
-        use_git=False,
-        stream=False,
-        pretty=False,
-        verbose=verbose,
+        verbose=verbose
     )
 
     timeouts = 0
@@ -575,17 +562,14 @@ def run_test(
     for i in range(tries):
         start = time.time()
         if not no_aider:
-            coder.run(with_message=instructions)
+            agent.run(with_message=instructions)
         dur += time.time() - start
-
-        if coder.last_keyboard_interrupt:
-            raise KeyboardInterrupt
 
         if no_unit_tests:
             break
 
         try:
-            errors = run_unit_tests(testdir, history_fname)
+            errors = run_unit_tests(testdir)
         except subprocess.TimeoutExpired:
             errors = "Tests timed out!"
             timeouts += 1
@@ -606,20 +590,21 @@ def run_test(
     results = dict(
         testdir=str(testdir),
         testcase=testdir.name,
-        model=main_model.name,
+        agent=agent_name,
+        model=model_name,
         edit_format=edit_format,
         tests_outcomes=test_outcomes,
-        cost=coder.total_cost,
+        cost=agent.total_cost,
         duration=dur,
         test_timeouts=timeouts,
         commit_hash=commit_hash,
-        num_error_outputs=io.num_error_outputs,
-        num_user_asks=io.num_user_asks,
-        num_exhausted_context_windows=coder.num_exhausted_context_windows,
+        num_error_outputs=agent.num_error_outputs,
+        num_user_asks=agent.num_user_asks,
+        num_exhausted_context_windows=agent.num_exhausted_context_windows,
         chat_hashes=list(
             zip(
-                coder.chat_completion_call_hashes,
-                coder.chat_completion_response_hashes,
+                agent.chat_completion_call_hashes,
+                agent.chat_completion_response_hashes,
             )
         ),
     )
@@ -630,7 +615,7 @@ def run_test(
     return results
 
 
-def run_unit_tests(testdir, history_fname):
+def run_unit_tests(testdir):
     command = [
         "python",
         "-m",
@@ -658,9 +643,6 @@ def run_unit_tests(testdir, history_fname):
     success = result.returncode == 0
     res = result.stdout
     res = cleanup_test_output(res, testdir)
-
-    with history_fname.open("a") as fh:
-        fh.write(f"```\n{res}\n```")
 
     if not success:
         print(f"Tests failed: {testdir}")
@@ -690,6 +672,100 @@ def cleanup_test_output(output, testdir):
 
     res = res.replace(str(testdir), str(testdir.name))
     return res
+
+
+class CodeAgent(ABC):
+
+    @abstractmethod
+    def run(self, with_message: str) -> None:
+        pass
+
+    @abstractmethod
+    def total_cost(self) -> float:
+        pass
+
+    @abstractmethod
+    def num_error_outputs(self) -> int:
+        pass
+
+    @abstractmethod
+    def num_user_asks(self) -> int:
+        pass
+
+    @abstractmethod
+    def num_exhausted_context_windows(self) -> int:
+        pass
+
+    @abstractmethod
+    def chat_completion_call_hashes(self) -> List[str]:
+        pass
+
+    @abstractmethod
+    def chat_completion_response_hashes(self) -> List[str]:
+        pass
+
+
+class AiderAgent(CodeAgent):
+
+    def __init__(self, testdir: Path, model_name: str, edit_format: str, fnames: List[Path], verbose: bool):
+        self.history_fname = testdir / ".aider.chat.history.md"
+
+        self.io = InputOutput(
+            pretty=True,
+            yes=False,
+            chat_history_file=self.history_fname,
+        )
+
+        main_model = models.Model(model_name)
+        edit_format = edit_format or main_model.edit_format
+
+        dump(main_model)
+        dump(edit_format)
+
+        self.coder = Coder.create(
+            main_model,
+            edit_format,
+            self.io,
+            fnames=fnames,
+            use_git=False,
+            stream=False,
+            pretty=False,
+            verbose=verbose,
+        )
+
+    def run(self, with_message: str):
+        self.coder.run(with_message=with_message)
+
+        if self.coder.last_keyboard_interrupt:
+            raise KeyboardInterrupt
+
+    def report_test(self, res: str):
+        with self.history_fname.open("a") as fh:
+            fh.write(f"```\n{res}\n```")
+
+    @property
+    def total_cost(self):
+        return self.coder.total_cost
+
+    @property
+    def num_error_outputs(self):
+        return self.io.num_error_outputs
+
+    @property
+    def num_user_asks(self):
+        return self.io.num_user_asks
+
+    @property
+    def num_exhausted_context_windows(self):
+        return self.coder.num_exhausted_context_windows
+
+    @property
+    def chat_completion_call_hashes(self):
+        return self.coder.chat_completion_call_hashes
+
+    @property
+    def chat_completion_response_hashes(self):
+        return self.coder.chat_completion_response_hashes
 
 
 if __name__ == "__main__":
