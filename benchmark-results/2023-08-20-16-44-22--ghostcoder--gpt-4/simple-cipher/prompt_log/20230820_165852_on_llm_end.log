@@ -1,0 +1,32 @@
+method: on_llm_end [2023-08-20 16:58:52]
+llm_output: {"token_usage": {"prompt_tokens": 1198, "completion_tokens": 473, "total_tokens": 1671}, "model_name": "gpt-4"}
+prompt:
+To implement the Caesar Cipher, we need to shift each character in the input text by a certain amount. In the case of the Caesar Cipher, this is a shift of 3 places. However, we want to make this more flexible by allowing the user to specify a key, which will be used to determine the shift distance. 
+
+In the `__init__` method, we check if a key is provided. If not, we generate a random key of at least 100 characters. We then calculate the shift distance by taking the ASCII value of the first character in the key and subtracting the ASCII value of 'a'. This gives us a number between 0 and 25, which we use as the shift distance.
+
+In the `encode` method, we shift each character in the input text by the shift distance. We need to handle the case where the shift would take us past 'z', so we use the modulus operator to wrap around to the start of the alphabet.
+
+The `decode` method is similar to the `encode` method, but we subtract the shift distance instead of adding it. Again, we need to handle the case where the shift would take us before 'a', so we add 26 (the number of letters in the alphabet) before subtracting the shift distance.
+
+Filepath: simple_cipher.py
+```python
+import random
+import string
+
+class Cipher:
+    def __init__(self, key=None):
+        if key is None:
+            self.key = ''.join(random.choice(string.ascii_lowercase) for _ in range(100))
+        else:
+            self.key = key
+        self.shift_distance = ord(self.key[0]) - ord('a')
+
+    def encode(self, text):
+        return ''.join(chr((ord(char) - ord('a') + self.shift_distance) % 26 + ord('a')) for char in text)
+
+    def decode(self, text):
+        return ''.join(chr((ord(char) - ord('a') - self.shift_distance + 26) % 26 + ord('a')) for char in text)
+```
+This code should work for any input text consisting of lowercase letters. If the input text contains uppercase letters, digits, or special characters, the code may not work as expected. You may want to add some error checking to handle these cases.
+---

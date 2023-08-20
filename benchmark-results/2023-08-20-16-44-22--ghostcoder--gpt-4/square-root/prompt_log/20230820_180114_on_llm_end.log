@@ -1,0 +1,25 @@
+method: on_llm_end [2023-08-20 18:01:14]
+llm_output: {"token_usage": {"prompt_tokens": 1430, "completion_tokens": 188, "total_tokens": 1618}, "model_name": "gpt-4"}
+prompt:
+The issue here is that the Babylonian method returns a float value with a precision of 0.000001, but the tests are expecting an integer value. To fix this, we can round the result to the nearest integer before returning it. 
+
+Here's the updated code:
+
+Filepath: square_root.py
+```python
+def square_root(number):
+    if number == 0 or number == 1:
+        return number
+
+    x = number
+    y = 1
+    precision = 0.000001  # Define the precision to which we want to calculate the square root
+
+    while x - y > precision:
+        x = (x + y) / 2
+        y = number / x
+
+    return round(x)
+```
+In this updated code, we use the built-in `round()` function to round the result to the nearest integer before returning it. This should resolve the test failures.
+---

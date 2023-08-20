@@ -1,0 +1,42 @@
+method: on_llm_end [2023-08-20 18:34:44]
+llm_output: {"token_usage": {"prompt_tokens": 850, "completion_tokens": 508, "total_tokens": 1358}, "model_name": "gpt-4"}
+prompt:
+To implement the variable length quantity encoding and decoding, we need to follow the rules mentioned in the instructions. 
+
+For encoding, we need to convert each number into a list of 7-bit bytes, with the most significant bit of each byte set to 1, except for the last byte, which should have the most significant bit set to 0. 
+
+For decoding, we need to convert a list of bytes into a list of numbers. Each number is formed by concatenating the 7 least significant bits of each byte, until a byte with the most significant bit set to 0 is found.
+
+Here is the updated code:
+
+Filepath: variable_length_quantity.py
+```python
+def encode(numbers):
+    result = []
+    for number in numbers:
+        bytes_ = []
+        while number > 127:
+            bytes_.insert(0, 128 | (number & 127))
+            number >>= 7
+        bytes_.insert(0, number)
+        result.extend(bytes_)
+    return result
+
+
+def decode(bytes_):
+    result = []
+    number = 0
+    for byte in bytes_:
+        number = (number << 7) | (byte & 127)
+        if byte < 128:
+            result.append(number)
+            number = 0
+    if number != 0:
+        raise ValueError("incomplete sequence")
+    return result
+```
+
+In the `encode` function, we iterate over each number in the input list. For each number, we create a list of bytes. If the number is greater than 127, we add the 7 least significant bits of the number to the list of bytes, with the most significant bit set to 1. We then shift the number 7 bits to the right. We continue this process until the number is less than or equal to 127. Finally, we add the number to the list of bytes, with the most significant bit set to 0. We add the list of bytes to the result list.
+
+In the `decode` function, we iterate over each byte in the input list. For each byte, we shift the current number 7 bits to the left and add the 7 least significant bits of the byte. If the most significant bit of the byte is 0, we add the number to the result list and reset the number to 0. If we reach the end of the input list and the number is not 0, we raise a `ValueError`, because the sequence is incomplete.
+---

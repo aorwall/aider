@@ -21,6 +21,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import openai
 import pandas as pd
+from langchain.chat_models import ChatOpenAI
+
 import prompts
 import typer
 from imgcat import imgcat
@@ -30,6 +32,10 @@ from aider import models
 from aider.coders import Coder
 from aider.dump import dump  # noqa: F401
 from aider.io import InputOutput
+from ghostcoder import FileRepository
+from ghostcoder.callback import LogCallbackHandler
+from ghostcoder.prompts.implement import ImplementationPrompt
+from ghostcoder.schema import FileItem, TextItem, Message
 
 BENCHMARK_DNAME = Path(os.environ["AIDER_BENCHMARK_DIR"])
 
@@ -271,6 +277,10 @@ def main(
         print("Only provide 1 dirname unless running with --stats or --diffs")
         return 1
 
+    if agent not in ["aider", "ghostcoder"]:
+        print("Unknown agent, must be one of: aider, ghostcoder")
+        return 1
+
     updated_dirnames = []
     for dirname in dirnames:
         dirname = Path(dirname)
@@ -418,6 +428,8 @@ def summarize_results(dirname):
 
     res.dir_name = str(dirname)
 
+    test_reports = ["testcase,model,edit format,passed tests,error outputs,cost,duration"]
+
     passed_tests = [0] * tries
 
     res.completed_tests = 0
@@ -448,12 +460,18 @@ def summarize_results(dirname):
         res.user_asks += results.get("num_user_asks", 0)
         res.exhausted_context_windows += results.get("num_exhausted_context_windows", 0)
 
+        test_reports.append(f"{results['testcase']},{results['model']},{results['edit_format']},{passed},"
+                            f"{results.get('num_error_outputs')},{results['cost']},{results['duration']}")
+
         for key in "agent model edit_format commit_hash".split():
             val = results.get(key)
             variants[key].add(val)
 
     if not res.completed_tests:
         return
+
+    tname = dirname / ".report.csv"
+    tname.write_text("\n".join(test_reports))
 
     console = Console(highlight=False)
     console.rule(title=str(dirname))
@@ -547,13 +565,22 @@ def run_test(
     show_fnames = ",".join(map(str, fnames))
     print("fnames:", show_fnames)
 
-    agent: CodeAgent = AiderAgent(
-        testdir=testdir,
-        model_name=model_name,
-        edit_format=edit_format,
-        fnames=fnames,
-        verbose=verbose
-    )
+    if agent_name == "aider":
+        agent: CodeAgent = AiderAgent(
+            testdir=testdir,
+            model_name=model_name,
+            edit_format=edit_format,
+            fnames=fnames,
+            verbose=verbose
+        )
+    elif agent_name == "ghostcoder":
+        agent: CodeAgent = GhostCoderAgent(
+            testdir=testdir,
+            model_name=model_name,
+            edit_format=edit_format,
+            fnames=fnames,
+            verbose=verbose
+        )
 
     timeouts = 0
 
@@ -739,10 +766,6 @@ class AiderAgent(CodeAgent):
         if self.coder.last_keyboard_interrupt:
             raise KeyboardInterrupt
 
-    def report_test(self, res: str):
-        with self.history_fname.open("a") as fh:
-            fh.write(f"```\n{res}\n```")
-
     @property
     def total_cost(self):
         return self.coder.total_cost
@@ -766,6 +789,89 @@ class AiderAgent(CodeAgent):
     @property
     def chat_completion_response_hashes(self):
         return self.coder.chat_completion_response_hashes
+
+
+class GhostCoderAgent(CodeAgent):
+
+    def __init__(self, testdir: Path, model_name: str, edit_format: str, fnames: List[Path], verbose: bool):
+        callback = LogCallbackHandler(str(testdir / "prompt_log"))
+
+        import logging
+        logging.basicConfig(level=logging.INFO)
+
+        gpt = ChatOpenAI(
+            model=model_name,
+            temperature=0,
+            callbacks=[callback]
+        )
+
+        repository = FileRepository(repo_path=str(testdir), use_git=False)
+        self.action = ImplementationPrompt(
+            llm=gpt,
+            repository=repository,
+            prompt_template=edit_format if edit_format else "expect_incomplete"
+        )
+        self.chat_history_fname = testdir / ".chat.history.json"
+        self.fnames = fnames
+        self.message_history = []
+        self._total_cost = 0
+        self._num_error_outputs = 0
+
+    def run(self, with_message: str):
+        items = [TextItem(text=with_message)]
+        items.extend([FileItem(file_path=str(fname.name), language="pyton") for fname in self.fnames])
+        human_msg = Message(sender="Human", items=items)
+        ai_messages = self.action.run(message=human_msg, message_history=self.message_history)
+        self.message_history.append(human_msg)
+        self.message_history.extend(ai_messages)
+        self._save_message(self.chat_history_fname, self.message_history)
+
+        usages = [msg.sum_usage() for msg in ai_messages if msg.usage]
+        if usages:
+            total_usage = sum(usages[1:], usages[0])
+            self._total_cost += total_usage.total_cost
+
+        if len(ai_messages[-1].find_items_by_type("updated_file")) == 0:
+            print("Missing updated_file in ai_message")
+            self._num_error_outputs += 1
+
+        if ai_messages[-1].usage[0].extra["hallucinated_file"] > 0:
+            print("Hallucinated file in ai_message")
+            self._num_error_outputs += 1
+
+        if ai_messages[-1].usage[0].extra["no_change"] > 0:
+            print("No change in updated file")
+            self._num_error_outputs += 1
+
+    def _save_message(self, cfile: Path, messages):
+        dicts = [msg.dict() for msg in messages]
+        with open(cfile, "w") as file:
+            json.dump(dicts, file, indent=2)
+
+
+    @property
+    def total_cost(self):
+        return self._total_cost
+
+    @property
+    def num_error_outputs(self):
+        return self._num_error_outputs
+
+    @property
+    def num_user_asks(self):
+        return 0
+
+    @property
+    def num_exhausted_context_windows(self):
+        return 0
+
+    @property
+    def chat_completion_call_hashes(self):
+        return ""
+
+    @property
+    def chat_completion_response_hashes(self):
+        return ""
 
 
 if __name__ == "__main__":

@@ -1,0 +1,40 @@
+method: on_llm_end [2023-08-20 17:52:48]
+llm_output: {"token_usage": {"prompt_tokens": 841, "completion_tokens": 509, "total_tokens": 1350}, "model_name": "gpt-4"}
+prompt:
+To generate the lyrics of the song, we can use a list of tuples where each tuple represents an animal and its corresponding phrase. We can then iterate over this list in reverse order to generate the lyrics for each verse. 
+
+Here's how you can modify the `recite` function to generate the lyrics:
+
+Filepath: food_chain.py
+```python
+def recite(start_verse, end_verse):
+    animals = [
+        ("fly", ""),
+        ("spider", "It wriggled and jiggled and tickled inside her."),
+        ("bird", "How absurd to swallow a bird!"),
+        ("cat", "Imagine that, to swallow a cat!"),
+        ("dog", "What a hog, to swallow a dog!"),
+        ("goat", "Just opened her throat and swallowed a goat!"),
+        ("cow", "I don't know how she swallowed a cow!"),
+        ("horse", "She's dead, of course!")
+    ]
+
+    verses = []
+    for i in range(start_verse - 1, end_verse):
+        verse = ["I know an old lady who swallowed a {}.".format(animals[i][0])]
+        if animals[i][1]:
+            verse.append(animals[i][1])
+        if i != len(animals) - 1:
+            for j in range(i, -1, -1):
+                if j == 0:
+                    verse.append("She swallowed the {} to catch the {}.".format(animals[j+1][0], animals[j][0]))
+                else:
+                    verse.append("She swallowed the {} to catch the {} that {}.".format(animals[j+1][0], animals[j][0], animals[j][1].lower()))
+            verse.append("I don't know why she swallowed the fly. Perhaps she'll die.")
+        verses.append("\n".join(verse))
+
+    return verses
+```
+
+In this code, we first define a list of tuples where each tuple represents an animal and its corresponding phrase. We then iterate over this list from the start verse to the end verse. For each verse, we generate the lyrics by iterating over the list in reverse order and appending the appropriate phrases to the verse. If the verse is not the last one, we also append the phrase "I don't know why she swallowed the fly. Perhaps she'll die." to the verse. Finally, we join the phrases of each verse with a newline character and append the verse to the list of verses.
+---

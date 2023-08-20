@@ -1,0 +1,72 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nThe dice game [Yacht][yacht] is from the same family as Poker Dice, Generala and particularly Yahtzee, of which it is a precursor.\nIn the game, five dice are rolled and the result can be entered in any of twelve categories.\nThe score of a throw of the dice depends on category chosen.\n\n## Scores in Yacht\n\n| Category | Score | Description | Example |\n| -------- | ----- | ----------- | ------- |\n| Ones | 1 \u00d7 number of ones | Any combination | 1 1 1 4 5 scores 3 |\n| Twos | 2 \u00d7 number of twos | Any combination | 2 2 3 4 5 scores 4 |\n| Threes | 3 \u00d7 number of threes | Any combination | 3 3 3 3 3 scores 15 |\n| Fours | 4 \u00d7 number of fours | Any combination | 1 2 3 3 5 scores 0 |\n| Fives | 5 \u00d7 number of fives| Any combination | 5 1 5 2 5 scores 15 |\n| Sixes | 6 \u00d7 number of sixes | Any combination | 2 3 4 5 6 scores 6 |\n| Full House | Total of the dice | Three of one number and two of another | 3 3 3 5 5 scores 19 |\n| Four of a Kind | Total of the four dice | At least four dice showing the same face | 4 4 4 4 6 scores 16 |\n| Little Straight |  30 points | 1-2-3-4-5 | 1 2 3 4 5 scores 30 |\n| Big Straight | 30 points | 2-3-4-5-6 | 2 3 4 5 6 scores 30 |\n| Choice | Sum of the dice | Any combination | 2 3 3 4 6 scores 18 |\n| Yacht | 50 points | All five dice showing the same face | 4 4 4 4 4 scores 50 |\n\nIf the dice do not satisfy the requirements of a category, the score is zero.\nIf, for example, *Four Of A Kind* is entered in the *Yacht* category, zero points are scored.\nA *Yacht* scores zero if entered in the *Full House* category.\n\n## Task\n\nGiven a list of values for five dice and a category, your solution should return the score of the dice for that category.\nIf the dice do not satisfy the requirements of the category your solution should return 0.\nYou can assume that five values will always be presented, and the value of each will be between one and six inclusively.\nYou should not assume that the dice are ordered.\n\n[yacht]: https://en.wikipedia.org/wiki/Yacht_(dice_game)\n\n####\n\nUse the above instructions to modify the supplied files: yacht.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "yacht.py",
+        "content": "# Score categories.\n# Change the values as you see fit.\nYACHT = None\nONES = None\nTWOS = None\nTHREES = None\nFOURS = None\nFIVES = None\nSIXES = None\nFULL_HOUSE = None\nFOUR_OF_A_KIND = None\nLITTLE_STRAIGHT = None\nBIG_STRAIGHT = None\nCHOICE = None\n\n\ndef score(dice, category):\n    pass\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "file_path": "yacht.py",
+        "content": "# Score categories.\n# Change the values as you see fit.\nYACHT = lambda x: 50 if len(set(x)) == 1 else 0\nONES = lambda x: x.count(1)\nTWOS = lambda x: x.count(2) * 2\nTHREES = lambda x: x.count(3) * 3\nFOURS = lambda x: x.count(4) * 4\nFIVES = lambda x: x.count(5) * 5\nSIXES = lambda x: x.count(6) * 6\nFULL_HOUSE = lambda x: sum(x) if len(set(x)) == 2 and x.count(x[0]) in [2, 3] else 0\nFOUR_OF_A_KIND = lambda x: 4 * max(set(x), key=x.count) if x.count(max(set(x), key=x.count)) >= 4 else 0\nLITTLE_STRAIGHT = lambda x: 30 if sorted(x) == [1, 2, 3, 4, 5] else 0\nBIG_STRAIGHT = lambda x: 30 if sorted(x) == [2, 3, 4, 5, 6] else 0\nCHOICE = sum\n\n\ndef score(dice, category):\n    return category(dice)",
+        "information": null,
+        "diff": "--- yacht.py\n+++ yacht.py\n@@ -1,18 +1,18 @@\n # Score categories.\n # Change the values as you see fit.\n-YACHT = None\n-ONES = None\n-TWOS = None\n-THREES = None\n-FOURS = None\n-FIVES = None\n-SIXES = None\n-FULL_HOUSE = None\n-FOUR_OF_A_KIND = None\n-LITTLE_STRAIGHT = None\n-BIG_STRAIGHT = None\n-CHOICE = None\n+YACHT = lambda x: 50 if len(set(x)) == 1 else 0\n+ONES = lambda x: x.count(1)\n+TWOS = lambda x: x.count(2) * 2\n+THREES = lambda x: x.count(3) * 3\n+FOURS = lambda x: x.count(4) * 4\n+FIVES = lambda x: x.count(5) * 5\n+SIXES = lambda x: x.count(6) * 6\n+FULL_HOUSE = lambda x: sum(x) if len(set(x)) == 2 and x.count(x[0]) in [2, 3] else 0\n+FOUR_OF_A_KIND = lambda x: 4 * max(set(x), key=x.count) if x.count(max(set(x), key=x.count)) >= 4 else 0\n+LITTLE_STRAIGHT = lambda x: 30 if sorted(x) == [1, 2, 3, 4, 5] else 0\n+BIG_STRAIGHT = lambda x: 30 if sorted(x) == [2, 3, 4, 5, 6] else 0\n+CHOICE = sum\n \n \n def score(dice, category):\n-    pass+    return category(dice)",
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "Explanation:\n\nI have replaced the `None` values with lambda functions that calculate the score for each category according to the rules of the game. \n\n- For the `YACHT` category, the function checks if all the dice have the same value (i.e., the set of dice values has a length of 1). If they do, it returns 50; otherwise, it returns 0.\n- For the `ONES` to `SIXES` categories, the function counts the number of dice that have the corresponding value and multiplies it by the value itself.\n- For the `FULL_HOUSE` category, the function checks if there are exactly two different dice values and if one of them appears 2 or 3 times. If these conditions are met, it returns the sum of the dice; otherwise, it returns 0.\n- For the `FOUR_OF_A_KIND` category, the function checks if there is a dice value that appears at least 4 times. If there is, it returns four times that value; otherwise, it returns 0.\n- For the `LITTLE_STRAIGHT` and `BIG_STRAIGHT` categories, the function checks if the sorted dice values match the sequence 1-2-3-4-5 or 2-3-4-5-6, respectively. If they do, it returns 30; otherwise, it returns 0.\n- For the `CHOICE` category, the function simply returns the sum of the dice.\n\nThe `score` function then takes a list of dice values and a category function as arguments and returns the result of applying the category function to the dice values.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-4",
+        "total_tokens": 1566,
+        "prompt_tokens": 932,
+        "completion_tokens": 634,
+        "total_cost": 0.066,
+        "duration": 56,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,45 @@
+method: on_llm_end [2023-08-20 17:28:25]
+llm_output: {"token_usage": {"prompt_tokens": 1730, "completion_tokens": 366, "total_tokens": 2096}, "model_name": "gpt-4"}
+prompt:
+The test errors indicate that the test suite is expecting an `added` method in the `School` class, which our current implementation does not have. 
+
+The `added` method should return a list of students added to the school, sorted by grade and then by name within each grade. This is similar to the `roster` method, but the `roster` method returns a single list of all students, while the `added` method should return a list of lists, with each inner list representing a grade.
+
+Here's how we can implement the `added` method:
+
+Filepath: grade_school.py
+```python
+class School:
+    def __init__(self):
+        self.students = {}
+
+    def add_student(self, name, grade):
+        if grade not in self.students:
+            self.students[grade] = []
+        if name not in self.students[grade]:
+            self.students[grade].append(name)
+            self.students[grade].sort()
+        else:
+            return "Student already added."
+
+    def roster(self):
+        roster = []
+        for grade in sorted(self.students.keys()):
+            for student in self.students[grade]:
+                roster.append(student)
+        return roster
+
+    def grade(self, grade_number):
+        if grade_number in self.students:
+            return self.students[grade_number]
+        else:
+            return []
+
+    def added(self):
+        added_students = []
+        for grade in sorted(self.students.keys()):
+            added_students.append(self.students[grade])
+        return added_students
+```
+In the `added` method, we create an empty list for the added students. We then iterate over the grades in the dictionary in sorted order, and for each grade, we append the list of students to the `added_students` list. Finally, we return the `added_students` list.
+---

@@ -1,0 +1,21 @@
+method: on_llm_end [2023-08-20 18:27:38]
+llm_output: {"token_usage": {"prompt_tokens": 650, "completion_tokens": 261, "total_tokens": 911}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we need to split the sentence into words and count the frequency of each word. We can use the `re` module to split the sentence into words. The `re` module provides regular expression matching operations similar to those found in Perl. We can use the `re.findall` function to find all substrings where the regular expression matches and return them as a list.
+
+We will use the regular expression `r"[a-z0-9]+'[a-z0-9]+|[a-z0-9]+"` to match words. This regular expression matches words that contain an apostrophe (like "they're" or "it's") and words that do not contain an apostrophe.
+
+After splitting the sentence into words, we will convert all words to lowercase because words are case insensitive.
+
+Finally, we will use the `collections.Counter` class to count the frequency of each word. The `collections.Counter` class is a dictionary subclass for counting hashable objects.
+
+Filepath: word_count.py
+```python
+import re
+from collections import Counter
+
+def count_words(sentence):
+    words = re.findall(r"[a-z0-9]+'[a-z0-9]+|[a-z0-9]+", sentence.lower())
+    return dict(Counter(words))
+```
+---

@@ -1,0 +1,31 @@
+method: on_llm_end [2023-08-20 18:06:23]
+llm_output: {"token_usage": {"prompt_tokens": 1556, "completion_tokens": 402, "total_tokens": 1958}, "model_name": "gpt-4"}
+prompt:
+I see the problem. The issue is that the puzzle is not properly split into words. The words are separated by '+' and '==' symbols, not just spaces. Also, the eval function is not suitable for evaluating the equation because it does not handle leading zeros correctly. 
+
+Let's modify the code to split the puzzle correctly and to evaluate the equation in a way that handles leading zeros. We will also return the solution as a dictionary mapping letters to digits, as expected by the tests.
+
+Here is the updated code:
+
+Filepath: alphametics.py
+```python
+from itertools import permutations
+
+def solve(puzzle):
+    words = [word for word in puzzle.split(" ") if word.isalpha()]
+    unique_chars = set(''.join(words))
+    assert len(unique_chars) <= 10, "Too many letters"
+    first_letters = [word[0] for word in words]
+    n = len(first_letters)
+    sorted_chars = ''.join(first_letters + list(unique_chars - set(first_letters)))
+    for perm in permutations('0123456789', len(unique_chars)):
+        if '0' not in perm[:n]:
+            trans = str.maketrans(sorted_chars, ''.join(perm))
+            translated_puzzle = puzzle.translate(trans)
+            left, right = translated_puzzle.split(" == ")
+            if sum(int(num) for num in left.split(" + ")) == int(right):
+                return dict(zip(sorted_chars, perm))
+``` 
+
+In this updated code, we first split the puzzle into words by checking if each split part is alphabetic. We then create a translation table for each permutation of the digits that does not map the first letter of any word to zero. We translate the puzzle using this table and split it into left and right parts around the '==' symbol. We then check if the sum of the numbers on the left equals the number on the right. If this is the case, we return a dictionary mapping the letters to the corresponding digits.
+---

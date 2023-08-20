@@ -1,0 +1,21 @@
+method: on_llm_end [2023-08-20 17:42:58]
+llm_output: {"token_usage": {"prompt_tokens": 501, "completion_tokens": 303, "total_tokens": 804}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we can use a nested loop to iterate over possible values of `a` and `b`, and then calculate `c` as `N - a - b`. We then check if the triplet `{a, b, c}` is a Pythagorean triplet by checking if `a² + b² = c²`. If it is, we add it to our list of triplets.
+
+Here is the updated code:
+
+Filepath: pythagorean_triplet.py
+```python
+def triplets_with_sum(number):
+    triplets = []
+    for a in range(1, number):
+        for b in range(a, number):
+            c = number - a - b
+            if a*a + b*b == c*c:
+                triplets.append([a, b, c])
+    return triplets
+```
+
+In this code, the outer loop iterates over possible values of `a` from 1 to `number - 1`. The inner loop iterates over possible values of `b` from `a` to `number - 1`. This ensures that `a < b < c`. For each pair of `a` and `b`, we calculate `c` as `number - a - b`, and then check if `a² + b² = c²`. If this condition is true, we add the triplet `{a, b, c}` to our list of triplets. Finally, we return the list of triplets.
+---

@@ -1,0 +1,218 @@
+method: on_llm_start [2023-08-20 17:30:32]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-4", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Implement a basic reactive system.
+
+Reactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.
+
+Implement a basic reactive system with cells with settable values ("input" cells) and cells with values computed in terms of other cells ("compute" cells).
+Implement updates so that when an input value is changed, values propagate to reach a new stable system state.
+
+In addition, compute cells should allow for registering change notification callbacks.
+Call a cell’s callbacks when the cell’s value in a new stable state has changed from the previous stable state.
+
+####
+
+Use the above instructions to modify the supplied files: react.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: react.py
+AI: The existing code provides the basic structure for the InputCell and ComputeCell classes, but lacks the functionality to propagate changes from input cells to compute cells, and to call callbacks when a compute cell's value changes.
+
+Here's how we can implement this:
+
+1. In the InputCell class, we need to keep track of the compute cells that depend on each input cell. We can do this by adding a list of dependent cells in the constructor, and a method to add a dependent cell.
+
+2. In the ComputeCell class, we need to compute the initial value using the compute function and the values of the input cells. We also need to keep track of the callbacks, and call them when the value changes.
+
+3. When the value of an input cell changes, we need to update the values of all dependent compute cells. We can do this by adding a setter for the value property that updates the dependent cells.
+
+4. When the value of a compute cell changes, we need to call all registered callbacks. We can do this by adding a setter for the value property that calls the callbacks.
+
+Here's the updated code:
+I updated a file.
+Filepath: react.py
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self._value = initial_value
+        self.dependents = []
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        self._value = new_value
+        for cell in self.dependents:
+            cell.compute_value()
+
+    def add_dependent(self, cell):
+        self.dependents.append(cell)
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.callbacks = []
+        for cell in inputs:
+            cell.add_dependent(self)
+        self.compute_value()
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        old_value = self._value
+        self._value = new_value
+        if old_value != new_value:
+            for callback in self.callbacks:
+                callback(new_value)
+
+    def compute_value(self):
+        self.value = self.compute_function([cell.value for cell in self.inputs])
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+```
+This code should provide the required functionality. However, it assumes that the compute function does not raise any exceptions, and that the callbacks do not modify the cell values. If these assumptions are not valid, additional error handling may be needed.
+Human: .EEEEEEEEEEE.E
+====
+ERROR: test_callback_cells_only_fire_on_change (react_test.ReactTest.test_callback_cells_only_fire_on_change)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 98, in test_callback_cells_only_fire_on_change
+    output = ComputeCell([input], lambda inputs: 111 if inputs[0] < 3 else 222)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "react/react.py", line 27, in __init__
+    self.compute_value()
+  File "react/react.py", line 42, in compute_value
+    self.value = self.compute_function([cell.value for cell in self.inputs])
+    ^^^^^^^^^^
+  File "react/react.py", line 35, in value
+    old_value = self._value
+                ^^^^^^^^^^^
+AttributeError: 'ComputeCell' object has no attribute '_value'
+
+====
+ERROR: test_callbacks_can_be_added_and_removed (react_test.ReactTest.test_callbacks_can_be_added_and_removed)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 149, in test_callbacks_can_be_added_and_removed
+    output = ComputeCell(
+             ^^^^^^^^^^^^
+  File "react/react.py", line 27, in __init__
+    self.compute_value()
+  File "react/react.py", line 42, in compute_value
+    self.value = self.compute_function([cell.value for cell in self.inputs])
+    ^^^^^^^^^^
+  File "react/react.py", line 35, in value
+    old_value = self._value
+                ^^^^^^^^^^^
+AttributeError: 'ComputeCell' object has no attribute '_value'
+
+====
+ERROR: test_callbacks_can_fire_from_multiple_cells (react_test.ReactTest.test_callbacks_can_fire_from_multiple_cells)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 125, in test_callbacks_can_fire_from_multiple_cells
+    plus_one = ComputeCell(
+               ^^^^^^^^^^^^
+  File "react/react.py", line 27, in __init__
+    self.compute_value()
+  File "react/react.py", line 42, in compute_value
+    self.value = self.compute_function([cell.value for cell in self.inputs])
+    ^^^^^^^^^^
+  File "react/react.py", line 35, in value
+    old_value = self._value
+                ^^^^^^^^^^^
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in react.py to resolve the errors.
+
+Filepath: react.py
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self._value = initial_value
+        self.dependents = []
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        self._value = new_value
+        for cell in self.dependents:
+            cell.compute_value()
+
+    def add_dependent(self, cell):
+        self.dependents.append(cell)
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.callbacks = []
+        for cell in inputs:
+            cell.add_dependent(self)
+        self.compute_value()
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        old_value = self._value
+        self._value = new_value
+        if old_value != new_value:
+            for callback in self.callbacks:
+                callback(new_value)
+
+    def compute_value(self):
+        self.value = self.compute_function([cell.value for cell in self.inputs])
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+```
+

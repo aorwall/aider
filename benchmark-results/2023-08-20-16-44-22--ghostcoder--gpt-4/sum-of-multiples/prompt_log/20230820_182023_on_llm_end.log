@@ -1,0 +1,24 @@
+method: on_llm_end [2023-08-20 18:20:23]
+llm_output: {"token_usage": {"prompt_tokens": 693, "completion_tokens": 287, "total_tokens": 980}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we can use list comprehension to generate the multiples of each base value that are less than the level number. We then combine these lists into a single list, convert it to a set to remove duplicates, and finally sum the unique multiples.
+
+Here's how you can implement this:
+
+Filepath: sum_of_multiples.py
+```python
+def sum_of_multiples(limit, multiples):
+    # Generate the multiples of each base value that are less than the level number
+    multiples_list = [i for multiple in multiples for i in range(multiple, limit, multiple)]
+    # Combine these lists into a single list, convert it to a set to remove duplicates
+    unique_multiples = set(multiples_list)
+    # Sum the unique multiples
+    return sum(unique_multiples)
+```
+
+In this code, the list comprehension `[i for multiple in multiples for i in range(multiple, limit, multiple)]` generates a list of multiples for each base value. The `range(multiple, limit, multiple)` part generates a range of numbers starting from the base value and incrementing by the base value each time, up to but not including the level number.
+
+The `set(multiples_list)` part converts the list of multiples into a set, which automatically removes any duplicates because sets only allow unique elements.
+
+Finally, `sum(unique_multiples)` calculates the sum of all the unique multiples.
+---

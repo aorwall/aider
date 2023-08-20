@@ -1,0 +1,32 @@
+method: on_llm_end [2023-08-20 17:34:20]
+llm_output: {"token_usage": {"prompt_tokens": 600, "completion_tokens": 552, "total_tokens": 1152}, "model_name": "gpt-4"}
+prompt:
+This problem is a classic example of a dynamic programming problem known as the 0/1 Knapsack problem. The idea is to build up a table `dp` progressively where `dp[i][j]` will represent the maximum value that can be obtained with a knapsack capacity of `j` and items up to `i`th index.
+
+We start by initializing a 2D array `dp` of size `(n+1) x (W+1)` where `n` is the number of items and `W` is the maximum weight of the knapsack. All elements of `dp` are initially 0.
+
+Then, for each item, we consider all weights from 0 to `W` (both inclusive). For every weight `w`, we have two options:
+
+1. Don't include the item in the knapsack, in which case the value of `dp[i][w]` will be `dp[i-1][w]` (value of the knapsack with the previous item).
+2. Include the item in the knapsack. In this case, the value of `dp[i][w]` will be `v[i] + dp[i-1][w-w[i]]`, where `v[i]` is the value of the `i`th item and `w[i]` is the weight of the `i`th item. The term `dp[i-1][w-w[i]]` represents the maximum value that can be obtained with the remaining weight after including the `i`th item.
+
+The maximum of these two options will be our optimal answer, i.e., `dp[i][w] = max(dp[i-1][w], v[i] + dp[i-1][w-w[i]])`.
+
+Finally, `dp[n][W]` will give us the maximum value that can be obtained with a knapsack capacity of `W` and all items.
+
+Filepath: knapsack.py
+```python
+def maximum_value(maximum_weight, items):
+    n = len(items)
+    dp = [[0 for _ in range(maximum_weight + 1)] for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for w in range(1, maximum_weight + 1):
+            if items[i-1]['weight'] <= w:
+                dp[i][w] = max(dp[i-1][w], items[i-1]['value'] + dp[i-1][w-items[i-1]['weight']])
+            else:
+                dp[i][w] = dp[i-1][w]
+    
+    return dp[n][maximum_weight]
+```
+---

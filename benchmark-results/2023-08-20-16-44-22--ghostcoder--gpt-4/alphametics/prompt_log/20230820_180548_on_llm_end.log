@@ -1,0 +1,27 @@
+method: on_llm_end [2023-08-20 18:05:48]
+llm_output: {"token_usage": {"prompt_tokens": 426, "completion_tokens": 349, "total_tokens": 775}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we can use the permutations function from the itertools module to generate all possible permutations of the digits 0-9 for the unique letters in the puzzle. Then we can iterate over these permutations and replace the letters in the puzzle with the corresponding digits. If the resulting equation is valid and no word starts with zero, we return the solution.
+
+Here is the updated code:
+
+Filepath: alphametics.py
+```python
+from itertools import permutations
+
+def solve(puzzle):
+    words = puzzle.split(" ")
+    unique_chars = set(''.join(words))
+    assert len(unique_chars) <= 10, "Too many letters"
+    first_letters = [word[0] for word in words]
+    n = len(first_letters)
+    sorted_chars = ''.join(first_letters + list(unique_chars - set(first_letters)))
+    for perm in permutations('0123456789', len(unique_chars)):
+        if '0' not in perm[:n]:
+            trans = str.maketrans(sorted_chars, ''.join(perm))
+            if eval(puzzle.translate(trans)):
+                return puzzle.translate(trans)
+```
+
+In this code, we first split the puzzle into words and collect all unique characters. We then create a string of characters where the first characters of each word come first. This is done to ensure that these characters are not mapped to zero in the permutations. We then iterate over all permutations of the digits for the unique characters. For each permutation, we check if the first n characters (where n is the number of words in the puzzle) do not include zero. If this is the case, we create a translation table and translate the puzzle. If the resulting equation is valid, we return the translated puzzle.
+---

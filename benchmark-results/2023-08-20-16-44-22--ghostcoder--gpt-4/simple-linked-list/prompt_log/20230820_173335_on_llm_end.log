@@ -1,0 +1,69 @@
+method: on_llm_end [2023-08-20 17:33:35]
+llm_output: {"token_usage": {"prompt_tokens": 2391, "completion_tokens": 497, "total_tokens": 2888}, "model_name": "gpt-4"}
+prompt:
+Let's start by implementing the Node class. This class will have two attributes: `value` and `next_node`. The `value` attribute will store the value of the node (in this case, the song ID), and the `next_node` attribute will point to the next node in the list. 
+
+Filepath: simple_linked_list.py
+```python
+class Node:
+    def __init__(self, value, next_node=None):
+        self._value = value
+        self._next_node = next_node
+
+    def value(self):
+        return self._value
+
+    def next(self):
+        return self._next_node
+```
+
+Next, let's implement the LinkedList class. This class will have a `head` attribute that points to the first node in the list. The `push` method will add a new node to the beginning of the list. The `pop` method will remove the first node from the list and return its value. The `reversed` method will return a new LinkedList that is the reverse of the original list.
+
+Filepath: simple_linked_list.py
+```python
+class LinkedList:
+    def __init__(self, values=[]):
+        self._head = None
+        for value in reversed(values):
+            self.push(value)
+
+    def __len__(self):
+        count = 0
+        node = self._head
+        while node:
+            count += 1
+            node = node.next()
+        return count
+
+    def head(self):
+        if not self._head:
+            raise EmptyListException("The list is empty.")
+        return self._head
+
+    def push(self, value):
+        self._head = Node(value, self._head)
+
+    def pop(self):
+        if not self._head:
+            raise EmptyListException("The list is empty.")
+        value = self._head.value()
+        self._head = self._head.next()
+        return value
+
+    def reversed(self):
+        reversed_list = LinkedList()
+        node = self._head
+        while node:
+            reversed_list.push(node.value())
+            node = node.next()
+        return reversed_list
+```
+
+Finally, let's implement the EmptyListException class. This class will inherit from the built-in Exception class in Python. We don't need to add any additional functionality to this class, so we can leave it empty.
+
+Filepath: simple_linked_list.py
+```python
+class EmptyListException(Exception):
+    pass
+```
+---

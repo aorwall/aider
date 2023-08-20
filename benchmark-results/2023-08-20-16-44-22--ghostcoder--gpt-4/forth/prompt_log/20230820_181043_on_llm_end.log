@@ -1,0 +1,57 @@
+method: on_llm_end [2023-08-20 18:10:43]
+llm_output: {"token_usage": {"prompt_tokens": 917, "completion_tokens": 466, "total_tokens": 1383}, "model_name": "gpt-4"}
+prompt:
+To implement the Forth evaluator, we need to maintain a stack of integers and a dictionary of defined words. The `evaluate` function will parse the input data, execute the operations, and return the final state of the stack.
+
+Here's how we can implement this:
+
+Filepath: forth.py
+```python
+class StackUnderflowError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+def evaluate(input_data):
+    stack = []
+    words = {}
+
+    def apply_op(op):
+        if len(stack) < 2:
+            raise StackUnderflowError("Insufficient number of items in stack")
+        b, a = stack.pop(), stack.pop()
+        if op == '+':
+            stack.append(a + b)
+        elif op == '-':
+            stack.append(a - b)
+        elif op == '*':
+            stack.append(a * b)
+        elif op == '/':
+            if b == 0:
+                raise ZeroDivisionError("divide by zero")
+            stack.append(a // b)
+
+    for line in input_data:
+        tokens = line.lower().split()
+        if tokens[0] == ':':
+            words[tokens[1]] = tokens[2:-1]
+        else:
+            for token in tokens:
+                if token.isdigit():
+                    stack.append(int(token))
+                elif token in words:
+                    for word in words[token]:
+                        if word.isdigit():
+                            stack.append(int(word))
+                        else:
+                            apply_op(word)
+                else:
+                    apply_op(token)
+
+    return stack
+```
+
+In this code, `apply_op` function applies the given operation to the top two elements of the stack. If the stack has less than two elements, it raises a `StackUnderflowError`. If the operation is division and the second operand is zero, it raises a `ZeroDivisionError`.
+
+The `evaluate` function processes each line of the input data. If the line defines a new word, it adds the word to the `words` dictionary. Otherwise, it processes each token in the line. If the token is a number, it pushes the number onto the stack. If the token is a defined word, it pushes the numbers in the word's definition onto the stack and applies the operations. If the token is an operation, it applies the operation.
+---

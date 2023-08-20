@@ -1,0 +1,19 @@
+method: on_llm_end [2023-08-20 18:01:38]
+llm_output: {"token_usage": {"prompt_tokens": 737, "completion_tokens": 261, "total_tokens": 998}, "model_name": "gpt-4"}
+prompt:
+To calculate the Hamming distance between two DNA strands, we need to compare each character in the two strings. If the characters at the same position in both strings are different, we increment a counter. 
+
+However, before we start comparing the characters, we need to ensure that the two strings are of the same length. If they are not, we raise a `ValueError` with a meaningful message.
+
+Here is the updated code:
+
+Filepath: hamming.py
+```python
+def distance(strand_a, strand_b):
+    if len(strand_a) != len(strand_b):
+        raise ValueError("Strands must be of equal length.")
+    return sum(a != b for a, b in zip(strand_a, strand_b))
+```
+
+In this code, `zip(strand_a, strand_b)` creates a list of tuples, where each tuple contains the characters from `strand_a` and `strand_b` at the same position. The expression `a != b for a, b in zip(strand_a, strand_b)` generates a list of boolean values, where `True` indicates that the characters are different and `False` indicates that they are the same. The `sum` function then counts the number of `True` values, which is the Hamming distance.
+---

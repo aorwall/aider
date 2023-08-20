@@ -1,0 +1,69 @@
+method: on_llm_end [2023-08-20 17:37:36]
+llm_output: {"token_usage": {"prompt_tokens": 1531, "completion_tokens": 385, "total_tokens": 1916}, "model_name": "gpt-4"}
+prompt:
+The issue seems to be with the `foldr` function. The `foldr` function should apply the function to the elements of the list in a right-to-left order, but the current implementation applies the function in a left-to-right order because it reverses the list first. 
+
+To fix this, we need to change the order of the arguments in the function call inside the `foldr` function. Instead of `function(item, result)`, it should be `function(result, item)`. 
+
+Also, the `reverse` function is currently using `insert` which has a time complexity of O(n). We can optimize this by using `append` and reversing the list at the end.
+
+Here is the corrected code:
+
+Filepath: list_ops.py
+```python
+def append(list1, list2):
+    for item in list2:
+        list1.append(item)
+    return list1
+
+
+def concat(lists):
+    result = []
+    for list in lists:
+        result = append(result, list)
+    return result
+
+
+def filter(function, list):
+    result = []
+    for item in list:
+        if function(item):
+            result.append(item)
+    return result
+
+
+def length(list):
+    count = 0
+    for _ in list:
+        count += 1
+    return count
+
+
+def map(function, list):
+    result = []
+    for item in list:
+        result.append(function(item))
+    return result
+
+
+def foldl(function, list, initial):
+    result = initial
+    for item in list:
+        result = function(result, item)
+    return result
+
+
+def foldr(function, list, initial):
+    result = initial
+    for item in list[::-1]:
+        result = function(result, item)
+    return result
+
+
+def reverse(list):
+    result = []
+    for item in list:
+        result.append(item)
+    return result[::-1]
+```
+---

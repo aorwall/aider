@@ -1,0 +1,22 @@
+method: on_llm_end [2023-08-20 17:20:44]
+llm_output: {"token_usage": {"prompt_tokens": 1921, "completion_tokens": 229, "total_tokens": 2150}, "model_name": "gpt-4"}
+prompt:
+The test cases are expecting the saddle points to be returned as dictionaries with keys "row" and "column", but the current implementation is returning them as tuples. We can fix this by changing the line where we append the points to the list to create a dictionary instead.
+
+Here's the updated code:
+
+Filepath: saddle_points.py
+```python
+def saddle_points(matrix):
+    if any(len(row) != len(matrix[0]) for row in matrix):
+        raise ValueError("irregular matrix")
+
+    points = []
+    for i, row in enumerate(matrix):
+        for j, value in enumerate(row):
+            if value == max(row) and value == min(col[j] for col in matrix):
+                points.append({"row": i+1, "column": j+1})
+    return points
+```
+In the updated code, instead of appending a tuple to the list of points, we append a dictionary with keys "row" and "column". The values are `i+1` and `j+1` because the problem statement specifies that the rows and columns are 1-indexed, not 0-indexed.
+---

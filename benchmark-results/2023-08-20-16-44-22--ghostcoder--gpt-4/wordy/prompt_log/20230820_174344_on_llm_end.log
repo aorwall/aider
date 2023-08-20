@@ -1,0 +1,47 @@
+method: on_llm_end [2023-08-20 17:43:44]
+llm_output: {"token_usage": {"prompt_tokens": 777, "completion_tokens": 459, "total_tokens": 1236}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we need to parse the input string and perform the operations as they appear. We can use Python's built-in `split()` function to split the string into a list of words. Then we can iterate over the list and perform the operations as they appear. 
+
+We'll also need to handle errors. If the question doesn't start with "What is", contains an unknown operation, or is malformed, we'll raise a `ValueError`.
+
+Here's the updated `wordy.py`:
+
+Filepath: wordy.py
+```python
+def answer(question):
+    words = question.replace('?', '').split()
+    if words[0:2] != ['What', 'is']:
+        raise ValueError("syntax error")
+
+    result = int(words[2])
+    i = 3
+    while i < len(words):
+        operation = words[i]
+        if operation == 'plus':
+            result += int(words[i+1])
+        elif operation == 'minus':
+            result -= int(words[i+1])
+        elif operation == 'multiplied':
+            if words[i+1] != 'by':
+                raise ValueError("syntax error")
+            result *= int(words[i+2])
+            i += 1
+        elif operation == 'divided':
+            if words[i+1] != 'by':
+                raise ValueError("syntax error")
+            result //= int(words[i+2])
+            i += 1
+        else:
+            raise ValueError("unknown operation")
+        i += 2
+
+    return result
+```
+
+This function starts by splitting the question into words. It then checks that the question starts with "What is", and raises a `ValueError` if it doesn't. It then initializes `result` to the first number in the question.
+
+The function then enters a loop where it performs the operations as they appear in the question. If it encounters an operation it doesn't recognize, it raises a `ValueError`. If it encounters "multiplied" or "divided", it checks that the next word is "by", and raises a `ValueError` if it isn't. It then performs the operation and increments `i` by an additional 1 to skip over the "by".
+
+Finally, the function returns the result.
+---

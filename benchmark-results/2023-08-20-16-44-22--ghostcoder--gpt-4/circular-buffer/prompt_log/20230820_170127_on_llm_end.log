@@ -1,0 +1,81 @@
+method: on_llm_end [2023-08-20 17:01:27]
+llm_output: {"token_usage": {"prompt_tokens": 1262, "completion_tokens": 777, "total_tokens": 2039}, "model_name": "gpt-4"}
+prompt:
+To implement the CircularBuffer class, we need to maintain a list to hold the buffer data and two pointers to keep track of the start and end of the buffer. The start pointer will be used to read data from the buffer and the end pointer will be used to write data into the buffer. 
+
+When the buffer is full, the write operation will raise a BufferFullException. When the buffer is empty, the read operation will raise a BufferEmptyException. The overwrite operation will write data into the buffer even if it's full by overwriting the oldest data. The clear operation will reset the buffer to its initial state.
+
+Here is the updated code:
+
+Filepath: circular_buffer.py
+```python
+class BufferFullException(BufferError):
+    """Exception raised when CircularBuffer is full.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message="Circular buffer is full"):
+        super().__init__(message)
+
+
+class BufferEmptyException(BufferError):
+    """Exception raised when CircularBuffer is empty.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message="Circular buffer is empty"):
+        super().__init__(message)
+
+
+class CircularBuffer:
+    def __init__(self, capacity):
+        self.buffer = [None]*capacity
+        self.start = 0
+        self.end = 0
+        self.is_full = False
+
+    def read(self):
+        if self.start == self.end and not self.is_full:
+            raise BufferEmptyException
+        data = self.buffer[self.start]
+        self.buffer[self.start] = None
+        self.start = (self.start + 1) % len(self.buffer)
+        self.is_full = False
+        return data
+
+    def write(self, data):
+        if self.is_full:
+            raise BufferFullException
+        self.buffer[self.end] = data
+        self.end = (self.end + 1) % len(self.buffer)
+        if self.end == self.start:
+            self.is_full = True
+
+    def overwrite(self, data):
+        self.buffer[self.end] = data
+        self.end = (self.end + 1) % len(self.buffer)
+        if self.is_full:
+            self.start = (self.start + 1) % len(self.buffer)
+        if self.end == self.start:
+            self.is_full = True
+
+    def clear(self):
+        self.buffer = [None]*len(self.buffer)
+        self.start = 0
+        self.end = 0
+        self.is_full = False
+```
+In the BufferFullException and BufferEmptyException classes, I added a default message to the constructor and called the parent constructor with the message. 
+
+In the CircularBuffer class, I added a boolean variable is_full to keep track of whether the buffer is full or not. This is necessary because when the buffer is full, the start and end pointers will be equal, which is the same condition as when the buffer is empty. The is_full variable allows us to distinguish between these two cases. 
+
+In the read method, I added a check to raise a BufferEmptyException if the buffer is empty. After reading data from the buffer, I set the corresponding buffer slot to None and moved the start pointer forward. 
+
+In the write method, I added a check to raise a BufferFullException if the buffer is full. After writing data into the buffer, I moved the end pointer forward. If the end pointer equals the start pointer after the move, it means the buffer is full. 
+
+In the overwrite method, I wrote data into the buffer and moved the end pointer forward regardless of whether the buffer is full or not. If the buffer was full, I also moved the start pointer forward to overwrite the oldest data. 
+
+In the clear method, I reset the buffer and the pointers to their initial state.
+---

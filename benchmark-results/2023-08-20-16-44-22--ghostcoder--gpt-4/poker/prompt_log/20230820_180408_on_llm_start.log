@@ -1,0 +1,239 @@
+method: on_llm_start [2023-08-20 18:04:08]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-4", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Pick the best hand(s) from a list of poker hands.
+
+See [wikipedia][poker-hands] for an overview of poker hands.
+
+[poker-hands]: https://en.wikipedia.org/wiki/List_of_poker_hands
+
+####
+
+Use the above instructions to modify the supplied files: poker.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: poker.py
+AI: To solve this problem, we need to rank each hand and then compare the ranks to find the best hand(s). 
+
+We'll use the following ranking system:
+
+- Straight flush: 8
+- Four of a kind: 7
+- Full house: 6
+- Flush: 5
+- Straight: 4
+- Three of a kind: 3
+- Two pair: 2
+- One pair: 1
+- High card: 0
+
+We'll also need to handle ties. If two hands have the same rank, we'll compare the cards in descending order. If the hands are still tied, they are both considered the best hands.
+
+Here's the updated code:
+I updated a file.
+Filepath: poker.py
+```python
+def best_hands(hands):
+    return all_max(hands, key=hand_rank)
+
+def all_max(iterable, key=None):
+    result, max_val = [], None
+    key = key or (lambda x: x)
+    for x in iterable:
+        x_val = key(x)
+        if not result or x_val > max_val:
+            result, max_val = [x], x_val
+        elif x_val == max_val:
+            result.append(x)
+    return result
+
+def hand_rank(hand):
+    ranks = card_ranks(hand)
+    if straight(ranks) and flush(hand):
+        return (8, max(ranks))
+    elif kind(4, ranks):
+        return (7, kind(4, ranks), kind(1, ranks))
+    elif kind(3, ranks) and kind(2, ranks):
+        return (6, kind(3, ranks), kind(2, ranks))
+    elif flush(hand):
+        return (5, ranks)
+    elif straight(ranks):
+        return (4, max(ranks))
+    elif kind(3, ranks):
+        return (3, kind(3, ranks), ranks)
+    elif two_pair(ranks):
+        return (2, two_pair(ranks), ranks)
+    elif kind(2, ranks):
+        return (1, kind(2, ranks), ranks)
+    else:
+        return (0, ranks)
+
+def card_ranks(hand):
+    rank_dict = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    ranks = [rank_dict.get(r, r) for r, s in hand]
+    ranks.sort(reverse=True)
+    return [5, 4, 3, 2, 1] if (ranks == [14, 5, 4, 3, 2]) else ranks
+
+def flush(hand):
+    suits = [s for r, s in hand]
+    return len(set(suits)) == 1
+
+def straight(ranks):
+    return (max(ranks)-min(ranks) == 4) and len(set(ranks)) == 5
+
+def kind(n, ranks):
+    for r in ranks:
+        if ranks.count(r) == n: return r
+    return None
+
+def two_pair(ranks):
+    pair = kind(2, ranks)
+    low_pair = kind(2, list(reversed(ranks)))
+    if pair and low_pair != pair:
+        return (pair, low_pair)
+    return None
+```
+Human: EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+====
+ERROR: test_a_straight_beats_three_of_a_kind (poker_test.PokerTest.test_a_straight_beats_three_of_a_kind)
+----
+Traceback (most recent call last):
+  File "poker/poker_test.py", line 107, in test_a_straight_beats_three_of_a_kind
+    best_hands(["4S 5H 4C 8D 4H", "3S 4D 2S 6D 5C"]), ["3S 4D 2S 6D 5C"]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 2, in best_hands
+    return all_max(hands, key=hand_rank)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 8, in all_max
+    x_val = key(x)
+            ^^^^^^
+  File "poker/poker.py", line 16, in hand_rank
+    ranks = card_ranks(hand)
+            ^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 38, in card_ranks
+    ranks = [rank_dict.get(r, r) for r, s in hand]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 38, in <listcomp>
+    ranks = [rank_dict.get(r, r) for r, s in hand]
+                                     ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+====
+ERROR: test_a_tie_has_multiple_winners (poker_test.PokerTest.test_a_tie_has_multiple_winners)
+----
+Traceback (most recent call last):
+  File "poker/poker_test.py", line 24, in test_a_tie_has_multiple_winners
+    best_hands(
+  File "poker/poker.py", line 2, in best_hands
+    return all_max(hands, key=hand_rank)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 8, in all_max
+    x_val = key(x)
+            ^^^^^^
+  File "poker/poker.py", line 16, in hand_rank
+    ranks = card_ranks(hand)
+            ^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 38, in card_ranks
+    ranks = [rank_dict.get(r, r) for r, s in hand]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 38, in <listcomp>
+    ranks = [rank_dict.get(r, r) for r, s in hand]
+                                     ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+====
+ERROR: test_aces_can_end_a_straight_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_10_j_q_k_a)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in poker.py to resolve the errors.
+
+Filepath: poker.py
+```python
+def best_hands(hands):
+    return all_max(hands, key=hand_rank)
+
+def all_max(iterable, key=None):
+    result, max_val = [], None
+    key = key or (lambda x: x)
+    for x in iterable:
+        x_val = key(x)
+        if not result or x_val > max_val:
+            result, max_val = [x], x_val
+        elif x_val == max_val:
+            result.append(x)
+    return result
+
+def hand_rank(hand):
+    ranks = card_ranks(hand)
+    if straight(ranks) and flush(hand):
+        return (8, max(ranks))
+    elif kind(4, ranks):
+        return (7, kind(4, ranks), kind(1, ranks))
+    elif kind(3, ranks) and kind(2, ranks):
+        return (6, kind(3, ranks), kind(2, ranks))
+    elif flush(hand):
+        return (5, ranks)
+    elif straight(ranks):
+        return (4, max(ranks))
+    elif kind(3, ranks):
+        return (3, kind(3, ranks), ranks)
+    elif two_pair(ranks):
+        return (2, two_pair(ranks), ranks)
+    elif kind(2, ranks):
+        return (1, kind(2, ranks), ranks)
+    else:
+        return (0, ranks)
+
+def card_ranks(hand):
+    rank_dict = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    ranks = [rank_dict.get(r, r) for r, s in hand]
+    ranks.sort(reverse=True)
+    return [5, 4, 3, 2, 1] if (ranks == [14, 5, 4, 3, 2]) else ranks
+
+def flush(hand):
+    suits = [s for r, s in hand]
+    return len(set(suits)) == 1
+
+def straight(ranks):
+    return (max(ranks)-min(ranks) == 4) and len(set(ranks)) == 5
+
+def kind(n, ranks):
+    for r in ranks:
+        if ranks.count(r) == n: return r
+    return None
+
+def two_pair(ranks):
+    pair = kind(2, ranks)
+    low_pair = kind(2, list(reversed(ranks)))
+    if pair and low_pair != pair:
+        return (pair, low_pair)
+    return None
+```
+

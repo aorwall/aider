@@ -1,0 +1,21 @@
+method: on_llm_end [2023-08-20 16:55:34]
+llm_output: {"token_usage": {"prompt_tokens": 1221, "completion_tokens": 202, "total_tokens": 1423}, "model_name": "gpt-4"}
+prompt:
+The test cases are expecting a ValueError to be raised when the input is not a valid octal number. In the current implementation, we are returning 0 for invalid inputs instead of raising an error. 
+
+We can fix this by raising a ValueError when the input is not a valid octal number. Here's the updated code:
+
+Filepath: octal.py
+```python
+def parse_octal(digits):
+    if not all(char in '01234567' for char in digits):
+        raise ValueError("Invalid octal number")
+
+    decimal = 0
+    for i, digit in enumerate(reversed(digits)):
+        decimal += int(digit) * (8 ** i)
+
+    return decimal
+```
+In this updated code, if the input string contains any character that is not a valid octal digit, a ValueError is raised with a message "Invalid octal number". If all characters are valid octal digits, the function proceeds to convert the octal number to a decimal number as before.
+---

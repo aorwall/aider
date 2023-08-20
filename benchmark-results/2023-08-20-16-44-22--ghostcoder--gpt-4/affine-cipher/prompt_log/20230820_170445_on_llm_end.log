@@ -1,0 +1,30 @@
+method: on_llm_end [2023-08-20 17:04:45]
+llm_output: {"token_usage": {"prompt_tokens": 1313, "completion_tokens": 452, "total_tokens": 1765}, "model_name": "gpt-4"}
+prompt:
+To implement the affine cipher, we need to define the `encode` and `decode` functions. 
+
+In the `encode` function, we first check if `a` and `m` are coprime by using the `math.gcd` function. If they are not, we raise a `ValueError`. Then, we convert the plain text to lower case and remove any non-alphabetic characters. We then convert each character to its numeric equivalent, apply the encryption function, and convert it back to a character. We group the characters into groups of 5 and join them with a space.
+
+In the `decode` function, we do the same checks and preprocessing. We then find the modular multiplicative inverse of `a` using the `pow` function with `-1` as the exponent. We apply the decryption function to each character and convert it back to a character.
+
+Filepath: affine_cipher.py
+```python
+import math
+import re
+
+def encode(plain_text, a, b):
+    if math.gcd(a, 26) != 1:
+        raise ValueError("a and m must be coprime.")
+    plain_text = re.sub('[^a-z0-9]', '', plain_text.lower())
+    ciphered_text = [chr((a * (ord(c) - ord('a')) + b) % 26 + ord('a')) if c.isalpha() else c for c in plain_text]
+    return ' '.join([''.join(ciphered_text[i:i+5]) for i in range(0, len(ciphered_text), 5)])
+
+def decode(ciphered_text, a, b):
+    if math.gcd(a, 26) != 1:
+        raise ValueError("a and m must be coprime.")
+    ciphered_text = re.sub('[^a-z0-9]', '', ciphered_text.lower())
+    a_inv = pow(a, -1, 26)
+    plain_text = [chr(a_inv * ((ord(c) - ord('a')) - b) % 26 + ord('a')) if c.isalpha() else c for c in ciphered_text]
+    return ''.join(plain_text)
+```
+---

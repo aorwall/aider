@@ -1,0 +1,38 @@
+method: on_llm_end [2023-08-20 18:19:34]
+llm_output: {"token_usage": {"prompt_tokens": 932, "completion_tokens": 634, "total_tokens": 1566}, "model_name": "gpt-4"}
+prompt:
+Filepath: yacht.py
+```python
+# Score categories.
+# Change the values as you see fit.
+YACHT = lambda x: 50 if len(set(x)) == 1 else 0
+ONES = lambda x: x.count(1)
+TWOS = lambda x: x.count(2) * 2
+THREES = lambda x: x.count(3) * 3
+FOURS = lambda x: x.count(4) * 4
+FIVES = lambda x: x.count(5) * 5
+SIXES = lambda x: x.count(6) * 6
+FULL_HOUSE = lambda x: sum(x) if len(set(x)) == 2 and x.count(x[0]) in [2, 3] else 0
+FOUR_OF_A_KIND = lambda x: 4 * max(set(x), key=x.count) if x.count(max(set(x), key=x.count)) >= 4 else 0
+LITTLE_STRAIGHT = lambda x: 30 if sorted(x) == [1, 2, 3, 4, 5] else 0
+BIG_STRAIGHT = lambda x: 30 if sorted(x) == [2, 3, 4, 5, 6] else 0
+CHOICE = sum
+
+
+def score(dice, category):
+    return category(dice)
+```
+
+Explanation:
+
+I have replaced the `None` values with lambda functions that calculate the score for each category according to the rules of the game. 
+
+- For the `YACHT` category, the function checks if all the dice have the same value (i.e., the set of dice values has a length of 1). If they do, it returns 50; otherwise, it returns 0.
+- For the `ONES` to `SIXES` categories, the function counts the number of dice that have the corresponding value and multiplies it by the value itself.
+- For the `FULL_HOUSE` category, the function checks if there are exactly two different dice values and if one of them appears 2 or 3 times. If these conditions are met, it returns the sum of the dice; otherwise, it returns 0.
+- For the `FOUR_OF_A_KIND` category, the function checks if there is a dice value that appears at least 4 times. If there is, it returns four times that value; otherwise, it returns 0.
+- For the `LITTLE_STRAIGHT` and `BIG_STRAIGHT` categories, the function checks if the sorted dice values match the sequence 1-2-3-4-5 or 2-3-4-5-6, respectively. If they do, it returns 30; otherwise, it returns 0.
+- For the `CHOICE` category, the function simply returns the sum of the dice.
+
+The `score` function then takes a list of dice values and a category function as arguments and returns the result of applying the category function to the dice values.
+---

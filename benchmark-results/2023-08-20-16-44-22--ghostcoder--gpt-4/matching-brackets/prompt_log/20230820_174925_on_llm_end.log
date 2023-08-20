@@ -1,0 +1,22 @@
+method: on_llm_end [2023-08-20 17:49:25]
+llm_output: {"token_usage": {"prompt_tokens": 295, "completion_tokens": 345, "total_tokens": 640}, "model_name": "gpt-4"}
+prompt:
+Sure, I can help with that. The problem can be solved using a stack data structure. We iterate over the string and every time we encounter an opening bracket, we push it to the stack. When we encounter a closing bracket, we check the top of the stack. If the top of the stack is the corresponding opening bracket, we pop it from the stack. If it's not, or if the stack is empty, we return False. After iterating over the string, if the stack is empty, we return True, otherwise we return False.
+
+Here is the updated code:
+
+Filepath: matching_brackets.py
+```python
+def is_paired(input_string):
+    stack = []
+    brackets = {"(": ")", "{": "}", "[": "]"}
+    for char in input_string:
+        if char in brackets:
+            stack.append(char)
+        elif char in brackets.values():
+            if not stack or brackets[stack.pop()] != char:
+                return False
+    return not stack
+```
+In this code, we first initialize an empty stack and a dictionary that maps each opening bracket to its corresponding closing bracket. Then we iterate over the input string. If the current character is an opening bracket, we push it to the stack. If it's a closing bracket, we check if the stack is empty or if the top of the stack doesn't match the current character. If either of these conditions is true, we return False. Finally, after iterating over the string, we check if the stack is empty. If it is, we return True, indicating that all brackets are correctly paired and nested. If it's not, we return False, indicating that there are unpaired or incorrectly nested brackets.
+---

@@ -1,0 +1,90 @@
+method: on_llm_end [2023-08-20 18:08:11]
+llm_output: {"token_usage": {"prompt_tokens": 3161, "completion_tokens": 550, "total_tokens": 3711}, "model_name": "gpt-4"}
+prompt:
+The error messages indicate that the `Node` class is not defined. This is because the `Node` class and the `LinkedList` class are defined in separate cells. In Python, all related classes should be defined in the same cell or in the same file. 
+
+Let's put the `Node` class and the `LinkedList` class in the same file.
+
+Filepath: linked_list.py
+```python
+class Node:
+    def __init__(self, value, succeeding=None, previous=None):
+        self.value = value
+        self.succeeding = succeeding
+        self.previous = previous
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.length = 0
+
+    def push(self, value):
+        new_node = Node(value, None, self.tail)
+        if self.tail:
+            self.tail.succeeding = new_node
+        else:
+            self.head = new_node
+        self.tail = new_node
+        self.length += 1
+
+    def pop(self):
+        if not self.tail:
+            raise IndexError("List is empty")
+        value = self.tail.value
+        self.tail = self.tail.previous
+        if self.tail:
+            self.tail.succeeding = None
+        else:
+            self.head = None
+        self.length -= 1
+        return value
+
+    def shift(self):
+        if not self.head:
+            raise IndexError("List is empty")
+        value = self.head.value
+        self.head = self.head.succeeding
+        if self.head:
+            self.head.previous = None
+        else:
+            self.tail = None
+        self.length -= 1
+        return value
+
+    def unshift(self, value):
+        new_node = Node(value, self.head, None)
+        if self.head:
+            self.head.previous = new_node
+        else:
+            self.tail = new_node
+        self.head = new_node
+        self.length += 1
+
+    def delete(self, value):
+        node = self.head
+        while node:
+            if node.value == value:
+                if node.previous:
+                    node.previous.succeeding = node.succeeding
+                else:
+                    self.head = node.succeeding
+                if node.succeeding:
+                    node.succeeding.previous = node.previous
+                else:
+                    self.tail = node.previous
+                self.length -= 1
+                return
+            node = node.succeeding
+        raise ValueError("Value not found")
+
+    def __len__(self):
+        return self.length
+
+    def __iter__(self):
+        node = self.head
+        while node:
+            yield node.value
+            node = node.succeeding
+```
+---

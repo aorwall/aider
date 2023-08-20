@@ -1,0 +1,47 @@
+method: on_llm_end [2023-08-20 17:38:12]
+llm_output: {"token_usage": {"prompt_tokens": 447, "completion_tokens": 575, "total_tokens": 1022}, "model_name": "gpt-4"}
+prompt:
+Sure, I will modify the `Point` class to initialize `x` and `y` with the provided parameters. Then, I will implement the `WordSearch` class. In the `__init__` method, I will store the puzzle as a list of lists for easier access. In the `search` method, I will iterate over the puzzle in all possible directions (horizontal, vertical, and diagonal) to find the word. If the word is found, I will return the start and end points.
+
+Filepath: word_search.py
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+
+class WordSearch:
+    def __init__(self, puzzle):
+        self.puzzle = [list(row) for row in puzzle]
+
+    def search(self, word):
+        for y in range(len(self.puzzle)):
+            for x in range(len(self.puzzle[y])):
+                if self.search_from(x, y, word):
+                    return Point(x, y), Point(x + len(word) - 1, y)
+        return None
+
+    def search_from(self, x, y, word):
+        for dx, dy in [(0, 1), (1, 0), (1, 1), (-1, 0), (0, -1), (-1, -1), (1, -1), (-1, 1)]:
+            if self.search_in_direction(x, y, dx, dy, word):
+                return True
+        return False
+
+    def search_in_direction(self, x, y, dx, dy, word):
+        for i in range(len(word)):
+            nx, ny = x + i * dx, y + i * dy
+            if not (0 <= nx < len(self.puzzle[0]) and 0 <= ny < len(self.puzzle)):
+                return False
+            if self.puzzle[ny][nx] != word[i]:
+                return False
+        return True
+```
+
+In the `search_from` method, I iterate over all possible directions. For each direction, I call `search_in_direction` to check if the word can be found in that direction starting from the current point. If the word is found, I return `True`.
+
+In the `search_in_direction` method, I iterate over the characters of the word. For each character, I calculate the next point in the given direction and check if it's within the bounds of the puzzle and if it matches the current character of the word. If all characters match, I return `True`. If any character doesn't match or if I go out of bounds, I return `False`.
+---

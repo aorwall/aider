@@ -1,0 +1,44 @@
+method: on_llm_end [2023-08-20 17:27:57]
+llm_output: {"token_usage": {"prompt_tokens": 618, "completion_tokens": 424, "total_tokens": 1042}, "model_name": "gpt-4"}
+prompt:
+Based on the instructions, we need to implement a School class that can add students to a grade, get a list of all students in a grade, and get a sorted list of all students in all grades. 
+
+Here's how we can implement this:
+
+Filepath: grade_school.py
+```python
+class School:
+    def __init__(self):
+        self.students = {}
+
+    def add_student(self, name, grade):
+        if grade not in self.students:
+            self.students[grade] = []
+        if name not in self.students[grade]:
+            self.students[grade].append(name)
+            self.students[grade].sort()
+        else:
+            return "Student already added."
+
+    def roster(self):
+        roster = []
+        for grade in sorted(self.students.keys()):
+            for student in self.students[grade]:
+                roster.append(student)
+        return roster
+
+    def grade(self, grade_number):
+        if grade_number in self.students:
+            return self.students[grade_number]
+        else:
+            return []
+```
+
+In the `__init__` method, we initialize an empty dictionary to store the students. The keys of this dictionary will be the grade numbers, and the values will be lists of student names.
+
+In the `add_student` method, we first check if the grade exists in the dictionary. If it doesn't, we add it and initialize an empty list for the students. Then we check if the student is already in the list for that grade. If they are not, we add them and sort the list. If they are, we return a message indicating that the student has already been added.
+
+In the `roster` method, we create an empty list for the roster. We then iterate over the grades in the dictionary in sorted order, and for each grade, we iterate over the students and add them to the roster. Finally, we return the roster.
+
+In the `grade` method, we check if the grade exists in the dictionary. If it does, we return the list of students for that grade. If it doesn't, we return an empty list.
+---

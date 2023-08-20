@@ -1,0 +1,33 @@
+method: on_llm_end [2023-08-20 17:57:05]
+llm_output: {"token_usage": {"prompt_tokens": 3384, "completion_tokens": 468, "total_tokens": 3852}, "model_name": "gpt-4"}
+prompt:
+The task is to generate the lyrics of the song "99 Bottles of Beer on the Wall". The song is repetitive and follows a pattern, which makes it a good candidate for a programmatic solution. 
+
+The function `recite(start, take=1)` takes two parameters: `start` which is the starting number of bottles, and `take` which is the number of verses to generate. The default value for `take` is 1, meaning if no value is provided, the function will generate one verse.
+
+The function uses a loop to generate the verses. For each iteration, it checks if the current number of bottles is greater than 0. If it is, it generates a verse using string formatting. If the current number of bottles is 0, it generates the final verse of the song.
+
+Here is the updated code:
+
+Filepath: beer_song.py
+```python
+def recite(start, take=1):
+    lyrics = []
+    for i in range(start, start - take, -1):
+        if i > 2:
+            lyrics.append(f"{i} bottles of beer on the wall, {i} bottles of beer.")
+            lyrics.append(f"Take one down and pass it around, {i - 1} bottles of beer on the wall.\n")
+        elif i == 2:
+            lyrics.append(f"{i} bottles of beer on the wall, {i} bottles of beer.")
+            lyrics.append(f"Take one down and pass it around, {i - 1} bottle of beer on the wall.\n")
+        elif i == 1:
+            lyrics.append(f"{i} bottle of beer on the wall, {i} bottle of beer.")
+            lyrics.append("Take it down and pass it around, no more bottles of beer on the wall.\n")
+        else:
+            lyrics.append("No more bottles of beer on the wall, no more bottles of beer.")
+            lyrics.append("Go to the store and buy some more, 99 bottles of beer on the wall.\n")
+    return lyrics
+```
+
+This function will return a list of strings, each string being a line of the song. The `\n` at the end of each verse is used to separate the verses when the lyrics are printed or written to a file.
+---

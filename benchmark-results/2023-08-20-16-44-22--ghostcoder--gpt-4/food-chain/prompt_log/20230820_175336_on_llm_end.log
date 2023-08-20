@@ -1,0 +1,44 @@
+method: on_llm_end [2023-08-20 17:53:36]
+llm_output: {"token_usage": {"prompt_tokens": 2159, "completion_tokens": 511, "total_tokens": 2670}, "model_name": "gpt-4"}
+prompt:
+I see the issue. The problem is that the phrase for the spider is being included in the lines for the animals that are swallowed to catch the spider. This phrase should only be included in the line for the spider itself, not in the lines for the other animals. 
+
+To fix this, we can add a condition to check if the current animal is the spider before including its phrase. 
+
+Here's the updated code:
+
+Filepath: food_chain.py
+```python
+def recite(start_verse, end_verse):
+    animals = [
+        ("fly", ""),
+        ("spider", "It wriggled and jiggled and tickled inside her."),
+        ("bird", "How absurd to swallow a bird!"),
+        ("cat", "Imagine that, to swallow a cat!"),
+        ("dog", "What a hog, to swallow a dog!"),
+        ("goat", "Just opened her throat and swallowed a goat!"),
+        ("cow", "I don't know how she swallowed a cow!"),
+        ("horse", "She's dead, of course!")
+    ]
+
+    verses = []
+    for i in range(start_verse - 1, end_verse):
+        verse = ["I know an old lady who swallowed a {}.".format(animals[i][0])]
+        if animals[i][1]:
+            verse.append(animals[i][1])
+        if i != len(animals) - 1:
+            for j in range(i, -1, -1):
+                if j == 0:
+                    verse.append("She swallowed the {} to catch the {}.".format(animals[j+1][0], animals[j][0]))
+                else:
+                    if animals[j][0] == "spider":
+                        verse.append("She swallowed the {} to catch the {} that {}.".format(animals[j+1][0], animals[j][0], animals[j][1].lower()))
+                    else:
+                        verse.append("She swallowed the {} to catch the {}.".format(animals[j+1][0], animals[j][0]))
+            verse.append("I don't know why she swallowed the fly. Perhaps she'll die.")
+        verses.append("\n".join(verse))
+
+    return verses
+```
+In this updated code, I added a condition to check if the current animal is the spider before including its phrase in the line. If the current animal is not the spider, the line is generated without the phrase. This should fix the issue and make the code pass the tests.
+---

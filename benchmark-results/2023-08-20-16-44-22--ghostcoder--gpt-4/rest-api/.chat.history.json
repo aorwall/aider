@@ -1,0 +1,145 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a RESTful API for tracking IOUs.\n\nFour roommates have a habit of borrowing money from each other frequently, and have trouble remembering who owes whom, and how much.\n\nYour task is to implement a simple [RESTful API][restful-wikipedia] that receives [IOU][iou]s as POST requests, and can deliver specified summary information via GET requests.\n\n## API Specification\n\n### User object\n\n```json\n{\n  \"name\": \"Adam\",\n  \"owes\": {\n    \"Bob\": 12.0,\n    \"Chuck\": 4.0,\n    \"Dan\": 9.5\n  },\n  \"owed_by\": {\n    \"Bob\": 6.5,\n    \"Dan\": 2.75,\n  },\n  \"balance\": \"<(total owed by other users) - (total owed to other users)>\"\n}\n```\n\n### Methods\n\n| Description | HTTP Method | URL | Payload Format | Response w/o Payload | Response w/ Payload |\n| --- | --- | --- | --- | --- | --- |\n| List of user information | GET | /users | `{\"users\":[\"Adam\",\"Bob\"]}` | `{\"users\":<List of all User objects>}` | `{\"users\":<List of User objects for <users> (sorted by name)}` |\n| Create user | POST | /add | `{\"user\":<name of new user (unique)>}` | N/A | `<User object for new user>` |\n| Create IOU | POST | /iou | `{\"lender\":<name of lender>,\"borrower\":<name of borrower>,\"amount\":5.25}` | N/A | `{\"users\":<updated User objects for <lender> and <borrower> (sorted by name)>}` |\n\n## Other Resources\n\n- [REST API Tutorial][restfulapi]\n- Example RESTful APIs\n  - [GitHub][github-rest]\n  - [Reddit][reddit-rest]\n\n[restful-wikipedia]: https://en.wikipedia.org/wiki/Representational_state_transfer\n[iou]: https://en.wikipedia.org/wiki/IOU\n[github-rest]: https://developer.github.com/v3/\n[reddit-rest]: https://www.reddit.com/dev/api/\n[restfulapi]: https://restfulapi.net/\n\n####\n\nUse the above instructions to modify the supplied files: rest_api.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "rest_api.py",
+        "content": "class RestAPI:\n    def __init__(self, database=None):\n        pass\n\n    def get(self, url, payload=None):\n        pass\n\n    def post(self, url, payload=None):\n        pass\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "To implement the RESTful API for tracking IOUs, we need to update the `RestAPI` class in the `rest_api.py` file. \n\nWe will add a `database` attribute to the `__init__` method to store the user data. \n\nIn the `get` method, we will check if the URL is '/users'. If it is, we will return the user information. If a payload is provided, we will return the information of the specified users. If no payload is provided, we will return the information of all users.\n\nIn the `post` method, we will check the URL. If the URL is '/add', we will add a new user to the database. If the URL is '/iou', we will update the 'owes' and 'owed_by' fields of the lender and borrower, and update their balances.",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "file_path": "rest_api.py",
+        "content": "import json\n\nclass RestAPI:\n    def __init__(self, database=None):\n        self.database = database if database else {\"users\": []}\n\n    def get(self, url, payload=None):\n        if url == \"/users\":\n            if payload:\n                names = json.loads(payload)[\"users\"]\n                return json.dumps({\"users\": [user for user in self.database[\"users\"] if user[\"name\"] in names]})\n            else:\n                return json.dumps(self.database)\n\n    def post(self, url, payload=None):\n        if url == \"/add\":\n            name = json.loads(payload)[\"user\"]\n            user = {\"name\": name, \"owes\": {}, \"owed_by\": {}, \"balance\": 0.0}\n            self.database[\"users\"].append(user)\n            return json.dumps(user)\n        elif url == \"/iou\":\n            data = json.loads(payload)\n            lender = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"lender\"])\n            borrower = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"borrower\"])\n            amount = data[\"amount\"]\n\n            if borrower[\"name\"] in lender[\"owed_by\"]:\n                lender[\"owed_by\"][borrower[\"name\"]] -= amount\n                if lender[\"owed_by\"][borrower[\"name\"]] <= 0:\n                    amount = -lender[\"owed_by\"][borrower[\"name\"]]\n                    del lender[\"owed_by\"][borrower[\"name\"]]\n                else:\n                    amount = 0\n            if amount > 0:\n                lender[\"owes\"][borrower[\"name\"]] = lender[\"owes\"].get(borrower[\"name\"], 0) + amount\n                borrower[\"owed_by\"][lender[\"name\"]] = borrower[\"owed_by\"].get(lender[\"name\"], 0) + amount\n\n            lender[\"balance\"] = sum(lender[\"owed_by\"].values()) - sum(lender[\"owes\"].values())\n            borrower[\"balance\"] = sum(borrower[\"owed_by\"].values()) - sum(borrower[\"owes\"].values())\n\n            return json.dumps({\"users\": sorted([lender, borrower], key=lambda x: x[\"name\"])})",
+        "information": null,
+        "diff": "--- rest_api.py\n+++ rest_api.py\n@@ -1,9 +1,40 @@\n+import json\n class RestAPI:\n     def __init__(self, database=None):\n-        pass\n+        self.database = database if database else {\"users\": []}\n \n     def get(self, url, payload=None):\n-        pass\n+        if url == \"/users\":\n+            if payload:\n+                names = json.loads(payload)[\"users\"]\n+                return json.dumps({\"users\": [user for user in self.database[\"users\"] if user[\"name\"] in names]})\n+            else:\n+                return json.dumps(self.database)\n \n     def post(self, url, payload=None):\n-        pass+        if url == \"/add\":\n+            name = json.loads(payload)[\"user\"]\n+            user = {\"name\": name, \"owes\": {}, \"owed_by\": {}, \"balance\": 0.0}\n+            self.database[\"users\"].append(user)\n+            return json.dumps(user)\n+        elif url == \"/iou\":\n+            data = json.loads(payload)\n+            lender = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"lender\"])\n+            borrower = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"borrower\"])\n+            amount = data[\"amount\"]\n+\n+            if borrower[\"name\"] in lender[\"owed_by\"]:\n+                lender[\"owed_by\"][borrower[\"name\"]] -= amount\n+                if lender[\"owed_by\"][borrower[\"name\"]] <= 0:\n+                    amount = -lender[\"owed_by\"][borrower[\"name\"]]\n+                    del lender[\"owed_by\"][borrower[\"name\"]]\n+                else:\n+                    amount = 0\n+            if amount > 0:\n+                lender[\"owes\"][borrower[\"name\"]] = lender[\"owes\"].get(borrower[\"name\"], 0) + amount\n+                borrower[\"owed_by\"][lender[\"name\"]] = borrower[\"owed_by\"].get(lender[\"name\"], 0) + amount\n+\n+            lender[\"balance\"] = sum(lender[\"owed_by\"].values()) - sum(lender[\"owes\"].values())\n+            borrower[\"balance\"] = sum(borrower[\"owed_by\"].values()) - sum(borrower[\"owes\"].values())\n+\n+            return json.dumps({\"users\": sorted([lender, borrower], key=lambda x: x[\"name\"])})",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-4",
+        "total_tokens": 1384,
+        "prompt_tokens": 748,
+        "completion_tokens": 636,
+        "total_cost": 0.0606,
+        "duration": 54,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 1,
+          "gpt_tweaks": [
+            "next_original_match_insert"
+          ]
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".FF.FFFF.\n====\nFAIL: test_borrower_has_negative_balance (rest_api_test.RestApiTest.test_borrower_has_negative_balance)\n----\nTraceback (most recent call last):\n  File \"rest-api/rest_api_test.py\", line 85, in test_borrower_has_negative_balance\n    self.assertDictEqual(json.loads(response), expected)\nAssertionError: {'use[27 chars]s': {'Bob': 3.0}, 'owed_by': {}, 'balance': -3[83 chars].0}]} != {'use[27 chars]s': {}, 'owed_by': {'Bob': 3.0}, 'balance': 3.[85 chars].0}]}\n- {'users': [{'balance': -3.0,\n?                        -\n\n+ {'users': [{'balance': 3.0,\n              'name': 'Adam',\n+             'owed_by': {'Bob': 3.0},\n+             'owes': {}},\n+            {'balance': -6.0,\n+             'name': 'Bob',\n              'owed_by': {},\n-             'owes': {'Bob': 3.0}},\n-            {'balance': 0.0,\n-             'name': 'Bob',\n-             'owed_by': {'Adam': 3.0},\n-             'owes': {'Chuck': 3.0}}]}\n+             'owes': {'Adam': 3.0, 'Chuck': 3.0}}]}\n?                      +++++++++++++\n\n\n====\nFAIL: test_both_users_have_0_balance (rest_api_test.RestApiTest.test_both_users_have_0_balance)\n----\nTraceback (most recent call last):\n  File \"rest-api/rest_api_test.py\", line 61, in test_both_users_have_0_balance\n    self.assertDictEqual(json.loads(response), expected)\nAssertionError: {'use[27 chars]s': {'Bob': 3.0}, 'owed_by': {}, 'balance': -3[71 chars].0}]} != {'use[27 chars]s': {}, 'owed_by': {'Bob': 3.0}, 'balance': 3.[71 chars].0}]}\n- {'users': [{'balance': -3.0,\n?                        -\n\n+ {'users': [{'balance': 3.0,\n              'name': 'Adam',\n+             'owed_by': {'Bob': 3.0},\n+             'owes': {}},\n+            {'balance': -3.0,\n+             'name': 'Bob',\n              'owed_by': {},\n-             'owes': {'Bob': 3.0}},\n-            {'balance': 3.0,\n-             'name': 'Bob',\n-             'owed_by': {'Adam': 3.0},\n?                 ^^^^                ^\n\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in rest_api.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "rest_api.py",
+        "content": "import json\n\nclass RestAPI:\n    def __init__(self, database=None):\n        self.database = database if database else {\"users\": []}\n\n    def get(self, url, payload=None):\n        if url == \"/users\":\n            if payload:\n                names = json.loads(payload)[\"users\"]\n                return json.dumps({\"users\": [user for user in self.database[\"users\"] if user[\"name\"] in names]})\n            else:\n                return json.dumps(self.database)\n\n    def post(self, url, payload=None):\n        if url == \"/add\":\n            name = json.loads(payload)[\"user\"]\n            user = {\"name\": name, \"owes\": {}, \"owed_by\": {}, \"balance\": 0.0}\n            self.database[\"users\"].append(user)\n            return json.dumps(user)\n        elif url == \"/iou\":\n            data = json.loads(payload)\n            lender = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"lender\"])\n            borrower = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"borrower\"])\n            amount = data[\"amount\"]\n\n            if borrower[\"name\"] in lender[\"owed_by\"]:\n                lender[\"owed_by\"][borrower[\"name\"]] -= amount\n                if lender[\"owed_by\"][borrower[\"name\"]] <= 0:\n                    amount = -lender[\"owed_by\"][borrower[\"name\"]]\n                    del lender[\"owed_by\"][borrower[\"name\"]]\n                else:\n                    amount = 0\n            if amount > 0:\n                lender[\"owes\"][borrower[\"name\"]] = lender[\"owes\"].get(borrower[\"name\"], 0) + amount\n                borrower[\"owed_by\"][lender[\"name\"]] = borrower[\"owed_by\"].get(lender[\"name\"], 0) + amount\n\n            lender[\"balance\"] = sum(lender[\"owed_by\"].values()) - sum(lender[\"owes\"].values())\n            borrower[\"balance\"] = sum(borrower[\"owed_by\"].values()) - sum(borrower[\"owes\"].values())\n\n            return json.dumps({\"users\": sorted([lender, borrower], key=lambda x: x[\"name\"])})",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "The error messages indicate that the 'owes' and 'owed_by' fields are not being updated correctly when an IOU is created. The 'owes' field of the lender and the 'owed_by' field of the borrower should be updated, but the current code is doing the opposite.\n\nLet's correct this. When an IOU is created, the lender should have an entry in their 'owed_by' field for the borrower, and the borrower should have an entry in their 'owes' field for the lender. \n\nAlso, the balance of each user should be updated correctly. The balance is the total amount owed by other users minus the total amount the user owes to others. \n\nHere is the corrected code:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "file_path": "rest_api.py",
+        "content": "import json\n\nclass RestAPI:\n    def __init__(self, database=None):\n        self.database = database if database else {\"users\": []}\n\n    def get(self, url, payload=None):\n        if url == \"/users\":\n            if payload:\n                names = json.loads(payload)[\"users\"]\n                return json.dumps({\"users\": [user for user in self.database[\"users\"] if user[\"name\"] in names]})\n            else:\n                return json.dumps(self.database)\n\n    def post(self, url, payload=None):\n        if url == \"/add\":\n            name = json.loads(payload)[\"user\"]\n            user = {\"name\": name, \"owes\": {}, \"owed_by\": {}, \"balance\": 0.0}\n            self.database[\"users\"].append(user)\n            return json.dumps(user)\n        elif url == \"/iou\":\n            data = json.loads(payload)\n            lender = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"lender\"])\n            borrower = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"borrower\"])\n            amount = data[\"amount\"]\n\n            if borrower[\"name\"] in lender[\"owes\"]:\n                lender[\"owes\"][borrower[\"name\"]] -= amount\n                if lender[\"owes\"][borrower[\"name\"]] <= 0:\n                    amount = -lender[\"owes\"][borrower[\"name\"]]\n                    del lender[\"owes\"][borrower[\"name\"]]\n                else:\n                    amount = 0\n            if amount > 0:\n                lender[\"owed_by\"][borrower[\"name\"]] = lender[\"owed_by\"].get(borrower[\"name\"], 0) + amount\n                borrower[\"owes\"][lender[\"name\"]] = borrower[\"owes\"].get(lender[\"name\"], 0) + amount\n\n            lender[\"balance\"] = sum(lender[\"owed_by\"].values()) - sum(lender[\"owes\"].values())\n            borrower[\"balance\"] = sum(borrower[\"owed_by\"].values()) - sum(borrower[\"owes\"].values())\n\n            return json.dumps({\"users\": sorted([lender, borrower], key=lambda x: x[\"name\"])})",
+        "information": null,
+        "diff": "--- rest_api.py\n+++ rest_api.py\n@@ -24,16 +24,16 @@\n             borrower = next(user for user in self.database[\"users\"] if user[\"name\"] == data[\"borrower\"])\n             amount = data[\"amount\"]\n \n-            if borrower[\"name\"] in lender[\"owed_by\"]:\n-                lender[\"owed_by\"][borrower[\"name\"]] -= amount\n-                if lender[\"owed_by\"][borrower[\"name\"]] <= 0:\n-                    amount = -lender[\"owed_by\"][borrower[\"name\"]]\n-                    del lender[\"owed_by\"][borrower[\"name\"]]\n+            if borrower[\"name\"] in lender[\"owes\"]:\n+                lender[\"owes\"][borrower[\"name\"]] -= amount\n+                if lender[\"owes\"][borrower[\"name\"]] <= 0:\n+                    amount = -lender[\"owes\"][borrower[\"name\"]]\n+                    del lender[\"owes\"][borrower[\"name\"]]\n                 else:\n                     amount = 0\n             if amount > 0:\n-                lender[\"owes\"][borrower[\"name\"]] = lender[\"owes\"].get(borrower[\"name\"], 0) + amount\n-                borrower[\"owed_by\"][lender[\"name\"]] = borrower[\"owed_by\"].get(lender[\"name\"], 0) + amount\n+                lender[\"owed_by\"][borrower[\"name\"]] = lender[\"owed_by\"].get(borrower[\"name\"], 0) + amount\n+                borrower[\"owes\"][lender[\"name\"]] = borrower[\"owes\"].get(lender[\"name\"], 0) + amount\n \n             lender[\"balance\"] = sum(lender[\"owed_by\"].values()) - sum(lender[\"owes\"].values())\n             borrower[\"balance\"] = sum(borrower[\"owed_by\"].values()) - sum(borrower[\"owes\"].values())\n",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-4",
+        "total_tokens": 3028,
+        "prompt_tokens": 2420,
+        "completion_tokens": 608,
+        "total_cost": 0.10908,
+        "duration": 50,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

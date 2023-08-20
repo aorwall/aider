@@ -1,0 +1,30 @@
+method: on_llm_end [2023-08-20 17:45:49]
+llm_output: {"token_usage": {"prompt_tokens": 370, "completion_tokens": 410, "total_tokens": 780}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we can use a nested loop to iterate over the matrix. We will keep track of the current number we are inserting and the boundaries of the matrix that we have not yet filled. On each iteration, we will fill the current row or column, then adjust the boundaries accordingly.
+
+Here is the updated code:
+
+Filepath: spiral_matrix.py
+```python
+def spiral_matrix(size):
+    matrix = [[0]*size for _ in range(size)]
+    num = 1
+    for layer in range((size + 1) // 2):
+        for ptr in range(layer, size - layer):  # Traverse right
+            matrix[layer][ptr] = num
+            num += 1
+        for ptr in range(layer + 1, size - layer):  # Traverse down
+            matrix[ptr][size - layer - 1] = num
+            num += 1
+        for ptr in range(layer + 1, size - layer):  # Traverse left
+            matrix[size - layer - 1][-ptr - 1] = num
+            num += 1
+        for ptr in range(layer + 1, size - layer - 1):  # Traverse up
+            matrix[-ptr - 1][layer] = num
+            num += 1
+    return matrix
+```
+
+In this code, we first initialize a matrix of the given size with all elements as 0. Then we start filling the matrix in a spiral order. We use a variable `num` to keep track of the current number we are inserting. We use a variable `layer` to keep track of the current layer of the spiral we are filling. For each layer, we fill the top row from left to right, the right column from top to bottom, the bottom row from right to left, and the left column from bottom to top. After filling each row or column, we increment `num` and adjust the boundaries of the matrix that we have not yet filled.
+---

@@ -1,0 +1,25 @@
+method: on_llm_end [2023-08-20 17:19:40]
+llm_output: {"token_usage": {"prompt_tokens": 714, "completion_tokens": 318, "total_tokens": 1032}, "model_name": "gpt-4"}
+prompt:
+Sure, I can help with that. Here's how you can implement the `is_valid` function to verify an ISBN-10 number.
+
+Filepath: isbn_verifier.py
+```python
+def is_valid(isbn):
+    isbn = isbn.replace('-', '')
+    if len(isbn) != 10:
+        return False
+    if not (isbn[:-1].isdigit() and (isbn[-1].isdigit() or isbn[-1] == 'X')):
+        return False
+    total = sum((10 - i) * (int(digit) if digit != 'X' else 10) for i, digit in enumerate(isbn))
+    return total % 11 == 0
+```
+
+Here's what the code does:
+
+1. The `replace` function is used to remove all hyphens from the ISBN number.
+2. It then checks if the length of the ISBN number is 10. If not, it returns `False`.
+3. It checks if the first 9 characters are digits and the last character is either a digit or 'X'. If not, it returns `False`.
+4. It calculates the total of the product of each digit (or 10 if the digit is 'X') and its weight (which is 10 for the first digit, 9 for the second, and so on until 1 for the last digit).
+5. Finally, it checks if the total is divisible by 11. If it is, it returns `True`, indicating that the ISBN number is valid. Otherwise, it returns `False`.
+---

@@ -1,0 +1,27 @@
+method: on_llm_end [2023-08-20 16:52:27]
+llm_output: {"token_usage": {"prompt_tokens": 1822, "completion_tokens": 335, "total_tokens": 2157}, "model_name": "gpt-4"}
+prompt:
+I see that the test cases are expecting specific error messages for row and column separately. I will modify the `__init__` method to raise separate exceptions for row and column.
+
+Filepath: queen_attack.py
+```python
+class Queen:
+    def __init__(self, row, column):
+        if row < 0:
+            raise ValueError("row not positive")
+        if column < 0:
+            raise ValueError("column not positive")
+        if row > 7:
+            raise ValueError("row not on board")
+        if column > 7:
+            raise ValueError("column not on board")
+        self.row = row
+        self.column = column
+
+    def can_attack(self, another_queen):
+        if self.row == another_queen.row and self.column == another_queen.column:
+            raise ValueError("Invalid queen position: both queens in the same square")
+        return self.row == another_queen.row or self.column == another_queen.column or abs(self.row - another_queen.row) == abs(self.column - another_queen.column)
+```
+In the `__init__` method, I separated the checks for row and column. Now, if the row is negative, it raises a `ValueError` with the message "row not positive". If the column is negative, it raises a `ValueError` with the message "column not positive". If the row is greater than 7, it raises a `ValueError` with the message "row not on board". If the column is greater than 7, it raises a `ValueError` with the message "column not on board". This should satisfy the test cases.
+---

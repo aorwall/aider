@@ -1,0 +1,24 @@
+method: on_llm_end [2023-08-20 17:00:19]
+llm_output: {"token_usage": {"prompt_tokens": 636, "completion_tokens": 265, "total_tokens": 901}, "model_name": "gpt-4"}
+prompt:
+In the given `Matrix` class, we need to implement three methods: `__init__`, `row`, and `column`.
+
+In the `__init__` method, we will convert the input string into a 2D list of integers. This will make it easier to retrieve rows and columns later. We will split the string by newline characters to get the rows, and then split each row by spaces to get the individual numbers. We will also convert these numbers to integers at this stage.
+
+In the `row` method, we will simply return the row at the given index. Python list indices start at 0, so we subtract 1 from the index.
+
+In the `column` method, we will use a list comprehension to create a list of the elements at the given index in each row. Again, we subtract 1 from the index to account for 0-based indexing.
+
+Filepath: matrix.py
+```python
+class Matrix:
+    def __init__(self, matrix_string):
+        self.matrix = [[int(num) for num in row.split()] for row in matrix_string.split("\n")]
+
+    def row(self, index):
+        return self.matrix[index - 1]
+
+    def column(self, index):
+        return [row[index - 1] for row in self.matrix]
+```
+---

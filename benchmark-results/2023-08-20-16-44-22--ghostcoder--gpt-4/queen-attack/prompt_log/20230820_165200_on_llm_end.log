@@ -1,0 +1,24 @@
+method: on_llm_end [2023-08-20 16:52:00]
+llm_output: {"token_usage": {"prompt_tokens": 904, "completion_tokens": 299, "total_tokens": 1203}, "model_name": "gpt-4"}
+prompt:
+Filepath: queen_attack.py
+```python
+class Queen:
+    def __init__(self, row, column):
+        if row < 0 or column < 0:
+            raise ValueError("row or column not positive")
+        if row > 7 or column > 7:
+            raise ValueError("row or column not on board")
+        self.row = row
+        self.column = column
+
+    def can_attack(self, another_queen):
+        if self.row == another_queen.row and self.column == another_queen.column:
+            raise ValueError("Invalid queen position: both queens in the same square")
+        return self.row == another_queen.row or self.column == another_queen.column or abs(self.row - another_queen.row) == abs(self.column - another_queen.column)
+```
+
+In the `__init__` method, I added checks to ensure that the row and column values are within the valid range (0-7). If they are not, a `ValueError` is raised with an appropriate message.
+
+In the `can_attack` method, I first check if the two queens are in the same position. If they are, a `ValueError` is raised with an appropriate message. Then, I check if the queens are in the same row, same column, or on the same diagonal. If any of these conditions are true, the method returns `True`, indicating that the queens can attack each other. Otherwise, it returns `False`.
+---

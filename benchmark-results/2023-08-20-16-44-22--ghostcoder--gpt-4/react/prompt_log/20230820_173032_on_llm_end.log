@@ -1,0 +1,70 @@
+method: on_llm_end [2023-08-20 17:30:32]
+llm_output: {"token_usage": {"prompt_tokens": 426, "completion_tokens": 544, "total_tokens": 970}, "model_name": "gpt-4"}
+prompt:
+The existing code provides the basic structure for the InputCell and ComputeCell classes, but lacks the functionality to propagate changes from input cells to compute cells, and to call callbacks when a compute cell's value changes.
+
+Here's how we can implement this:
+
+1. In the InputCell class, we need to keep track of the compute cells that depend on each input cell. We can do this by adding a list of dependent cells in the constructor, and a method to add a dependent cell.
+
+2. In the ComputeCell class, we need to compute the initial value using the compute function and the values of the input cells. We also need to keep track of the callbacks, and call them when the value changes.
+
+3. When the value of an input cell changes, we need to update the values of all dependent compute cells. We can do this by adding a setter for the value property that updates the dependent cells.
+
+4. When the value of a compute cell changes, we need to call all registered callbacks. We can do this by adding a setter for the value property that calls the callbacks.
+
+Here's the updated code:
+
+Filepath: react.py
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self._value = initial_value
+        self.dependents = []
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        self._value = new_value
+        for cell in self.dependents:
+            cell.compute_value()
+
+    def add_dependent(self, cell):
+        self.dependents.append(cell)
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.callbacks = []
+        for cell in inputs:
+            cell.add_dependent(self)
+        self.compute_value()
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        old_value = self._value
+        self._value = new_value
+        if old_value != new_value:
+            for callback in self.callbacks:
+                callback(new_value)
+
+    def compute_value(self):
+        self.value = self.compute_function([cell.value for cell in self.inputs])
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+```
+This code should provide the required functionality. However, it assumes that the compute function does not raise any exceptions, and that the callbacks do not modify the cell values. If these assumptions are not valid, additional error handling may be needed.
+---

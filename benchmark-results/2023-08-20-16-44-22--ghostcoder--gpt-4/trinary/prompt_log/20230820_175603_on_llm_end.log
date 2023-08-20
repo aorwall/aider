@@ -1,0 +1,18 @@
+method: on_llm_end [2023-08-20 17:56:03]
+llm_output: {"token_usage": {"prompt_tokens": 469, "completion_tokens": 218, "total_tokens": 687}, "model_name": "gpt-4"}
+prompt:
+To convert a trinary number to its decimal equivalent, we can iterate over the string in reverse order. For each character, we multiply its integer value by 3 raised to the power of its position and add the result to a running total. If we encounter a character that is not a valid trinary digit, we return 0.
+
+Here's how you can implement this in the `trinary` function:
+
+Filepath: trinary.py
+```python
+def trinary(string):
+    try:
+        return sum(int(char) * 3 ** i for i, char in enumerate(string[::-1]))
+    except ValueError:
+        return 0
+```
+
+In this code, `enumerate(string[::-1])` generates pairs of the form `(i, char)`, where `i` is the position of `char` in the reversed string. `int(char) * 3 ** i` converts the trinary digit to its decimal equivalent. If `int(char)` raises a `ValueError` because `char` is not a valid digit, the function returns 0.
+---

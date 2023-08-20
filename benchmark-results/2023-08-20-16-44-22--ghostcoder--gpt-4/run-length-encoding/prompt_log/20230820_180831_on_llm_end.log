@@ -1,0 +1,39 @@
+method: on_llm_end [2023-08-20 18:08:31]
+llm_output: {"token_usage": {"prompt_tokens": 463, "completion_tokens": 324, "total_tokens": 787}, "model_name": "gpt-4"}
+prompt:
+Sure, I can help with that. Here's how you can implement run-length encoding and decoding in Python.
+
+Filepath: run_length_encoding.py
+```python
+def decode(string):
+    count = ''
+    decoded = ''
+    for char in string:
+        if char.isdigit():
+            count += char
+        else:
+            decoded += char * int(count or '1')
+            count = ''
+    return decoded
+
+
+def encode(string):
+    encoded = ''
+    i = 0
+    while i < len(string):
+        count = 1
+        while i + 1 < len(string) and string[i] == string[i+1]:
+            i += 1
+            count += 1
+        if count > 1:
+            encoded += str(count) + string[i]
+        else:
+            encoded += string[i]
+        i += 1
+    return encoded
+```
+
+In the `decode` function, we iterate over the input string. If the character is a digit, we add it to the `count` string. If it's not a digit, it means it's a character that needs to be repeated `count` times. We add `count` times the character to the `decoded` string and reset the `count` string.
+
+In the `encode` function, we iterate over the input string. For each character, we count how many times it repeats consecutively. If it repeats more than once, we add the count and the character to the `encoded` string. If it doesn't repeat, we just add the character to the `encoded` string.
+---

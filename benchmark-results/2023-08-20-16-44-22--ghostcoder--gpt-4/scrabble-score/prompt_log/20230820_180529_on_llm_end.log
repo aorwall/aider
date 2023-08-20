@@ -1,0 +1,41 @@
+method: on_llm_end [2023-08-20 18:05:29]
+llm_output: {"token_usage": {"prompt_tokens": 475, "completion_tokens": 558, "total_tokens": 1033}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we will create a dictionary to map each letter to its corresponding score. Then, we will iterate over each character in the input word, summing up the scores for each character. 
+
+We will also add two optional parameters to the function: `double_letter` and `triple_letter`, which will be used to specify if a letter should have its score doubled or tripled, and `double_word` and `triple_word`, which will be used to specify if the entire word's score should be doubled or tripled.
+
+Here is the updated code:
+
+Filepath: scrabble_score.py
+```python
+def score(word, double_letter=None, triple_letter=None, double_word=False, triple_word=False):
+    letter_scores = {
+        'A': 1, 'E': 1, 'I': 1, 'O': 1, 'U': 1, 'L': 1, 'N': 1, 'R': 1, 'S': 1, 'T': 1,
+        'D': 2, 'G': 2,
+        'B': 3, 'C': 3, 'M': 3, 'P': 3,
+        'F': 4, 'H': 4, 'V': 4, 'W': 4, 'Y': 4,
+        'K': 5,
+        'J': 8, 'X': 8,
+        'Q': 10, 'Z': 10
+    }
+
+    word_score = 0
+    for letter in word.upper():
+        letter_score = letter_scores[letter]
+        if letter == double_letter:
+            letter_score *= 2
+        elif letter == triple_letter:
+            letter_score *= 3
+        word_score += letter_score
+
+    if double_word:
+        word_score *= 2
+    elif triple_word:
+        word_score *= 3
+
+    return word_score
+```
+
+In this code, we first create a dictionary `letter_scores` that maps each letter to its corresponding score. Then, we initialize `word_score` to 0. We iterate over each letter in the word (converted to uppercase to match the keys in `letter_scores`). For each letter, we get its score from `letter_scores` and multiply it by 2 or 3 if the letter is the same as `double_letter` or `triple_letter`, respectively. We then add the letter's score to `word_score`. After iterating over all the letters, we multiply `word_score` by 2 or 3 if `double_word` or `triple_word` is True, respectively. Finally, we return `word_score`.
+---

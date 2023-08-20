@@ -1,0 +1,22 @@
+method: on_llm_end [2023-08-20 17:49:54]
+llm_output: {"token_usage": {"prompt_tokens": 349, "completion_tokens": 315, "total_tokens": 664}, "model_name": "gpt-4"}
+prompt:
+To solve this problem, we can use the split() function in Python to split the input string into words. We then take the first character of each word, convert it to uppercase, and join them together to form the acronym. 
+
+We also need to handle punctuation. According to the problem statement, hyphens are considered as word separators, so we replace hyphens with spaces before splitting the string. All other punctuation can be removed from the input, so we use the translate() function with a translation table that removes all punctuation except hyphens.
+
+Here is the updated code:
+
+Filepath: acronym.py
+```python
+import string
+
+def abbreviate(words):
+    # Replace hyphens with spaces and remove all other punctuation
+    words = words.replace('-', ' ').translate(str.maketrans('', '', string.punctuation))
+    # Split the string into words, take the first character of each word, convert it to uppercase, and join them together
+    return ''.join(word[0].upper() for word in words.split())
+```
+
+In this code, `str.maketrans('', '', string.punctuation)` creates a translation table that maps every punctuation character to None, effectively removing them when used with the translate() function. The replace() function is called before translate() to ensure that hyphens are replaced with spaces before other punctuation is removed. The split() function splits the string into words at spaces, and the list comprehension takes the first character of each word, converts it to uppercase, and joins them together to form the acronym.
+---

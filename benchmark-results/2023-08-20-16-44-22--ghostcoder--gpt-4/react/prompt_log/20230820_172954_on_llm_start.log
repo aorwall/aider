@@ -1,0 +1,62 @@
+method: on_llm_start [2023-08-20 17:29:54]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-4", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Implement a basic reactive system.
+
+Reactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.
+
+Implement a basic reactive system with cells with settable values ("input" cells) and cells with values computed in terms of other cells ("compute" cells).
+Implement updates so that when an input value is changed, values propagate to reach a new stable system state.
+
+In addition, compute cells should allow for registering change notification callbacks.
+Call a cell’s callbacks when the cell’s value in a new stable state has changed from the previous stable state.
+
+####
+
+Use the above instructions to modify the supplied files: react.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: react.py
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self.value = None
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.value = None
+
+    def add_callback(self, callback):
+        pass
+
+    def remove_callback(self, callback):
+        pass
+    
+```
+

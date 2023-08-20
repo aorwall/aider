@@ -1,0 +1,54 @@
+method: on_llm_end [2023-08-20 16:46:21]
+llm_output: {"token_usage": {"prompt_tokens": 478, "completion_tokens": 631, "total_tokens": 1109}, "model_name": "gpt-4"}
+prompt:
+The Zebra Puzzle is a well-known logic puzzle that can be solved using constraint satisfaction. We can use itertools.permutations to generate all possible arrangements of houses, and then filter out those that don't meet the constraints.
+
+Here's how you can modify the zebra_puzzle.py file:
+
+Filepath: zebra_puzzle.py
+```python
+import itertools
+
+def zebra_puzzle():
+    "Return a tuple (WATER, ZEBRA) indicating their house numbers."
+    houses = first, _, middle, _, _ = [1, 2, 3, 4, 5]
+    orderings = list(itertools.permutations(houses)) # 1
+    return next((WATER, ZEBRA)
+                for (red, green, ivory, yellow, blue) in orderings
+                if imright(houses.index(ivory), houses.index(green)) # 6
+                for (Englishman, Spaniard, Ukrainian, Japanese, Norwegian) in orderings
+                if Englishman == red # 2
+                if Norwegian == first # 10
+                if nextto(houses.index(Norwegian), houses.index(blue)) # 15
+                for (coffee, tea, milk, oj, WATER) in orderings
+                if coffee == green # 4
+                if Ukrainian == tea # 5
+                if milk == middle # 9
+                for (OldGold, Kools, Chesterfields, LuckyStrike, Parliaments) in orderings
+                if Kools == yellow # 8
+                if LuckyStrike == oj # 13
+                if Japanese == Parliaments # 14
+                for (dog, snails, fox, horse, ZEBRA) in orderings
+                if Spaniard == dog # 3
+                if OldGold == snails # 7
+                if nextto(houses.index(Chesterfields), houses.index(fox)) # 11
+                if nextto(houses.index(Kools), houses.index(horse)) # 12
+                )
+
+def imright(h1, h2):
+    "House h1 is immediately right of h2 if h1-h2 == 1."
+    return h1-h2 == 1
+
+def nextto(h1, h2):
+    "Two houses are next to each other if they differ by 1."
+    return abs(h1-h2) == 1
+
+def drinks_water():
+    return zebra_puzzle()[0]
+
+def owns_zebra():
+    return zebra_puzzle()[1]
+```
+
+In the above code, we first generate all possible permutations of the houses. Then, we iterate over these permutations and check if they satisfy all the constraints given in the problem. If they do, we return the house numbers for the resident who drinks water and the one who owns the zebra. The helper functions `imright` and `nextto` are used to check if a house is immediately to the right of another house and if two houses are next to each other, respectively.
+---

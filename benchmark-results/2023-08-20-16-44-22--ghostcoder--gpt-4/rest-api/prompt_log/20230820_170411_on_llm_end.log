@@ -1,0 +1,56 @@
+method: on_llm_end [2023-08-20 17:04:11]
+llm_output: {"token_usage": {"prompt_tokens": 2420, "completion_tokens": 608, "total_tokens": 3028}, "model_name": "gpt-4"}
+prompt:
+The error messages indicate that the 'owes' and 'owed_by' fields are not being updated correctly when an IOU is created. The 'owes' field of the lender and the 'owed_by' field of the borrower should be updated, but the current code is doing the opposite.
+
+Let's correct this. When an IOU is created, the lender should have an entry in their 'owed_by' field for the borrower, and the borrower should have an entry in their 'owes' field for the lender. 
+
+Also, the balance of each user should be updated correctly. The balance is the total amount owed by other users minus the total amount the user owes to others. 
+
+Here is the corrected code:
+
+Filepath: rest_api.py
+```python
+import json
+
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = database if database else {"users": []}
+
+    def get(self, url, payload=None):
+        if url == "/users":
+            if payload:
+                names = json.loads(payload)["users"]
+                return json.dumps({"users": [user for user in self.database["users"] if user["name"] in names]})
+            else:
+                return json.dumps(self.database)
+
+    def post(self, url, payload=None):
+        if url == "/add":
+            name = json.loads(payload)["user"]
+            user = {"name": name, "owes": {}, "owed_by": {}, "balance": 0.0}
+            self.database["users"].append(user)
+            return json.dumps(user)
+        elif url == "/iou":
+            data = json.loads(payload)
+            lender = next(user for user in self.database["users"] if user["name"] == data["lender"])
+            borrower = next(user for user in self.database["users"] if user["name"] == data["borrower"])
+            amount = data["amount"]
+
+            if borrower["name"] in lender["owes"]:
+                lender["owes"][borrower["name"]] -= amount
+                if lender["owes"][borrower["name"]] <= 0:
+                    amount = -lender["owes"][borrower["name"]]
+                    del lender["owes"][borrower["name"]]
+                else:
+                    amount = 0
+            if amount > 0:
+                lender["owed_by"][borrower["name"]] = lender["owed_by"].get(borrower["name"], 0) + amount
+                borrower["owes"][lender["name"]] = borrower["owes"].get(lender["name"], 0) + amount
+
+            lender["balance"] = sum(lender["owed_by"].values()) - sum(lender["owes"].values())
+            borrower["balance"] = sum(borrower["owed_by"].values()) - sum(borrower["owes"].values())
+
+            return json.dumps({"users": sorted([lender, borrower], key=lambda x: x["name"])})
+```
+---

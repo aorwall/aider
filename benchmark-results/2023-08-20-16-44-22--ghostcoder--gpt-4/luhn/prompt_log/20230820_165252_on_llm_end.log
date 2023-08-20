@@ -1,0 +1,32 @@
+method: on_llm_end [2023-08-20 16:52:52]
+llm_output: {"token_usage": {"prompt_tokens": 675, "completion_tokens": 285, "total_tokens": 960}, "model_name": "gpt-4"}
+prompt:
+Sure, I will implement the Luhn algorithm in the given class. 
+
+In the `__init__` method, I will remove all spaces from the input string and store it in an instance variable. 
+
+In the `valid` method, I will first check if the length of the card number is less than 2 or if it contains any non-digit characters. If either of these conditions is true, I will return False. 
+
+Then, I will reverse the card number and double every second digit. If the doubled digit is greater than 9, I will subtract 9 from it. 
+
+Finally, I will sum all the digits and check if the sum is divisible by 10. If it is, I will return True, otherwise, I will return False.
+
+Filepath: luhn.py
+```python
+class Luhn:
+    def __init__(self, card_num):
+        self.card_num = card_num.replace(' ', '')
+
+    def valid(self):
+        if len(self.card_num) <= 1 or not self.card_num.isdigit():
+            return False
+
+        digits = [int(d) for d in self.card_num[::-1]]
+        for i in range(1, len(digits), 2):
+            digits[i] *= 2
+            if digits[i] > 9:
+                digits[i] -= 9
+
+        return sum(digits) % 10 == 0
+```
+---

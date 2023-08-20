@@ -1,0 +1,57 @@
+method: on_llm_end [2023-08-20 16:49:55]
+llm_output: {"token_usage": {"prompt_tokens": 899, "completion_tokens": 674, "total_tokens": 1573}, "model_name": "gpt-4"}
+prompt:
+Filepath: complex_numbers.py
+```python
+import math
+
+class ComplexNumber:
+    def __init__(self, real, imaginary):
+        self.real = real
+        self.imaginary = imaginary
+
+    def __eq__(self, other):
+        return self.real == other.real and self.imaginary == other.imaginary
+
+    def __add__(self, other):
+        return ComplexNumber(self.real + other.real, self.imaginary + other.imaginary)
+
+    def __mul__(self, other):
+        real = self.real * other.real - self.imaginary * other.imaginary
+        imaginary = self.imaginary * other.real + self.real * other.imaginary
+        return ComplexNumber(real, imaginary)
+
+    def __sub__(self, other):
+        return ComplexNumber(self.real - other.real, self.imaginary - other.imaginary)
+
+    def __truediv__(self, other):
+        denominator = other.real ** 2 + other.imaginary ** 2
+        real = (self.real * other.real + self.imaginary * other.imaginary) / denominator
+        imaginary = (self.imaginary * other.real - self.real * other.imaginary) / denominator
+        return ComplexNumber(real, imaginary)
+
+    def __abs__(self):
+        return math.sqrt(self.real ** 2 + self.imaginary ** 2)
+
+    def conjugate(self):
+        return ComplexNumber(self.real, -self.imaginary)
+
+    def exp(self):
+        exp_real = math.exp(self.real)
+        return ComplexNumber(exp_real * math.cos(self.imaginary), exp_real * math.sin(self.imaginary))
+```
+
+Explanation:
+
+The `ComplexNumber` class is implemented with the following methods:
+
+- `__init__`: Initializes a new instance of the `ComplexNumber` class with a real and an imaginary part.
+- `__eq__`: Checks if two complex numbers are equal by comparing their real and imaginary parts.
+- `__add__`: Adds two complex numbers by adding their real parts and their imaginary parts separately.
+- `__mul__`: Multiplies two complex numbers using the formula `(a + i * b) * (c + i * d) = (a * c - b * d) + (b * c + a * d) * i`.
+- `__sub__`: Subtracts two complex numbers by subtracting their real parts and their imaginary parts separately.
+- `__truediv__`: Divides two complex numbers using the formula `(a + i * b) / (c + i * d) = (a * c + b * d)/(c^2 + d^2) + (b * c - a * d)/(c^2 + d^2) * i`.
+- `__abs__`: Returns the absolute value of a complex number using the formula `|z| = sqrt(a^2 + b^2)`.
+- `conjugate`: Returns the conjugate of a complex number, which is the number with the same real part and the negated imaginary part.
+- `exp`: Returns the result of raising e to the power of a complex number using the formula `e^(a + i * b) = e^a * e^(i * b) = e^a * (cos(b) + i * sin(b))`.
+---

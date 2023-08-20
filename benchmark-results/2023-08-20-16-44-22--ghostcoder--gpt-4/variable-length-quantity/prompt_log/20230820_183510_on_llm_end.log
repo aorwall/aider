@@ -1,0 +1,35 @@
+method: on_llm_end [2023-08-20 18:35:10]
+llm_output: {"token_usage": {"prompt_tokens": 2009, "completion_tokens": 311, "total_tokens": 2320}, "model_name": "gpt-4"}
+prompt:
+I see the issue. The problem is with the encoding function. When the number is less than or equal to 127, we are directly inserting the number into the bytes list. However, we should be inserting the number with the most significant bit set to 1, unless it's the only byte for the number. 
+
+Here is the corrected code:
+
+Filepath: variable_length_quantity.py
+```python
+def encode(numbers):
+    result = []
+    for number in numbers:
+        bytes_ = []
+        while number > 0:
+            bytes_.insert(0, 128 | (number & 127))
+            number >>= 7
+        bytes_[0] &= 127
+        result.extend(bytes_)
+    return result
+
+
+def decode(bytes_):
+    result = []
+    number = 0
+    for byte in bytes_:
+        number = (number << 7) | (byte & 127)
+        if byte < 128:
+            result.append(number)
+            number = 0
+    if number != 0:
+        raise ValueError("incomplete sequence")
+    return result
+```
+In the `encode` function, we now continue the while loop until the number is 0. We insert the number with the most significant bit set to 1 into the bytes list. After the while loop, we set the most significant bit of the first byte to 0, because it's the last byte for the number. This should fix the issue with the encoding function. The `decode` function remains the same.
+---

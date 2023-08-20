@@ -1,0 +1,82 @@
+method: on_llm_end [2023-08-20 16:48:02]
+llm_output: {"token_usage": {"prompt_tokens": 1612, "completion_tokens": 770, "total_tokens": 2382}, "model_name": "gpt-4"}
+prompt:
+To parse the SGF string, we will use a recursive approach. We will start by checking the validity of the input string. If it's invalid, we will raise a ValueError with a meaningful message. Then, we will parse the properties and children of each node recursively.
+
+Here is the updated code:
+
+Filepath: sgf_parsing.py
+```python
+class SgfTree:
+    def __init__(self, properties=None, children=None):
+        self.properties = properties or {}
+        self.children = children or []
+
+    def __eq__(self, other):
+        if not isinstance(other, SgfTree):
+            return False
+        for key, value in self.properties.items():
+            if key not in other.properties:
+                return False
+            if other.properties[key] != value:
+                return False
+        for key in other.properties.keys():
+            if key not in self.properties:
+                return False
+        if len(self.children) != len(other.children):
+            return False
+        for child, other_child in zip(self.children, other.children):
+            if child != other_child:
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self == other
+
+
+def parse(input_string):
+    if not input_string.startswith('(') or not input_string.endswith(')'):
+        raise ValueError("tree missing")
+    if input_string.count(';') == 0:
+        raise ValueError("tree with no nodes")
+    return parse_node(input_string[1:-1])
+
+
+def parse_node(input_string):
+    if not input_string.startswith(';'):
+        raise ValueError("properties without delimiter")
+    input_string = input_string[1:]
+    properties = {}
+    while input_string and input_string[0].isupper():
+        key, value, input_string = parse_property(input_string)
+        properties[key] = value
+    children = []
+    while input_string and input_string[0] == '(':
+        child, input_string = parse_node(input_string[1:])
+        children.append(child)
+    return SgfTree(properties, children), input_string
+
+
+def parse_property(input_string):
+    key_end = input_string.find('[')
+    if key_end == -1:
+        raise ValueError("property must be in uppercase")
+    key = input_string[:key_end]
+    input_string = input_string[key_end:]
+    values = []
+    while input_string and input_string[0] == '[':
+        value_end = input_string.find(']')
+        if value_end == -1:
+            raise ValueError("property without closing bracket")
+        value = input_string[1:value_end]
+        values.append(value)
+        input_string = input_string[value_end+1:]
+    return key, values, input_string
+```
+
+In the `parse` function, we check if the input string starts with '(' and ends with ')'. If not, we raise a ValueError indicating that the tree is missing. We also check if there are any nodes in the tree by counting the number of semicolons. If there are no semicolons, we raise a ValueError indicating that the tree has no nodes. Then, we call the `parse_node` function to parse the nodes of the tree.
+
+In the `parse_node` function, we check if the input string starts with a semicolon. If not, we raise a ValueError indicating that the properties are without a delimiter. We then parse the properties and children of the node recursively.
+
+In the `parse_property` function, we parse the properties of a node. We find the end of the key by finding the index of the first '['. If there is no '[', we raise a ValueError indicating that the property must be in uppercase. We then parse the values of the property. If there is no ']', we raise a ValueError indicating that the property is without a closing bracket.
+---

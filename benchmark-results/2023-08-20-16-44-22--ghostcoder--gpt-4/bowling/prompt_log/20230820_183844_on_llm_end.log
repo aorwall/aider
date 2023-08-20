@@ -1,0 +1,51 @@
+method: on_llm_end [2023-08-20 18:38:44]
+llm_output: {"token_usage": {"prompt_tokens": 1069, "completion_tokens": 537, "total_tokens": 1606}, "model_name": "gpt-4"}
+prompt:
+To implement the BowlingGame class, we need to keep track of the rolls and the current frame while the game is in progress. We also need to handle the special scoring rules for spares and strikes. 
+
+Here's how we can do it:
+
+Filepath: bowling.py
+```python
+class BowlingGame:
+    def __init__(self):
+        self.rolls = []
+        self.current_frame = 1
+        self.is_first_roll = True
+
+    def roll(self, pins):
+        if pins < 0 or pins > 10:
+            raise ValueError("Pins must be between 0 and 10")
+        if self.current_frame > 10:
+            raise IndexError("Cannot roll after tenth frame")
+        if not self.is_first_roll and self.rolls[-1] + pins > 10:
+            raise ValueError("Frame score cannot be more than 10 unless it's the tenth frame")
+        self.rolls.append(pins)
+        if self.current_frame < 10 and (pins == 10 or not self.is_first_roll):
+            self.current_frame += 1
+            self.is_first_roll = True
+        else:
+            self.is_first_roll = not self.is_first_roll
+
+    def score(self):
+        if self.current_frame < 10 or (self.current_frame == 10 and self.is_first_roll):
+            raise IndexError("Score cannot be calculated before end of game")
+        score = 0
+        roll_index = 0
+        for frame in range(10):
+            if self.rolls[roll_index] == 10:  # strike
+                score += 10 + self.rolls[roll_index + 1] + self.rolls[roll_index + 2]
+                roll_index += 1
+            elif self.rolls[roll_index] + self.rolls[roll_index + 1] == 10:  # spare
+                score += 10 + self.rolls[roll_index + 2]
+                roll_index += 2
+            else:  # open frame
+                score += self.rolls[roll_index] + self.rolls[roll_index + 1]
+                roll_index += 2
+        return score
+```
+
+In the `roll` method, we first check if the number of pins is valid and if the game is still in progress. We then add the roll to the list of rolls and update the current frame and the first roll flag.
+
+In the `score` method, we first check if the game is over. We then calculate the score by iterating over the rolls and applying the scoring rules for strikes, spares, and open frames.
+---
