@@ -32,10 +32,6 @@ from aider import models
 from aider.coders import Coder
 from aider.dump import dump  # noqa: F401
 from aider.io import InputOutput
-from ghostcoder import FileRepository
-from ghostcoder.callback import LogCallbackHandler
-from ghostcoder.prompts.implement import ImplementationPrompt
-from ghostcoder.schema import FileItem, TextItem, Message
 
 BENCHMARK_DNAME = Path(os.environ["AIDER_BENCHMARK_DIR"])
 
@@ -794,6 +790,10 @@ class AiderAgent(CodeAgent):
 class GhostCoderAgent(CodeAgent):
 
     def __init__(self, testdir: Path, model_name: str, edit_format: str, fnames: List[Path], verbose: bool):
+        from ghostcoder import FileRepository
+        from ghostcoder.callback import LogCallbackHandler
+        from ghostcoder.prompts.implement import ImplementationPrompt
+
         callback = LogCallbackHandler(str(testdir / "prompt_log"))
 
         import logging
@@ -818,6 +818,8 @@ class GhostCoderAgent(CodeAgent):
         self._num_error_outputs = 0
 
     def run(self, with_message: str):
+        from ghostcoder.schema import FileItem, TextItem, Message
+
         items = [TextItem(text=with_message)]
         items.extend([FileItem(file_path=str(fname.name), language="pyton") for fname in self.fnames])
         human_msg = Message(sender="Human", items=items)
