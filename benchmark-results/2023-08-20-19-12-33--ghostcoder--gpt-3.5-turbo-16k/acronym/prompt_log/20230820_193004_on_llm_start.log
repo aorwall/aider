@@ -1,0 +1,114 @@
+method: on_llm_start [2023-08-20 19:30:04]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-3.5-turbo-16k", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Convert a phrase to its acronym.
+
+Techies love their TLA (Three Letter Acronyms)!
+
+Help generate some jargon by writing a program that converts a long name like Portable Network Graphics to its acronym (PNG).
+
+Punctuation is handled as follows: hyphens are word separators (like whitespace); all other punctuation can be removed from the input.
+
+For example:
+
+|Input|Output|
+|-|-|
+|As Soon As Possible|ASAP|
+|Liquid-crystal display|LCD|
+|Thank George It's Friday!|TGIF|
+
+####
+
+Use the above instructions to modify the supplied files: acronym.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: acronym.py
+AI: I updated a file.
+Filepath: acronym.py
+```python
+import re
+
+def abbreviate(words):
+    # Remove all punctuation except hyphens
+    words = re.sub(r'[^\w\s-]', '', words)
+    
+    # Split the words by whitespace and hyphens
+    words = re.split(r'[\s-]+', words)
+    
+    # Get the first letter of each word and convert to uppercase
+    acronym = [word[0].upper() for word in words]
+    
+    # Join the letters to form the acronym
+    acronym = ''.join(acronym)
+    
+    return acronym
+```
+Human: .......F.
+====
+FAIL: test_underscore_emphasis (acronym_test.AcronymTest.test_underscore_emphasis)
+----
+Traceback (most recent call last):
+  File "acronym/acronym_test.py", line 43, in test_underscore_emphasis
+    self.assertEqual(abbreviate("The Road _Not_ Taken"), "TRNT")
+AssertionError: 'TR_T' != 'TRNT'
+- TR_T
+?   ^
++ TRNT
+?   ^
+
+
+----
+
+
+FAILED (failures=1)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in acronym.py to resolve the errors.
+
+Filepath: acronym.py
+```python
+import re
+
+def abbreviate(words):
+    # Remove all punctuation except hyphens
+    words = re.sub(r'[^\w\s-]', '', words)
+    
+    # Split the words by whitespace and hyphens
+    words = re.split(r'[\s-]+', words)
+    
+    # Get the first letter of each word and convert to uppercase
+    acronym = [word[0].upper() for word in words]
+    
+    # Join the letters to form the acronym
+    acronym = ''.join(acronym)
+    
+    return acronym
+```
+

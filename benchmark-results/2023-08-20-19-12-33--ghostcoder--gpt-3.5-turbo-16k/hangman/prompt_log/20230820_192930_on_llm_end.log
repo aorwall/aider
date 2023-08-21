@@ -1,0 +1,39 @@
+method: on_llm_end [2023-08-20 19:29:30]
+llm_output: {"token_usage": {"prompt_tokens": 770, "completion_tokens": 240, "total_tokens": 1010}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: hangman.py
+```python
+# Game status categories
+# Change the values as you see fit
+STATUS_WIN = 'win'
+STATUS_LOSE = 'lose'
+STATUS_ONGOING = 'ongoing'
+
+
+class Hangman:
+    def __init__(self, word):
+        self.word = word
+        self.remaining_guesses = 9
+        self.guessed_letters = []
+        self.status = STATUS_ONGOING
+
+    def guess(self, char):
+        if self.status != STATUS_ONGOING:
+            raise ValueError("The game has already ended.")
+        if char in self.guessed_letters:
+            return
+        self.guessed_letters.append(char)
+        if char not in self.word:
+            self.remaining_guesses -= 1
+            if self.remaining_guesses == 0:
+                self.status = STATUS_LOSE
+        if all(letter in self.guessed_letters for letter in self.word):
+            self.status = STATUS_WIN
+
+    def get_masked_word(self):
+        return ''.join([letter if letter in self.guessed_letters else '_' for letter in self.word])
+
+    def get_status(self):
+        return self.status
+```
+---

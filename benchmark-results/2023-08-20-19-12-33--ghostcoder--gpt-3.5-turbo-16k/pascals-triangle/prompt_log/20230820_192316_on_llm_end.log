@@ -1,0 +1,22 @@
+method: on_llm_end [2023-08-20 19:23:16]
+llm_output: {"token_usage": {"prompt_tokens": 870, "completion_tokens": 125, "total_tokens": 995}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: pascals_triangle.py
+```python
+def rows(row_count):
+    if row_count < 0:
+        raise ValueError("number of rows is negative")
+    elif row_count == 0:
+        return []
+    else:
+        triangle = [[1]]
+        for i in range(1, row_count):
+            prev_row = triangle[i-1]
+            curr_row = [1]
+            for j in range(1, i):
+                curr_row.append(prev_row[j-1] + prev_row[j])
+            curr_row.append(1)
+            triangle.append(curr_row)
+        return triangle
+```
+---

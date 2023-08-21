@@ -1,0 +1,67 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven a string containing brackets `[]`, braces `{}`, parentheses `()`, or any combination thereof, verify that any and all pairs are matched and nested correctly.\nThe string may also contain other characters, which for the purposes of this exercise should be ignored.\n\n####\n\nUse the above instructions to modify the supplied files: matching_brackets.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "matching_brackets.py",
+        "content": "def is_paired(input_string):\n    pass\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "file_path": "matching_brackets.py",
+        "content": "def is_paired(input_string):\n    stack = []\n    opening_brackets = ['[', '{', '(']\n    closing_brackets = [']', '}', ')']\n    bracket_pairs = {'[': ']', '{': '}', '(': ')'}\n    \n    for char in input_string:\n        if char in opening_brackets:\n            stack.append(char)\n        elif char in closing_brackets:\n            if not stack:\n                return False\n            last_opening_bracket = stack.pop()\n            if bracket_pairs[last_opening_bracket] != char:\n                return False\n    \n    return len(stack) == 0",
+        "information": null,
+        "diff": "--- matching_brackets.py\n+++ matching_brackets.py\n@@ -1,2 +1,17 @@\n def is_paired(input_string):\n-    pass+    stack = []\n+    opening_brackets = ['[', '{', '(']\n+    closing_brackets = [']', '}', ')']\n+    bracket_pairs = {'[': ']', '{': '}', '(': ')'}\n+\n+    for char in input_string:\n+        if char in opening_brackets:\n+            stack.append(char)\n+        elif char in closing_brackets:\n+            if not stack:\n+                return False\n+            last_opening_bracket = stack.pop()\n+            if bracket_pairs[last_opening_bracket] != char:\n+                return False\n+\n+    return len(stack) == 0",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-3.5-turbo-16k",
+        "total_tokens": 433,
+        "prompt_tokens": 295,
+        "completion_tokens": 138,
+        "total_cost": 0.001437,
+        "duration": 3,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

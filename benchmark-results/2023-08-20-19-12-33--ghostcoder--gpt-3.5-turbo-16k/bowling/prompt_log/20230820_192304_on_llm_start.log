@@ -1,0 +1,247 @@
+method: on_llm_start [2023-08-20 19:23:04]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-3.5-turbo-16k", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Score a bowling game.
+
+Bowling is a game where players roll a heavy ball to knock down pins arranged in a triangle.
+Write code to keep track of the score of a game of bowling.
+
+## Scoring Bowling
+
+The game consists of 10 frames.
+A frame is composed of one or two ball throws with 10 pins standing at frame initialization.
+There are three cases for the tabulation of a frame.
+
+- An open frame is where a score of less than 10 is recorded for the frame.
+  In this case the score for the frame is the number of pins knocked down.
+
+- A spare is where all ten pins are knocked down by the second throw.
+  The total value of a spare is 10 plus the number of pins knocked down in their next throw.
+
+- A strike is where all ten pins are knocked down by the first throw.
+  The total value of a strike is 10 plus the number of pins knocked down in the next two throws.
+  If a strike is immediately followed by a second strike, then the value of the first strike cannot be determined until the ball is thrown one more time.
+
+Here is a three frame example:
+
+| Frame 1         | Frame 2       | Frame 3                |
+| :-------------: |:-------------:| :---------------------:|
+| X (strike)      | 5/ (spare)    | 9 0 (open frame)       |
+
+Frame 1 is (10 + 5 + 5) = 20
+
+Frame 2 is (5 + 5 + 9) = 19
+
+Frame 3 is (9 + 0) = 9
+
+This means the current running total is 48.
+
+The tenth frame in the game is a special case.
+If someone throws a spare or a strike then they get one or two fill balls respectively.
+Fill balls exist to calculate the total of the 10th frame.
+Scoring a strike or spare on the fill ball does not give the player more fill balls.
+The total value of the 10th frame is the total number of pins knocked down.
+
+For a tenth frame of X1/ (strike and a spare), the total value is 20.
+
+For a tenth frame of XXX (three strikes), the total value is 30.
+
+## Requirements
+
+Write code to keep track of the score of a game of bowling.
+It should support two operations:
+
+- `roll(pins : int)` is called each time the player rolls a ball.
+  The argument is the number of pins knocked down.
+- `score() : int` is called only at the very end of the game.
+  It returns the total score for that game.
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to "throw" an error when the scoring or playing rules are not followed. The tests will only pass if you both `raise` the `exception` and include a message with it.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# example when a bonus is attempted with an open frame
+raise IndexError("cannot throw bonus with an open tenth frame")
+
+# example when fill balls are invalid
+raise ValueError("invalid fill balls")
+```
+
+####
+
+Use the above instructions to modify the supplied files: bowling.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: bowling.py
+AI: I updated a file.
+Filepath: bowling.py
+```python
+class BowlingGame:
+    def __init__(self):
+        self.rolls = []
+
+    def roll(self, pins):
+        self.rolls.append(pins)
+
+    def score(self):
+        total_score = 0
+        roll_index = 0
+
+        for frame in range(10):
+            if self.is_strike(roll_index):
+                total_score += 10 + self.strike_bonus(roll_index)
+                roll_index += 1
+            elif self.is_spare(roll_index):
+                total_score += 10 + self.spare_bonus(roll_index)
+                roll_index += 2
+            else:
+                total_score += self.frame_score(roll_index)
+                roll_index += 2
+
+        return total_score
+
+    def is_strike(self, roll_index):
+        return self.rolls[roll_index] == 10
+
+    def is_spare(self, roll_index):
+        return self.rolls[roll_index] + self.rolls[roll_index + 1] == 10
+
+    def strike_bonus(self, roll_index):
+        return self.rolls[roll_index + 1] + self.rolls[roll_index + 2]
+
+    def spare_bonus(self, roll_index):
+        return self.rolls[roll_index + 2]
+
+    def frame_score(self, roll_index):
+        return self.rolls[roll_index] + self.rolls[roll_index + 1]
+```
+I have implemented the `BowlingGame` class according to the instructions. I added an instance variable `rolls` to keep track of the number of pins knocked down in each roll. In the `roll` method, I append the number of pins to the `rolls` list. In the `score` method, I iterate over the frames and calculate the total score based on the scoring rules. I also added helper methods `is_strike`, `is_spare`, `strike_bonus`, `spare_bonus`, and `frame_score` to check for strikes, spares, and calculate the bonus and frame score.
+Human: F........F...FFF......FF...F.FF
+====
+FAIL: test_a_roll_cannot_score_more_than_10_points (bowling_test.BowlingTest.test_a_roll_cannot_score_more_than_10_points)
+----
+Traceback (most recent call last):
+  File "bowling/bowling_test.py", line 109, in test_a_roll_cannot_score_more_than_10_points
+    with self.assertRaisesWithMessage(Exception):
+AssertionError: Exception not raised
+
+====
+FAIL: test_bonus_roll_after_a_strike_in_the_last_frame_cannot_score_more_than_10_points (bowling_test.BowlingTest.test_bonus_roll_after_a_strike_in_the_last_frame_cannot_score_more_than_10_points)
+----
+Traceback (most recent call last):
+  File "bowling/bowling_test.py", line 123, in test_bonus_roll_after_a_strike_in_the_last_frame_cannot_score_more_than_10_points
+    with self.assertRaisesWithMessage(Exception):
+AssertionError: Exception not raised
+
+====
+FAIL: test_cannot_roll_after_bonus_roll_for_spare (bowling_test.BowlingTest.test_cannot_roll_after_bonus_roll_for_spare)
+----
+Traceback (most recent call last):
+  File "bowling/bowling_test.py", line 202, in test_cannot_roll_after_bonus_roll_for_spare
+    with self.assertRaisesWithMessage(Exception):
+AssertionError: Exception not raised
+
+====
+FAIL: test_cannot_roll_after_bonus_rolls_for_strike (bowling_test.BowlingTest.test_cannot_roll_after_bonus_rolls_for_strike)
+----
+Traceback (most recent call last):
+  File "bowling/bowling_test.py", line 208, in test_cannot_roll_after_bonus_rolls_for_strike
+    with self.assertRaisesWithMessage(Exception):
+AssertionError: Exception not raised
+
+====
+FAIL: test_cannot_roll_if_game_already_has_ten_frames (bowling_test.BowlingTest.test_cannot_roll_if_game_already_has_ten_frames)
+----
+Traceback (most recent call last):
+  File "bowling/bowling_test.py", line 172, in test_cannot_roll_if_game_already_has_ten_frames
+    with self.assertRaisesWithMessage(Exception):
+AssertionError: Exception not raised
+
+====
+FAIL: test_rolls_cannot_score_negative_points (bowling_test.BowlingTest.test_rolls_cannot_score_negative_points)
+----
+Traceback (most recent call last):
+  File "bowling/bowling_test.py", line 103, in test_rolls_cannot_score_negative_points
+    with self.assertRaisesWithMessage(Exception):
+AssertionError: Exception not raised
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in bowling.py to resolve the errors.
+
+Filepath: bowling.py
+```python
+class BowlingGame:
+    def __init__(self):
+        self.rolls = []
+
+    def roll(self, pins):
+        self.rolls.append(pins)
+
+    def score(self):
+        total_score = 0
+        roll_index = 0
+
+        for frame in range(10):
+            if self.is_strike(roll_index):
+                total_score += 10 + self.strike_bonus(roll_index)
+                roll_index += 1
+            elif self.is_spare(roll_index):
+                total_score += 10 + self.spare_bonus(roll_index)
+                roll_index += 2
+            else:
+                total_score += self.frame_score(roll_index)
+                roll_index += 2
+
+        return total_score
+
+    def is_strike(self, roll_index):
+        return self.rolls[roll_index] == 10
+
+    def is_spare(self, roll_index):
+        return self.rolls[roll_index] + self.rolls[roll_index + 1] == 10
+
+    def strike_bonus(self, roll_index):
+        return self.rolls[roll_index + 1] + self.rolls[roll_index + 2]
+
+    def spare_bonus(self, roll_index):
+        return self.rolls[roll_index + 2]
+
+    def frame_score(self, roll_index):
+        return self.rolls[roll_index] + self.rolls[roll_index + 1]
+```
+

@@ -1,0 +1,38 @@
+method: on_llm_end [2023-08-20 19:19:00]
+llm_output: {"token_usage": {"prompt_tokens": 402, "completion_tokens": 217, "total_tokens": 619}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: custom_set.py
+```python
+class CustomSet:
+    def __init__(self, elements=[]):
+        self.elements = elements
+
+    def isempty(self):
+        return len(self.elements) == 0
+
+    def __contains__(self, element):
+        return element in self.elements
+
+    def issubset(self, other):
+        return all(element in other.elements for element in self.elements)
+
+    def isdisjoint(self, other):
+        return not any(element in other.elements for element in self.elements)
+
+    def __eq__(self, other):
+        return set(self.elements) == set(other.elements)
+
+    def add(self, element):
+        if element not in self.elements:
+            self.elements.append(element)
+
+    def intersection(self, other):
+        return CustomSet([element for element in self.elements if element in other.elements])
+
+    def __sub__(self, other):
+        return CustomSet([element for element in self.elements if element not in other.elements])
+
+    def __add__(self, other):
+        return CustomSet(self.elements + other.elements)
+```
+---

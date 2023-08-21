@@ -1,0 +1,43 @@
+method: on_llm_end [2023-08-20 19:19:36]
+llm_output: {"token_usage": {"prompt_tokens": 685, "completion_tokens": 382, "total_tokens": 1067}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: protein_translation.py
+```python
+def proteins(strand):
+    codon_protein_map = {
+        "AUG": "Methionine",
+        "UUU": "Phenylalanine",
+        "UUC": "Phenylalanine",
+        "UUA": "Leucine",
+        "UUG": "Leucine",
+        "UCU": "Serine",
+        "UCC": "Serine",
+        "UCA": "Serine",
+        "UCG": "Serine",
+        "UAU": "Tyrosine",
+        "UAC": "Tyrosine",
+        "UGU": "Cysteine",
+        "UGC": "Cysteine",
+        "UGG": "Tryptophan",
+        "UAA": "STOP",
+        "UAG": "STOP",
+        "UGA": "STOP"
+    }
+
+    codons = [strand[i:i+3] for i in range(0, len(strand), 3)]
+    proteins = []
+    for codon in codons:
+        protein = codon_protein_map.get(codon)
+        if protein == "STOP":
+            break
+        if protein:
+            proteins.append(protein)
+    return proteins
+```
+Explanation:
+- I created a dictionary `codon_protein_map` that maps each codon to its corresponding protein.
+- I used list comprehension to split the `strand` into codons of length 3.
+- I iterated over each codon and checked if it exists in the `codon_protein_map`. If it does, I added the corresponding protein to the `proteins` list.
+- If the protein is "STOP", I break out of the loop to terminate the translation.
+- Finally, I return the `proteins` list.
+---

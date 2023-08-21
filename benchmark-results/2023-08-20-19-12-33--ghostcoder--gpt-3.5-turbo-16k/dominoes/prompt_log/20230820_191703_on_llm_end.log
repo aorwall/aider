@@ -1,0 +1,29 @@
+method: on_llm_end [2023-08-20 19:17:03]
+llm_output: {"token_usage": {"prompt_tokens": 496, "completion_tokens": 181, "total_tokens": 677}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: dominoes.py
+```python
+def can_chain(dominoes):
+    if not dominoes:
+        return False
+
+    def backtrack(chain, remaining):
+        if not remaining:
+            return chain[0][0] == chain[-1][1]
+
+        last = chain[-1][1]
+        for i, domino in enumerate(remaining):
+            if domino[0] == last:
+                result = backtrack(chain + [domino], remaining[:i] + remaining[i+1:])
+                if result:
+                    return True
+            elif domino[1] == last:
+                result = backtrack(chain + [(domino[1], domino[0])], remaining[:i] + remaining[i+1:])
+                if result:
+                    return True
+
+        return False
+
+    return backtrack([dominoes[0]], dominoes[1:])
+```
+---

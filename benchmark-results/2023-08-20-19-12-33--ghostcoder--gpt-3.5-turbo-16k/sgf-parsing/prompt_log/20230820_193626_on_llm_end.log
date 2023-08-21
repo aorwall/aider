@@ -1,0 +1,146 @@
+method: on_llm_end [2023-08-20 19:36:26]
+llm_output: {"token_usage": {"prompt_tokens": 1612, "completion_tokens": 766, "total_tokens": 2378}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: sgf_parsing.py
+```python
+class SgfTree:
+    def __init__(self, properties=None, children=None):
+        self.properties = properties or {}
+        self.children = children or []
+
+    def __eq__(self, other):
+        if not isinstance(other, SgfTree):
+            return False
+        for key, value in self.properties.items():
+            if key not in other.properties:
+                return False
+            if other.properties[key] != value:
+                return False
+        for key in other.properties.keys():
+            if key not in self.properties:
+                return False
+        if len(self.children) != len(other.children):
+            return False
+        for child, other_child in zip(self.children, other.children):
+            if child != other_child:
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self == other
+
+
+def parse(input_string):
+    if not input_string:
+        raise ValueError("tree missing")
+
+    if input_string[0] != '(' or input_string[-1] != ')':
+        raise ValueError("tree missing")
+
+    input_string = input_string[1:-1]
+
+    if not input_string:
+        raise ValueError("tree with no nodes")
+
+    tree = parse_tree(input_string)
+    return tree
+
+
+def parse_tree(input_string):
+    properties, rest = parse_properties(input_string)
+    children = []
+
+    while rest:
+        if rest[0] == '(':
+            subtree, rest = parse_tree(rest[1:])
+            children.append(subtree)
+        elif rest[0] == ')':
+            return SgfTree(properties, children), rest[1:]
+        else:
+            raise ValueError("tree missing")
+
+    return SgfTree(properties, children), ''
+
+
+def parse_properties(input_string):
+    properties = {}
+    rest = input_string
+
+    while rest:
+        if rest[0] == ';':
+            rest = rest[1:]
+            key, value, rest = parse_property(rest)
+            properties[key] = value
+        elif rest[0] == '(' or rest[0] == ')':
+            return properties, rest
+        else:
+            raise ValueError("tree missing")
+
+    return properties, ''
+
+
+def parse_property(input_string):
+    if not input_string:
+        raise ValueError("properties without delimiter")
+
+    key, rest = parse_key(input_string)
+    values, rest = parse_values(rest)
+
+    return key, values, rest
+
+
+def parse_key(input_string):
+    if not input_string:
+        raise ValueError("properties without delimiter")
+
+    key = ''
+    rest = input_string
+
+    while rest and rest[0].isalpha():
+        key += rest[0]
+        rest = rest[1:]
+
+    if not key.isupper():
+        raise ValueError("property must be in uppercase")
+
+    return key, rest
+
+
+def parse_values(input_string):
+    if not input_string:
+        raise ValueError("properties without delimiter")
+
+    values = []
+    rest = input_string
+
+    while rest and rest[0] == '[':
+        value, rest = parse_value(rest[1:])
+        values.append(value)
+
+    return values, rest
+
+
+def parse_value(input_string):
+    if not input_string:
+        raise ValueError("properties without delimiter")
+
+    value = ''
+    rest = input_string
+
+    while rest and rest[0] != ']':
+        if rest[0] == '\\':
+            if len(rest) > 1:
+                value += rest[1]
+                rest = rest[2:]
+            else:
+                raise ValueError("properties without delimiter")
+        else:
+            value += rest[0]
+            rest = rest[1:]
+
+    if not rest or rest[0] != ']':
+        raise ValueError("properties without delimiter")
+
+    return value, rest[1:]
+```
+---

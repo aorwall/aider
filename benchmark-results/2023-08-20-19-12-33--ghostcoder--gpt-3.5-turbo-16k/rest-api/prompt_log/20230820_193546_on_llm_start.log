@@ -1,0 +1,233 @@
+method: on_llm_start [2023-08-20 19:35:46]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-3.5-turbo-16k", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Implement a RESTful API for tracking IOUs.
+
+Four roommates have a habit of borrowing money from each other frequently, and have trouble remembering who owes whom, and how much.
+
+Your task is to implement a simple [RESTful API][restful-wikipedia] that receives [IOU][iou]s as POST requests, and can deliver specified summary information via GET requests.
+
+## API Specification
+
+### User object
+
+```json
+{
+  "name": "Adam",
+  "owes": {
+    "Bob": 12.0,
+    "Chuck": 4.0,
+    "Dan": 9.5
+  },
+  "owed_by": {
+    "Bob": 6.5,
+    "Dan": 2.75,
+  },
+  "balance": "<(total owed by other users) - (total owed to other users)>"
+}
+```
+
+### Methods
+
+| Description | HTTP Method | URL | Payload Format | Response w/o Payload | Response w/ Payload |
+| --- | --- | --- | --- | --- | --- |
+| List of user information | GET | /users | `{"users":["Adam","Bob"]}` | `{"users":<List of all User objects>}` | `{"users":<List of User objects for <users> (sorted by name)}` |
+| Create user | POST | /add | `{"user":<name of new user (unique)>}` | N/A | `<User object for new user>` |
+| Create IOU | POST | /iou | `{"lender":<name of lender>,"borrower":<name of borrower>,"amount":5.25}` | N/A | `{"users":<updated User objects for <lender> and <borrower> (sorted by name)>}` |
+
+## Other Resources
+
+- [REST API Tutorial][restfulapi]
+- Example RESTful APIs
+  - [GitHub][github-rest]
+  - [Reddit][reddit-rest]
+
+[restful-wikipedia]: https://en.wikipedia.org/wiki/Representational_state_transfer
+[iou]: https://en.wikipedia.org/wiki/IOU
+[github-rest]: https://developer.github.com/v3/
+[reddit-rest]: https://www.reddit.com/dev/api/
+[restfulapi]: https://restfulapi.net/
+
+####
+
+Use the above instructions to modify the supplied files: rest_api.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: rest_api.py
+AI: I updated a file.
+Filepath: rest_api.py
+```python
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = database
+
+    def get(self, url, payload=None):
+        if url == '/users':
+            if payload is None:
+                return {"users": sorted(self.database.keys())}
+            else:
+                users = payload["users"]
+                user_objects = []
+                for user in users:
+                    if user in self.database:
+                        user_objects.append(self.database[user])
+                return {"users": sorted(user_objects, key=lambda x: x["name"])}
+        else:
+            return None
+
+    def post(self, url, payload=None):
+        if url == '/add':
+            if payload is not None and "user" in payload:
+                user = payload["user"]
+                if user not in self.database:
+                    self.database[user] = {
+                        "name": user,
+                        "owes": {},
+                        "owed_by": {},
+                        "balance": 0.0
+                    }
+                    return self.database[user]
+        elif url == '/iou':
+            if payload is not None and "lender" in payload and "borrower" in payload and "amount" in payload:
+                lender = payload["lender"]
+                borrower = payload["borrower"]
+                amount = payload["amount"]
+                if lender in self.database and borrower in self.database:
+                    self.database[lender]["owed_by"][borrower] = amount
+                    self.database[borrower]["owes"][lender] = amount
+                    self.database[lender]["balance"] += amount
+                    self.database[borrower]["balance"] -= amount
+                    return {
+                        "users": sorted([self.database[lender], self.database[borrower]], key=lambda x: x["name"])
+                    }
+        return None
+```
+Human: EEEEEEEEE
+====
+ERROR: test_add_user (rest_api_test.RestApiTest.test_add_user)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 26, in test_add_user
+    response = api.post("/add", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 22, in post
+    user = payload["user"]
+           ~~~~~~~^^^^^^^^
+TypeError: string indices must be integers, not 'str'
+
+====
+ERROR: test_borrower_has_negative_balance (rest_api_test.RestApiTest.test_borrower_has_negative_balance)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 73, in test_borrower_has_negative_balance
+    response = api.post("/iou", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 33, in post
+    lender = payload["lender"]
+             ~~~~~~~^^^^^^^^^^
+TypeError: string indices must be integers, not 'str'
+
+====
+ERROR: test_both_users_have_0_balance (rest_api_test.RestApiTest.test_both_users_have_0_balance)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 54, in test_both_users_have_0_balance
+    response = api.post("/iou", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 33, in post
+    lender = payload["lender"]
+             ~~~~~~~^^^^^^^^^^
+TypeError: string indices must be integers, not 'str'
+
+====
+ERROR: test_get_single_user (rest_api_test.RestApiTest.test_get_single_user)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 39, in test_get_single_user
+    response = api.get("/users", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 10, in get
+    users = payload["users"]
+            ~~~~~~~^^^^^^^^^
+TypeError: string indices must be integers, not 'str'
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in rest_api.py to resolve the errors.
+
+Filepath: rest_api.py
+```python
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = database
+
+    def get(self, url, payload=None):
+        if url == '/users':
+            if payload is None:
+                return {"users": sorted(self.database.keys())}
+            else:
+                users = payload["users"]
+                user_objects = []
+                for user in users:
+                    if user in self.database:
+                        user_objects.append(self.database[user])
+                return {"users": sorted(user_objects, key=lambda x: x["name"])}
+        else:
+            return None
+
+    def post(self, url, payload=None):
+        if url == '/add':
+            if payload is not None and "user" in payload:
+                user = payload["user"]
+                if user not in self.database:
+                    self.database[user] = {
+                        "name": user,
+                        "owes": {},
+                        "owed_by": {},
+                        "balance": 0.0
+                    }
+                    return self.database[user]
+        elif url == '/iou':
+            if payload is not None and "lender" in payload and "borrower" in payload and "amount" in payload:
+                lender = payload["lender"]
+                borrower = payload["borrower"]
+                amount = payload["amount"]
+                if lender in self.database and borrower in self.database:
+                    self.database[lender]["owed_by"][borrower] = amount
+                    self.database[borrower]["owes"][lender] = amount
+                    self.database[lender]["balance"] += amount
+                    self.database[borrower]["balance"] -= amount
+                    return {
+                        "users": sorted([self.database[lender], self.database[borrower]], key=lambda x: x["name"])
+                    }
+        return None
+```
+

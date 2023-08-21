@@ -1,0 +1,38 @@
+method: on_llm_end [2023-08-20 19:20:29]
+llm_output: {"token_usage": {"prompt_tokens": 618, "completion_tokens": 330, "total_tokens": 948}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: grade_school.py
+```python
+class School:
+    def __init__(self):
+        self.students = {}
+
+    def add_student(self, name, grade):
+        if grade in self.students:
+            self.students[grade].append(name)
+        else:
+            self.students[grade] = [name]
+
+    def roster(self):
+        sorted_students = []
+        for grade in sorted(self.students.keys()):
+            sorted_students.extend(sorted(self.students[grade]))
+        return sorted_students
+
+    def grade(self, grade_number):
+        if grade_number in self.students:
+            return sorted(self.students[grade_number])
+        else:
+            return []
+
+    def added(self):
+        return self.students
+```
+
+Explanation:
+- Added an instance variable `students` to the `School` class to store the students' names and grades.
+- In the `add_student` method, if the grade already exists in the `students` dictionary, the student's name is appended to the list of names for that grade. Otherwise, a new key-value pair is added to the `students` dictionary with the grade as the key and a list containing the student's name as the value.
+- In the `roster` method, the students' names are sorted by grade and then alphabetically within each grade. The sorted names are stored in the `sorted_students` list and returned.
+- In the `grade` method, if the grade exists in the `students` dictionary, the names for that grade are sorted and returned. Otherwise, an empty list is returned.
+- In the `added` method, the `students` dictionary is returned as is.
+---

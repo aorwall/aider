@@ -1,0 +1,28 @@
+method: on_llm_end [2023-08-20 19:25:51]
+llm_output: {"token_usage": {"prompt_tokens": 717, "completion_tokens": 193, "total_tokens": 910}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+I apologize for the mistake. The issue is with the condition `if not string.isnumeric():` which checks if the string is numeric, but it should be checking if the string contains any characters other than '0', '1', and '2'. 
+
+To fix this, we can use a regular expression to check if the string matches the pattern of a valid trinary number. 
+
+Here's the updated code:
+
+Filepath: trinary.py
+```python
+import re
+
+def trinary(string):
+    if not re.match(r'^[0-2]+$', string):
+        return 0
+
+    decimal = 0
+    power = 0
+    for digit in string[::-1]:
+        decimal += int(digit) * (3 ** power)
+        power += 1
+
+    return decimal
+```
+
+Now, the function will return 0 for any string that contains characters other than '0', '1', and '2'.
+---

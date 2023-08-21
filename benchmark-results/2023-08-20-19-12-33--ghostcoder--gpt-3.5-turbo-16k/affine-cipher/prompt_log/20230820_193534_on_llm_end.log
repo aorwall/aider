@@ -1,0 +1,46 @@
+method: on_llm_end [2023-08-20 19:35:34]
+llm_output: {"token_usage": {"prompt_tokens": 2145, "completion_tokens": 326, "total_tokens": 2471}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+I apologize for the oversight. The issue is that the `encode` function is not excluding digits from encryption. To fix this, we need to add a condition to skip digits in the `encode` function. 
+
+Here's the updated code:
+
+Filepath: affine_cipher.py
+```python
+def encode(plain_text, a, b):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    encoded_text = ""
+    for char in plain_text.lower():
+        if char.isalpha():
+            index = alphabet.index(char)
+            encoded_index = (a * index + b) % 26
+            encoded_char = alphabet[encoded_index]
+            encoded_text += encoded_char
+        else:
+            encoded_text += char
+    return " ".join([encoded_text[i:i+5] for i in range(0, len(encoded_text), 5)])
+
+
+def decode(ciphered_text, a, b):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    decoded_text = ""
+    for char in ciphered_text.lower():
+        if char.isalpha():
+            index = alphabet.index(char)
+            decoded_index = (modular_multiplicative_inverse(a, 26) * (index - b)) % 26
+            decoded_char = alphabet[decoded_index]
+            decoded_text += decoded_char
+        else:
+            decoded_text += char
+    return decoded_text
+
+
+def modular_multiplicative_inverse(a, m):
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+    raise ValueError("a and m must be coprime.")
+```
+
+Please try running the tests again.
+---

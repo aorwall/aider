@@ -1,0 +1,67 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven the size, return a square matrix of numbers in spiral order.\n\nThe matrix should be filled with natural numbers, starting from 1 in the top-left corner, increasing in an inward, clockwise spiral order, like these examples:\n\n## Examples\n\n### Spiral matrix of size 3\n\n```text\n1 2 3\n8 9 4\n7 6 5\n```\n\n### Spiral matrix of size 4\n\n```text\n 1  2  3 4\n12 13 14 5\n11 16 15 6\n10  9  8 7\n```\n\n####\n\nUse the above instructions to modify the supplied files: spiral_matrix.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "spiral_matrix.py",
+        "content": "def spiral_matrix(size):\n    pass\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "file_path": "spiral_matrix.py",
+        "content": "def spiral_matrix(size):\n    matrix = [[0] * size for _ in range(size)]\n    num = 1\n    row_start = 0\n    row_end = size - 1\n    col_start = 0\n    col_end = size - 1\n\n    while row_start <= row_end and col_start <= col_end:\n        # Traverse right\n        for i in range(col_start, col_end + 1):\n            matrix[row_start][i] = num\n            num += 1\n        row_start += 1\n\n        # Traverse down\n        for i in range(row_start, row_end + 1):\n            matrix[i][col_end] = num\n            num += 1\n        col_end -= 1\n\n        # Traverse left\n        for i in range(col_end, col_start - 1, -1):\n            matrix[row_end][i] = num\n            num += 1\n        row_end -= 1\n\n        # Traverse up\n        for i in range(row_end, row_start - 1, -1):\n            matrix[i][col_start] = num\n            num += 1\n        col_start += 1\n\n    return matrix",
+        "information": null,
+        "diff": "--- spiral_matrix.py\n+++ spiral_matrix.py\n@@ -1,2 +1,34 @@\n def spiral_matrix(size):\n-    pass+    matrix = [[0] * size for _ in range(size)]\n+    num = 1\n+    row_start = 0\n+    row_end = size - 1\n+    col_start = 0\n+    col_end = size - 1\n+\n+    while row_start <= row_end and col_start <= col_end:\n+        # Traverse right\n+        for i in range(col_start, col_end + 1):\n+            matrix[row_start][i] = num\n+            num += 1\n+        row_start += 1\n+\n+        # Traverse down\n+        for i in range(row_start, row_end + 1):\n+            matrix[i][col_end] = num\n+            num += 1\n+        col_end -= 1\n+\n+        # Traverse left\n+        for i in range(col_end, col_start - 1, -1):\n+            matrix[row_end][i] = num\n+            num += 1\n+        row_end -= 1\n+\n+        # Traverse up\n+        for i in range(row_end, row_start - 1, -1):\n+            matrix[i][col_start] = num\n+            num += 1\n+        col_start += 1\n+\n+    return matrix",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-3.5-turbo-16k",
+        "total_tokens": 630,
+        "prompt_tokens": 370,
+        "completion_tokens": 260,
+        "total_cost": 0.00215,
+        "duration": 5,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

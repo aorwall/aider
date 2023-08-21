@@ -1,0 +1,208 @@
+method: on_llm_start [2023-08-20 19:15:10]
+serialized: {"lc": 1, "type": "constructor", "id": ["langchain", "chat_models", "openai", "ChatOpenAI"], "kwargs": {"model": "gpt-3.5-turbo-16k", "temperature": 0.0, "openai_api_key": {"lc": 1, "type": "secret", "id": ["OPENAI_API_KEY"]}}}
+prompt:
+System: Act as a helpful Senior Developer helping a Human to write code. 
+
+You can both update the existing files and add new ones if needed. 
+
+When responding, answer with an through explanation of what you changed, and present the updated or added files. 
+Please exclude files that have not been updated.   
+
+* YOU MUST keep package names and comments.
+* YOU MUST avoid adding any comments to the new code sections you are proposing.
+* YOU MUST provide valid code 
+
+When updating existing files:
+* YOU MUST only print out updated or added lines. 
+* YOU MUST replace unchanged lines with a comment. 
+* YOU MUST include the definitions of parent classes and functions.
+
+* ALL files should be presented in the following format:
+Filepath: file_path
+```languague
+code
+```
+
+Human: # Instructions
+
+Write a robot simulator.
+
+A robot factory's test facility needs a program to verify robot movements.
+
+The robots have three possible movements:
+
+- turn right
+- turn left
+- advance
+
+Robots are placed on a hypothetical infinite grid, facing a particular direction (north, east, south, or west) at a set of {x,y} coordinates,
+e.g., {3,8}, with coordinates increasing to the north and east.
+
+The robot then receives a number of instructions, at which point the testing facility verifies the robot's new position, and in which direction it is pointing.
+
+- The letter-string "RAALAL" means:
+  - Turn right
+  - Advance twice
+  - Turn left
+  - Advance once
+  - Turn left yet again
+- Say a robot starts at {7, 3} facing north.
+  Then running this stream of instructions should leave it at {9, 4} facing west.
+
+####
+
+Use the above instructions to modify the supplied files: robot_simulator.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: robot_simulator.py
+AI: I updated a file.
+Filepath: robot_simulator.py
+```python
+# Globals for the directions
+# Change the values as you see fit
+EAST = 'EAST'
+NORTH = 'NORTH'
+WEST = 'WEST'
+SOUTH = 'SOUTH'
+
+
+class Robot:
+    def __init__(self, direction=NORTH, x_pos=0, y_pos=0):
+        self.direction = direction
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+    def turn_right(self):
+        if self.direction == NORTH:
+            self.direction = EAST
+        elif self.direction == EAST:
+            self.direction = SOUTH
+        elif self.direction == SOUTH:
+            self.direction = WEST
+        elif self.direction == WEST:
+            self.direction = NORTH
+
+    def turn_left(self):
+        if self.direction == NORTH:
+            self.direction = WEST
+        elif self.direction == WEST:
+            self.direction = SOUTH
+        elif self.direction == SOUTH:
+            self.direction = EAST
+        elif self.direction == EAST:
+            self.direction = NORTH
+
+    def advance(self):
+        if self.direction == NORTH:
+            self.y_pos += 1
+        elif self.direction == EAST:
+            self.x_pos += 1
+        elif self.direction == SOUTH:
+            self.y_pos -= 1
+        elif self.direction == WEST:
+            self.x_pos -= 1
+```
+Human: EEEEEEEEEEEEEEEEEE
+====
+ERROR: test_at_negative_position_facing_south (robot_simulator_test.RobotSimulatorTest.test_at_negative_position_facing_south)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 28, in test_at_negative_position_facing_south
+    self.assertEqual(robot.coordinates, (-1, -1))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_at_origin_facing_north (robot_simulator_test.RobotSimulatorTest.test_at_origin_facing_north)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 22, in test_at_origin_facing_north
+    self.assertEqual(robot.coordinates, (0, 0))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_changes_east_to_north (robot_simulator_test.RobotSimulatorTest.test_changes_east_to_north)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 84, in test_changes_east_to_north
+    robot.move("L")
+    ^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'move'
+
+====
+ERROR: test_changes_east_to_south (robot_simulator_test.RobotSimulatorTest.test_changes_east_to_south)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 41, in test_changes_east_to_south
+    robot.move("R")
+    ^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'move'
+
+====
+ERROR: test_changes_north_to_east (robot_simulator_test.RobotSimulatorTest.test_changes_north_to_east)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 34, in test_changes_north_to_east
+    robot.move("R")
+    ^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'move'
+
+====
+ERROR: test_changes_north_to_west (robot_simulator_test.RobotSimulatorTest.test_changes_north_to_west)
+----
+Traceback (most recent call last):
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in robot_simulator.py to resolve the errors.
+
+Filepath: robot_simulator.py
+```python
+# Globals for the directions
+# Change the values as you see fit
+EAST = 'EAST'
+NORTH = 'NORTH'
+WEST = 'WEST'
+SOUTH = 'SOUTH'
+
+
+class Robot:
+    def __init__(self, direction=NORTH, x_pos=0, y_pos=0):
+        self.direction = direction
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+    def turn_right(self):
+        if self.direction == NORTH:
+            self.direction = EAST
+        elif self.direction == EAST:
+            self.direction = SOUTH
+        elif self.direction == SOUTH:
+            self.direction = WEST
+        elif self.direction == WEST:
+            self.direction = NORTH
+
+    def turn_left(self):
+        if self.direction == NORTH:
+            self.direction = WEST
+        elif self.direction == WEST:
+            self.direction = SOUTH
+        elif self.direction == SOUTH:
+            self.direction = EAST
+        elif self.direction == EAST:
+            self.direction = NORTH
+
+    def advance(self):
+        if self.direction == NORTH:
+            self.y_pos += 1
+        elif self.direction == EAST:
+            self.x_pos += 1
+        elif self.direction == SOUTH:
+            self.y_pos -= 1
+        elif self.direction == WEST:
+            self.x_pos -= 1
+```
+

@@ -1,0 +1,34 @@
+method: on_llm_end [2023-08-20 19:17:28]
+llm_output: {"token_usage": {"prompt_tokens": 675, "completion_tokens": 347, "total_tokens": 1022}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: luhn.py
+```python
+class Luhn:
+    def __init__(self, card_num):
+        self.card_num = card_num.replace(" ", "")
+
+    def valid(self):
+        if len(self.card_num) <= 1:
+            return False
+
+        if not self.card_num.isdigit():
+            return False
+
+        digits = [int(digit) for digit in self.card_num]
+        for i in range(len(digits) - 2, -1, -2):
+            digits[i] = digits[i] * 2
+            if digits[i] > 9:
+                digits[i] = digits[i] - 9
+
+        return sum(digits) % 10 == 0
+```
+
+Explanation:
+- In the `__init__` method, I added a line to remove any spaces from the `card_num` string using the `replace` method.
+- In the `valid` method, I added a check to return `False` if the length of `card_num` is less than or equal to 1.
+- I added another check to return `False` if `card_num` contains any non-digit characters.
+- I converted each digit in `card_num` to an integer and stored them in a list called `digits`.
+- I looped through the `digits` list starting from the second-to-last digit and going backwards by 2.
+- For each digit, I doubled its value and checked if it is greater than 9. If it is, I subtracted 9 from it.
+- Finally, I checked if the sum of all the digits in `digits` is divisible by 10, and returned `True` or `False` accordingly.
+---

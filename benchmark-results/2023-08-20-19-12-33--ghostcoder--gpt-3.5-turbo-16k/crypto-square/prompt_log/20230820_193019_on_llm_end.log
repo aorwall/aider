@@ -1,0 +1,35 @@
+method: on_llm_end [2023-08-20 19:30:19]
+llm_output: {"token_usage": {"prompt_tokens": 1666, "completion_tokens": 241, "total_tokens": 1907}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+I apologize for the mistakes in the code. I have fixed the issues and updated the code. Here is the updated version:
+
+Filepath: crypto_square.py
+```python
+import math
+
+def cipher_text(plain_text):
+    # Normalize the text
+    normalized_text = plain_text.lower().replace(" ", "").replace(",", "").replace(".", "")
+
+    # Calculate the number of rows and columns
+    length = len(normalized_text)
+    rows = math.isqrt(length)
+    columns = rows if rows * rows == length else rows + 1
+
+    # Create the square code
+    square_code = ""
+    for i in range(columns):
+        for j in range(i, length, columns):
+            square_code += normalized_text[j]
+        square_code += " "
+
+    # Pad the last chunk with trailing spaces if needed
+    last_chunk_length = len(square_code.split()[-1])
+    if last_chunk_length < rows:
+        square_code += " " * (rows - last_chunk_length)
+
+    return square_code.strip()
+```
+
+I added a new section of code to pad the last chunk with trailing spaces if needed. This ensures that the output is in chunks that fill perfect rectangles.
+---

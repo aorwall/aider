@@ -1,0 +1,27 @@
+method: on_llm_end [2023-08-20 19:26:07]
+llm_output: {"token_usage": {"prompt_tokens": 1156, "completion_tokens": 267, "total_tokens": 1423}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: scale_generator.py
+```python
+class Scale:
+    def __init__(self, tonic):
+        self.tonic = tonic.upper()
+
+    def chromatic(self):
+        chromatic_scale = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+        if self.tonic.endswith('B') or self.tonic.endswith('E'):
+            chromatic_scale = ['A', 'Bb', 'B', 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab']
+        tonic_index = chromatic_scale.index(self.tonic)
+        return chromatic_scale[tonic_index:] + chromatic_scale[:tonic_index]
+
+    def interval(self, intervals):
+        chromatic_scale = self.chromatic()
+        scale = [self.tonic]
+        for interval in intervals:
+            if interval == 'M':
+                scale.append(chromatic_scale[(chromatic_scale.index(scale[-1]) + 2) % 12])
+            elif interval == 'm':
+                scale.append(chromatic_scale[(chromatic_scale.index(scale[-1]) + 1) % 12])
+        return scale
+```
+---

@@ -1,0 +1,51 @@
+method: on_llm_end [2023-08-20 19:35:46]
+llm_output: {"token_usage": {"prompt_tokens": 748, "completion_tokens": 370, "total_tokens": 1118}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: rest_api.py
+```python
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = database
+
+    def get(self, url, payload=None):
+        if url == '/users':
+            if payload is None:
+                return {"users": sorted(self.database.keys())}
+            else:
+                users = payload["users"]
+                user_objects = []
+                for user in users:
+                    if user in self.database:
+                        user_objects.append(self.database[user])
+                return {"users": sorted(user_objects, key=lambda x: x["name"])}
+        else:
+            return None
+
+    def post(self, url, payload=None):
+        if url == '/add':
+            if payload is not None and "user" in payload:
+                user = payload["user"]
+                if user not in self.database:
+                    self.database[user] = {
+                        "name": user,
+                        "owes": {},
+                        "owed_by": {},
+                        "balance": 0.0
+                    }
+                    return self.database[user]
+        elif url == '/iou':
+            if payload is not None and "lender" in payload and "borrower" in payload and "amount" in payload:
+                lender = payload["lender"]
+                borrower = payload["borrower"]
+                amount = payload["amount"]
+                if lender in self.database and borrower in self.database:
+                    self.database[lender]["owed_by"][borrower] = amount
+                    self.database[borrower]["owes"][lender] = amount
+                    self.database[lender]["balance"] += amount
+                    self.database[borrower]["balance"] -= amount
+                    return {
+                        "users": sorted([self.database[lender], self.database[borrower]], key=lambda x: x["name"])
+                    }
+        return None
+```
+---

@@ -1,0 +1,27 @@
+method: on_llm_end [2023-08-20 19:31:58]
+llm_output: {"token_usage": {"prompt_tokens": 708, "completion_tokens": 170, "total_tokens": 878}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: minesweeper.py
+```python
+def annotate(minefield):
+    # Function body starts here
+    if not minefield:
+        return minefield
+
+    rows = len(minefield)
+    cols = len(minefield[0])
+
+    for i in range(rows):
+        for j in range(cols):
+            if minefield[i][j] == ' ':
+                count = 0
+                for x in range(max(0, i - 1), min(rows, i + 2)):
+                    for y in range(max(0, j - 1), min(cols, j + 2)):
+                        if minefield[x][y] == '*':
+                            count += 1
+                if count > 0:
+                    minefield[i][j] = str(count)
+
+    return minefield
+```
+---

@@ -1,0 +1,137 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nPick the best hand(s) from a list of poker hands.\n\nSee [wikipedia][poker-hands] for an overview of poker hands.\n\n[poker-hands]: https://en.wikipedia.org/wiki/List_of_poker_hands\n\n####\n\nUse the above instructions to modify the supplied files: poker.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "poker.py",
+        "content": "def best_hands(hands):\n    pass\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "file_path": "poker.py",
+        "content": "def best_hands(hands):\n    # Create a dictionary to map the rank of each hand\n    rank_dict = {\n        'High Card': 0,\n        'One Pair': 1,\n        'Two Pairs': 2,\n        'Three of a Kind': 3,\n        'Straight': 4,\n        'Flush': 5,\n        'Full House': 6,\n        'Four of a Kind': 7,\n        'Straight Flush': 8,\n        'Royal Flush': 9\n    }\n\n    # Create a list to store the best hands\n    best_hands = []\n\n    # Initialize the maximum rank to -1\n    max_rank = -1\n\n    # Iterate through each hand\n    for hand in hands:\n        # Get the rank of the current hand\n        rank = get_rank(hand)\n\n        # If the rank of the current hand is greater than the maximum rank,\n        # update the maximum rank and clear the list of best hands\n        if rank > max_rank:\n            max_rank = rank\n            best_hands = [hand]\n        # If the rank of the current hand is equal to the maximum rank,\n        # append the current hand to the list of best hands\n        elif rank == max_rank:\n            best_hands.append(hand)\n\n    return best_hands\n\n\ndef get_rank(hand):\n    # Split the hand into a list of cards\n    cards = hand.split()\n\n    # Create a dictionary to store the count of each card rank\n    rank_count = {}\n\n    # Iterate through each card\n    for card in cards:\n        # Get the rank of the current card\n        rank = card[:-1]\n\n        # If the rank is already in the dictionary, increment the count\n        if rank in rank_count:\n            rank_count[rank] += 1\n        # Otherwise, add the rank to the dictionary with a count of 1\n        else:\n            rank_count[rank] = 1\n\n    # Get the count of unique ranks\n    unique_ranks = len(rank_count)\n\n    # Get the count of each rank count\n    count_count = {}\n    for count in rank_count.values():\n        if count in count_count:\n            count_count[count] += 1\n        else:\n            count_count[count] = 1\n\n    # Check for a straight\n    is_straight = is_consecutive(cards)\n\n    # Check for a flush\n    is_flush = is_same_suit(cards)\n\n    # Check for a straight flush\n    is_straight_flush = is_straight and is_flush\n\n    # Check for a royal flush\n    is_royal_flush = is_straight_flush and 'A' in cards and 'K' in cards\n\n    # Determine the rank of the hand\n    if is_royal_flush:\n        rank = 'Royal Flush'\n    elif is_straight_flush:\n        rank = 'Straight Flush'\n    elif unique_ranks == 2 and 4 in count_count:\n        rank = 'Four of a Kind'\n    elif unique_ranks == 2 and 3 in count_count:\n        rank = 'Full House'\n    elif is_flush:\n        rank = 'Flush'\n    elif is_straight:\n        rank = 'Straight'\n    elif unique_ranks == 3 and 3 in count_count:\n        rank = 'Three of a Kind'\n    elif unique_ranks == 3 and 2 in count_count:\n        rank = 'Two Pairs'\n    elif unique_ranks == 4 and 2 in count_count:\n        rank = 'One Pair'\n    else:\n        rank = 'High Card'\n\n    return rank\n\n\ndef is_consecutive(cards):\n    # Create a list to store the ranks of the cards\n    ranks = []\n\n    # Iterate through each card\n    for card in cards:\n        # Get the rank of the current card\n        rank = card[:-1]\n\n        # If the rank is 'A', append 14 to the list of ranks\n        if rank == 'A':\n            ranks.append(14)\n        # If the rank is 'K', append 13 to the list of ranks\n        elif rank == 'K':\n            ranks.append(13)\n        # If the rank is 'Q', append 12 to the list of ranks\n        elif rank == 'Q':\n            ranks.append(12)\n        # If the rank is 'J', append 11 to the list of ranks\n        elif rank == 'J':\n            ranks.append(11)\n        # If the rank is 'T', append 10 to the list of ranks\n        elif rank == 'T':\n            ranks.append(10)\n        # Otherwise, append the integer value of the rank to the list of ranks\n        else:\n            ranks.append(int(rank))\n\n    # Sort the list of ranks in ascending order\n    ranks.sort()\n\n    # Check if the ranks are consecutive\n    for i in range(len(ranks) - 1):\n        if ranks[i] + 1 != ranks[i + 1]:\n            return False\n\n    return True\n\n\ndef is_same_suit(cards):\n    # Get the suit of the first card\n    suit = cards[0][-1]\n\n    # Check if all the cards have the same suit\n    for card in cards:\n        if card[-1] != suit:\n            return False\n\n    return True",
+        "information": null,
+        "diff": "--- poker.py\n+++ poker.py\n@@ -1,2 +1,155 @@\n def best_hands(hands):\n-    pass+    # Create a dictionary to map the rank of each hand\n+    rank_dict = {\n+        'High Card': 0,\n+        'One Pair': 1,\n+        'Two Pairs': 2,\n+        'Three of a Kind': 3,\n+        'Straight': 4,\n+        'Flush': 5,\n+        'Full House': 6,\n+        'Four of a Kind': 7,\n+        'Straight Flush': 8,\n+        'Royal Flush': 9\n+    }\n+\n+    # Create a list to store the best hands\n+    best_hands = []\n+\n+    # Initialize the maximum rank to -1\n+    max_rank = -1\n+\n+    # Iterate through each hand\n+    for hand in hands:\n+        # Get the rank of the current hand\n+        rank = get_rank(hand)\n+\n+        # If the rank of the current hand is greater than the maximum rank,\n+        # update the maximum rank and clear the list of best hands\n+        if rank > max_rank:\n+            max_rank = rank\n+            best_hands = [hand]\n+        # If the rank of the current hand is equal to the maximum rank,\n+        # append the current hand to the list of best hands\n+        elif rank == max_rank:\n+            best_hands.append(hand)\n+\n+    return best_hands\n+\n+\n+def get_rank(hand):\n+    # Split the hand into a list of cards\n+    cards = hand.split()\n+\n+    # Create a dictionary to store the count of each card rank\n+    rank_count = {}\n+\n+    # Iterate through each card\n+    for card in cards:\n+        # Get the rank of the current card\n+        rank = card[:-1]\n+\n+        # If the rank is already in the dictionary, increment the count\n+        if rank in rank_count:\n+            rank_count[rank] += 1\n+        # Otherwise, add the rank to the dictionary with a count of 1\n+        else:\n+            rank_count[rank] = 1\n+\n+    # Get the count of unique ranks\n+    unique_ranks = len(rank_count)\n+\n+    # Get the count of each rank count\n+    count_count = {}\n+    for count in rank_count.values():\n+        if count in count_count:\n+            count_count[count] += 1\n+        else:\n+            count_count[count] = 1\n+\n+    # Check for a straight\n+    is_straight = is_consecutive(cards)\n+\n+    # Check for a flush\n+    is_flush = is_same_suit(cards)\n+\n+    # Check for a straight flush\n+    is_straight_flush = is_straight and is_flush\n+\n+    # Check for a royal flush\n+    is_royal_flush = is_straight_flush and 'A' in cards and 'K' in cards\n+\n+    # Determine the rank of the hand\n+    if is_royal_flush:\n+        rank = 'Royal Flush'\n+    elif is_straight_flush:\n+        rank = 'Straight Flush'\n+    elif unique_ranks == 2 and 4 in count_count:\n+        rank = 'Four of a Kind'\n+    elif unique_ranks == 2 and 3 in count_count:\n+        rank = 'Full House'\n+    elif is_flush:\n+        rank = 'Flush'\n+    elif is_straight:\n+        rank = 'Straight'\n+    elif unique_ranks == 3 and 3 in count_count:\n+        rank = 'Three of a Kind'\n+    elif unique_ranks == 3 and 2 in count_count:\n+        rank = 'Two Pairs'\n+    elif unique_ranks == 4 and 2 in count_count:\n+        rank = 'One Pair'\n+    else:\n+        rank = 'High Card'\n+\n+    return rank\n+\n+\n+def is_consecutive(cards):\n+    # Create a list to store the ranks of the cards\n+    ranks = []\n+\n+    # Iterate through each card\n+    for card in cards:\n+        # Get the rank of the current card\n+        rank = card[:-1]\n+\n+        # If the rank is 'A', append 14 to the list of ranks\n+        if rank == 'A':\n+            ranks.append(14)\n+        # If the rank is 'K', append 13 to the list of ranks\n+        elif rank == 'K':\n+            ranks.append(13)\n+        # If the rank is 'Q', append 12 to the list of ranks\n+        elif rank == 'Q':\n+            ranks.append(12)\n+        # If the rank is 'J', append 11 to the list of ranks\n+        elif rank == 'J':\n+            ranks.append(11)\n+        # If the rank is 'T', append 10 to the list of ranks\n+        elif rank == 'T':\n+            ranks.append(10)\n+        # Otherwise, append the integer value of the rank to the list of ranks\n+        else:\n+            ranks.append(int(rank))\n+\n+    # Sort the list of ranks in ascending order\n+    ranks.sort()\n+\n+    # Check if the ranks are consecutive\n+    for i in range(len(ranks) - 1):\n+        if ranks[i] + 1 != ranks[i + 1]:\n+            return False\n+\n+    return True\n+\n+\n+def is_same_suit(cards):\n+    # Get the suit of the first card\n+    suit = cards[0][-1]\n+\n+    # Check if all the cards have the same suit\n+    for card in cards:\n+        if card[-1] != suit:\n+            return False\n+\n+    return True",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-3.5-turbo-16k",
+        "total_tokens": 1406,
+        "prompt_tokens": 288,
+        "completion_tokens": 1118,
+        "total_cost": 0.0053360000000000005,
+        "duration": 19,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n====\nERROR: test_a_straight_beats_three_of_a_kind (poker_test.PokerTest.test_a_straight_beats_three_of_a_kind)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 107, in test_a_straight_beats_three_of_a_kind\n    best_hands([\"4S 5H 4C 8D 4H\", \"3S 4D 2S 6D 5C\"]), [\"3S 4D 2S 6D 5C\"]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 29, in best_hands\n    if rank > max_rank:\n       ^^^^^^^^^^^^^^^\nTypeError: '>' not supported between instances of 'str' and 'int'\n\n====\nERROR: test_a_tie_has_multiple_winners (poker_test.PokerTest.test_a_tie_has_multiple_winners)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 24, in test_a_tie_has_multiple_winners\n    best_hands(\n  File \"poker/poker.py\", line 29, in best_hands\n    if rank > max_rank:\n       ^^^^^^^^^^^^^^^\nTypeError: '>' not supported between instances of 'str' and 'int'\n\n====\nERROR: test_aces_can_end_a_straight_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_10_j_q_k_a)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 112, in test_aces_can_end_a_straight_10_j_q_k_a\n    best_hands([\"4S 5H 4C 8D 4H\", \"10D JH QS KD AC\"]), [\"10D JH QS KD AC\"]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 29, in best_hands\n    if rank > max_rank:\n       ^^^^^^^^^^^^^^^\nTypeError: '>' not supported between instances of 'str' and 'int'\n\n====\nERROR: test_aces_can_end_a_straight_flush_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_flush_10_j_q_k_a)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 190, in test_aces_can_end_a_straight_flush_10_j_q_k_a\n    best_hands([\"KC AH AS AD AC\", \"10C JC QC KC AC\"]), [\"10C JC QC KC AC\"]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 29, in best_hands\n    if rank > max_rank:\n       ^^^^^^^^^^^^^^^\nTypeError: '>' not supported between instances of 'str' and 'int'\n\n====\nERROR: test_aces_can_start_a_straight_a_2_3_4_5 (poker_test.PokerTest.test_aces_can_start_a_straight_a_2_3_4_5)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in poker.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "poker.py",
+        "content": "def best_hands(hands):\n    # Create a dictionary to map the rank of each hand\n    rank_dict = {\n        'High Card': 0,\n        'One Pair': 1,\n        'Two Pairs': 2,\n        'Three of a Kind': 3,\n        'Straight': 4,\n        'Flush': 5,\n        'Full House': 6,\n        'Four of a Kind': 7,\n        'Straight Flush': 8,\n        'Royal Flush': 9\n    }\n\n    # Create a list to store the best hands\n    best_hands = []\n\n    # Initialize the maximum rank to -1\n    max_rank = -1\n\n    # Iterate through each hand\n    for hand in hands:\n        # Get the rank of the current hand\n        rank = get_rank(hand)\n\n        # If the rank of the current hand is greater than the maximum rank,\n        # update the maximum rank and clear the list of best hands\n        if rank > max_rank:\n            max_rank = rank\n            best_hands = [hand]\n        # If the rank of the current hand is equal to the maximum rank,\n        # append the current hand to the list of best hands\n        elif rank == max_rank:\n            best_hands.append(hand)\n\n    return best_hands\n\n\ndef get_rank(hand):\n    # Split the hand into a list of cards\n    cards = hand.split()\n\n    # Create a dictionary to store the count of each card rank\n    rank_count = {}\n\n    # Iterate through each card\n    for card in cards:\n        # Get the rank of the current card\n        rank = card[:-1]\n\n        # If the rank is already in the dictionary, increment the count\n        if rank in rank_count:\n            rank_count[rank] += 1\n        # Otherwise, add the rank to the dictionary with a count of 1\n        else:\n            rank_count[rank] = 1\n\n    # Get the count of unique ranks\n    unique_ranks = len(rank_count)\n\n    # Get the count of each rank count\n    count_count = {}\n    for count in rank_count.values():\n        if count in count_count:\n            count_count[count] += 1\n        else:\n            count_count[count] = 1\n\n    # Check for a straight\n    is_straight = is_consecutive(cards)\n\n    # Check for a flush\n    is_flush = is_same_suit(cards)\n\n    # Check for a straight flush\n    is_straight_flush = is_straight and is_flush\n\n    # Check for a royal flush\n    is_royal_flush = is_straight_flush and 'A' in cards and 'K' in cards\n\n    # Determine the rank of the hand\n    if is_royal_flush:\n        rank = 'Royal Flush'\n    elif is_straight_flush:\n        rank = 'Straight Flush'\n    elif unique_ranks == 2 and 4 in count_count:\n        rank = 'Four of a Kind'\n    elif unique_ranks == 2 and 3 in count_count:\n        rank = 'Full House'\n    elif is_flush:\n        rank = 'Flush'\n    elif is_straight:\n        rank = 'Straight'\n    elif unique_ranks == 3 and 3 in count_count:\n        rank = 'Three of a Kind'\n    elif unique_ranks == 3 and 2 in count_count:\n        rank = 'Two Pairs'\n    elif unique_ranks == 4 and 2 in count_count:\n        rank = 'One Pair'\n    else:\n        rank = 'High Card'\n\n    return rank\n\n\ndef is_consecutive(cards):\n    # Create a list to store the ranks of the cards\n    ranks = []\n\n    # Iterate through each card\n    for card in cards:\n        # Get the rank of the current card\n        rank = card[:-1]\n\n        # If the rank is 'A', append 14 to the list of ranks\n        if rank == 'A':\n            ranks.append(14)\n        # If the rank is 'K', append 13 to the list of ranks\n        elif rank == 'K':\n            ranks.append(13)\n        # If the rank is 'Q', append 12 to the list of ranks\n        elif rank == 'Q':\n            ranks.append(12)\n        # If the rank is 'J', append 11 to the list of ranks\n        elif rank == 'J':\n            ranks.append(11)\n        # If the rank is 'T', append 10 to the list of ranks\n        elif rank == 'T':\n            ranks.append(10)\n        # Otherwise, append the integer value of the rank to the list of ranks\n        else:\n            ranks.append(int(rank))\n\n    # Sort the list of ranks in ascending order\n    ranks.sort()\n\n    # Check if the ranks are consecutive\n    for i in range(len(ranks) - 1):\n        if ranks[i] + 1 != ranks[i + 1]:\n            return False\n\n    return True\n\n\ndef is_same_suit(cards):\n    # Get the suit of the first card\n    suit = cards[0][-1]\n\n    # Check if all the cards have the same suit\n    for card in cards:\n        if card[-1] != suit:\n            return False\n\n    return True",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "I apologize for the mistake. The issue is that the `rank` variable in the `get_rank` function is a string, while the `max_rank` variable in the `best_hands` function is an integer. To fix this, we need to compare the ranks using their corresponding values from the `rank_dict` dictionary.\n\nHere's the updated code:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "file_path": "poker.py",
+        "content": "def best_hands(hands):\n    # Create a dictionary to map the rank of each hand\n    rank_dict = {\n        'High Card': 0,\n        'One Pair': 1,\n        'Two Pairs': 2,\n        'Three of a Kind': 3,\n        'Straight': 4,\n        'Flush': 5,\n        'Full House': 6,\n        'Four of a Kind': 7,\n        'Straight Flush': 8,\n        'Royal Flush': 9\n    }\n\n    # Create a list to store the best hands\n    best_hands = []\n\n    # Initialize the maximum rank to -1\n    max_rank = -1\n\n    # Iterate through each hand\n    for hand in hands:\n        # Get the rank of the current hand\n        rank = get_rank(hand)\n\n        # If the rank of the current hand is greater than the maximum rank,\n        # update the maximum rank and clear the list of best hands\n        if rank_dict[rank] > max_rank:\n            max_rank = rank_dict[rank]\n            best_hands = [hand]\n        # If the rank of the current hand is equal to the maximum rank,\n        # append the current hand to the list of best hands\n        elif rank_dict[rank] == max_rank:\n            best_hands.append(hand)\n\n    return best_hands\n\n\ndef get_rank(hand):\n    # Split the hand into a list of cards\n    cards = hand.split()\n\n    # Create a dictionary to store the count of each card rank\n    rank_count = {}\n\n    # Iterate through each card\n    for card in cards:\n        # Get the rank of the current card\n        rank = card[:-1]\n\n        # If the rank is already in the dictionary, increment the count\n        if rank in rank_count:\n            rank_count[rank] += 1\n        # Otherwise, add the rank to the dictionary with a count of 1\n        else:\n            rank_count[rank] = 1\n\n    # Get the count of unique ranks\n    unique_ranks = len(rank_count)\n\n    # Get the count of each rank count\n    count_count = {}\n    for count in rank_count.values():\n        if count in count_count:\n            count_count[count] += 1\n        else:\n            count_count[count] = 1\n\n    # Check for a straight\n    is_straight = is_consecutive(cards)\n\n    # Check for a flush\n    is_flush = is_same_suit(cards)\n\n    # Check for a straight flush\n    is_straight_flush = is_straight and is_flush\n\n    # Check for a royal flush\n    is_royal_flush = is_straight_flush and 'A' in cards and 'K' in cards\n\n    # Determine the rank of the hand\n    if is_royal_flush:\n        rank = 'Royal Flush'\n    elif is_straight_flush:\n        rank = 'Straight Flush'\n    elif unique_ranks == 2 and 4 in count_count:\n        rank = 'Four of a Kind'\n    elif unique_ranks == 2 and 3 in count_count:\n        rank = 'Full House'\n    elif is_flush:\n        rank = 'Flush'\n    elif is_straight:\n        rank = 'Straight'\n    elif unique_ranks == 3 and 3 in count_count:\n        rank = 'Three of a Kind'\n    elif unique_ranks == 3 and 2 in count_count:\n        rank = 'Two Pairs'\n    elif unique_ranks == 4 and 2 in count_count:\n        rank = 'One Pair'\n    else:\n        rank = 'High Card'\n\n    return rank\n\n\ndef is_consecutive(cards):\n    # Create a list to store the ranks of the cards\n    ranks = []\n\n    # Iterate through each card\n    for card in cards:\n        # Get the rank of the current card\n        rank = card[:-1]\n\n        # If the rank is 'A', append 14 to the list of ranks\n        if rank == 'A':\n            ranks.append(14)\n        # If the rank is 'K', append 13 to the list of ranks\n        elif rank == 'K':\n            ranks.append(13)\n        # If the rank is 'Q', append 12 to the list of ranks\n        elif rank == 'Q':\n            ranks.append(12)\n        # If the rank is 'J', append 11 to the list of ranks\n        elif rank == 'J':\n            ranks.append(11)\n        # If the rank is 'T', append 10 to the list of ranks\n        elif rank == 'T':\n            ranks.append(10)\n        # Otherwise, append the integer value of the rank to the list of ranks\n        else:\n            ranks.append(int(rank))\n\n    # Sort the list of ranks in ascending order\n    ranks.sort()\n\n    # Check if the ranks are consecutive\n    for i in range(len(ranks) - 1):\n        if ranks[i] + 1 != ranks[i + 1]:\n            return False\n\n    return True\n\n\ndef is_same_suit(cards):\n    # Get the suit of the first card\n    suit = cards[0][-1]\n\n    # Check if all the cards have the same suit\n    for card in cards:\n        if card[-1] != suit:\n            return False\n\n    return True",
+        "information": null,
+        "diff": "--- poker.py\n+++ poker.py\n@@ -26,12 +26,12 @@\n \n         # If the rank of the current hand is greater than the maximum rank,\n         # update the maximum rank and clear the list of best hands\n-        if rank > max_rank:\n-            max_rank = rank\n+        if rank_dict[rank] > max_rank:\n+            max_rank = rank_dict[rank]\n             best_hands = [hand]\n         # If the rank of the current hand is equal to the maximum rank,\n         # append the current hand to the list of best hands\n-        elif rank == max_rank:\n+        elif rank_dict[rank] == max_rank:\n             best_hands.append(hand)\n \n     return best_hands\n",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-3.5-turbo-16k",
+        "total_tokens": 4444,
+        "prompt_tokens": 3242,
+        "completion_tokens": 1202,
+        "total_cost": 0.014534,
+        "duration": 22,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

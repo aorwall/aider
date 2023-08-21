@@ -1,0 +1,20 @@
+method: on_llm_end [2023-08-20 19:29:45]
+llm_output: {"token_usage": {"prompt_tokens": 426, "completion_tokens": 146, "total_tokens": 572}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: alphametics.py
+```python
+def solve(puzzle):
+    words = puzzle.split()
+    unique_letters = set(''.join(words))
+    leading_letters = set(word[0] for word in words)
+    letters = leading_letters.union(unique_letters - leading_letters)
+    letters = sorted(letters)
+    for perm in permutations(range(10), len(letters)):
+        mapping = dict(zip(letters, perm))
+        if all(mapping[word[0]] != 0 for word in words):
+            nums = [int(''.join(str(mapping[ch]) for ch in word)) for word in words]
+            if sum(nums[:-1]) == nums[-1]:
+                return mapping
+    return {}
+```
+---

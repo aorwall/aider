@@ -1,0 +1,67 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou are working on a project to develop a train scheduling system for a busy railway network.\n\nYou've been asked to develop a prototype for the train routes in the scheduling system.\nEach route consists of a sequence of train stations that a given train stops at.\n# Instructions\n\nYour team has decided to use a doubly linked list to represent each train route in the schedule.\nEach station along the train's route will be represented by a node in the linked list.\n\nYou don't need to worry about arrival and departure times at the stations.\nEach station will simply be represented by a number.\n\nRoutes can be extended, adding stations to the beginning or end of a route.\nThey can also be shortened by removing stations from the beginning or the end of a route.\n\nSometimes a station gets closed down, and in that case the station needs to be removed from the route, even if it is not at the beginning or end of the route.\n\nThe size of a route is measured not by how far the train travels, but by how many stations it stops at.\n\n~~~~exercism/note\nThe linked list is a fundamental data structure in computer science, often used in the implementation of other data structures.\nAs the name suggests, it is a list of nodes that are linked together.\nIt is a list of \"nodes\", where each node links to its neighbor or neighbors.\nIn a **singly linked list** each node links only to the node that follows it.\nIn a **doubly linked list** each node links to both the node that comes before, as well as the node that comes after.\n\nIf you want to dig deeper into linked lists, check out [this article][intro-linked-list] that explains it using nice drawings.\n\n[intro-linked-list]: https://medium.com/basecs/whats-a-linked-list-anyway-part-1-d8b7e6508b9d\n~~~~\n# Instructions append\n\n## How this Exercise is Structured in Python\n\nWhile linked lists can be implemented in a variety of ways with a variety of underlying data structures, we ask here that you implement your linked list in an OOP fashion.\n\nIn the stub file, you will see the start of a `Node` class, as well as a `LinkedList` class.\nYour `Node` class should keep track of its value, as well as which other nodes preceed or follow.\nYour `push`, `pop`, `shift`, `unshift`, and the special method for `len` should be implemented in the `LinkedList` class.\nYou might also find it useful to implement a special `iter` method for iteration.\n\nUnlike the core exercise, we will be testing error conditions by calling `pop` and `shift` on empty `LinkedLists`, so you will need to `raise` errors appropriately.\n\nFinally, we would like you to implement `delete` in addition to the methods outlined above.\n`delete` will take one argument, which is the value to be removed from the linked list.\nIf the value appears more than once, only the **first** occurrence should be removed.\n\n<br>\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception][raising]. When you do this, you should always include a **meaningful error message** to indicate what the source of the error is.\nThis makes your code more readable and helps significantly with debugging.\nFor situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types][error types], but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement][raise] to \"throw\" a `ValueError` when a node value being `delete()`-ed is not found in the linked list.\nAdditionally, an `IndexError` should be thrown if there are no nodes left to `pop()`.\nThe tests will only pass if you both `raise` these `exceptions` and include messages with them.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# When the value passed to `delete()` is not found.\nif not found:\n    raise ValueError(\"Value not found\")\n\n```\n\nTo raise an `IndexError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# When pop() is called and there are no nodes left in the linked list\nif self.length == 0:\n    raise IndexError(\"List is empty\")\n\n```\n\n\n## Special Methods in Python\n\nThe tests for this exercise will also be calling `len()` on your `LinkedList`.\nIn order for `len()` to work, you will need to create a `__len__` special method.\nFor details on implementing special or \"dunder\" methods in Python, see [Python Docs: Basic Object Customization][basic customization] and [Python Docs: object.__len__(self)][__len__].\n\nWe also recommend creating a special [`__iter__`][__iter__] method to help with iterating over your linked list.\n\n<br>\n\n[__iter__]: https://docs.python.org/3/reference/datamodel.html#object.__iter__\n[__len__]: https://docs.python.org/3/reference/datamodel.html#object.__len__\n[basic customization]: https://docs.python.org/3/reference/datamodel.html#basic-customization\n[error types]: https://docs.python.org/3/library/exceptions.html#base-classes\n[raise]: https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement\n[raising]: https://docs.python.org/3/tutorial/errors.html#raising-exceptions\n\n####\n\nUse the above instructions to modify the supplied files: linked_list.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "linked_list.py",
+        "content": "class Node:\n    def __init__(self, value, succeeding=None, previous=None):\n        pass\n\n\nclass LinkedList:\n    def __init__(self):\n        pass\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "file_path": "linked_list.py",
+        "content": "class Node:\n    def __init__(self, value, succeeding=None, previous=None):\n        self.value = value\n        self.succeeding = succeeding\n        self.previous = previous\n\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n        self.tail = None\n        self.length = 0\n\n    def push(self, value):\n        new_node = Node(value)\n        if self.head is None:\n            self.head = new_node\n            self.tail = new_node\n        else:\n            new_node.previous = self.tail\n            self.tail.succeeding = new_node\n            self.tail = new_node\n        self.length += 1\n\n    def pop(self):\n        if self.length == 0:\n            raise IndexError(\"List is empty\")\n        value = self.tail.value\n        if self.length == 1:\n            self.head = None\n            self.tail = None\n        else:\n            self.tail = self.tail.previous\n            self.tail.succeeding = None\n        self.length -= 1\n        return value\n\n    def shift(self):\n        if self.length == 0:\n            raise IndexError(\"List is empty\")\n        value = self.head.value\n        if self.length == 1:\n            self.head = None\n            self.tail = None\n        else:\n            self.head = self.head.succeeding\n            self.head.previous = None\n        self.length -= 1\n        return value\n\n    def unshift(self, value):\n        new_node = Node(value)\n        if self.head is None:\n            self.head = new_node\n            self.tail = new_node\n        else:\n            new_node.succeeding = self.head\n            self.head.previous = new_node\n            self.head = new_node\n        self.length += 1\n\n    def delete(self, value):\n        current = self.head\n        found = False\n        while current is not None:\n            if current.value == value:\n                found = True\n                if current == self.head:\n                    self.head = current.succeeding\n                    if self.head is not None:\n                        self.head.previous = None\n                    else:\n                        self.tail = None\n                elif current == self.tail:\n                    self.tail = current.previous\n                    self.tail.succeeding = None\n                else:\n                    current.previous.succeeding = current.succeeding\n                    current.succeeding.previous = current.previous\n                self.length -= 1\n                break\n            current = current.succeeding\n        if not found:\n            raise ValueError(\"Value not found\")\n\n    def __len__(self):\n        return self.length\n\n    def __iter__(self):\n        current = self.head\n        while current is not None:\n            yield current.value\n            current = current.succeeding",
+        "information": null,
+        "diff": "--- linked_list.py\n+++ linked_list.py\n@@ -1,8 +1,93 @@\n class Node:\n     def __init__(self, value, succeeding=None, previous=None):\n-        pass\n+        self.value = value\n+        self.succeeding = succeeding\n+        self.previous = previous\n \n \n class LinkedList:\n     def __init__(self):\n-        pass+        self.head = None\n+        self.tail = None\n+        self.length = 0\n+\n+    def push(self, value):\n+        new_node = Node(value)\n+        if self.head is None:\n+            self.head = new_node\n+            self.tail = new_node\n+        else:\n+            new_node.previous = self.tail\n+            self.tail.succeeding = new_node\n+            self.tail = new_node\n+        self.length += 1\n+\n+    def pop(self):\n+        if self.length == 0:\n+            raise IndexError(\"List is empty\")\n+        value = self.tail.value\n+        if self.length == 1:\n+            self.head = None\n+            self.tail = None\n+        else:\n+            self.tail = self.tail.previous\n+            self.tail.succeeding = None\n+        self.length -= 1\n+        return value\n+\n+    def shift(self):\n+        if self.length == 0:\n+            raise IndexError(\"List is empty\")\n+        value = self.head.value\n+        if self.length == 1:\n+            self.head = None\n+            self.tail = None\n+        else:\n+            self.head = self.head.succeeding\n+            self.head.previous = None\n+        self.length -= 1\n+        return value\n+\n+    def unshift(self, value):\n+        new_node = Node(value)\n+        if self.head is None:\n+            self.head = new_node\n+            self.tail = new_node\n+        else:\n+            new_node.succeeding = self.head\n+            self.head.previous = new_node\n+            self.head = new_node\n+        self.length += 1\n+\n+    def delete(self, value):\n+        current = self.head\n+        found = False\n+        while current is not None:\n+            if current.value == value:\n+                found = True\n+                if current == self.head:\n+                    self.head = current.succeeding\n+                    if self.head is not None:\n+                        self.head.previous = None\n+                    else:\n+                        self.tail = None\n+                elif current == self.tail:\n+                    self.tail = current.previous\n+                    self.tail.succeeding = None\n+                else:\n+                    current.previous.succeeding = current.succeeding\n+                    current.succeeding.previous = current.previous\n+                self.length -= 1\n+                break\n+            current = current.succeeding\n+        if not found:\n+            raise ValueError(\"Value not found\")\n+\n+    def __len__(self):\n+        return self.length\n+\n+    def __iter__(self):\n+        current = self.head\n+        while current is not None:\n+            yield current.value\n+            current = current.succeeding",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-3.5-turbo-16k",
+        "total_tokens": 1996,
+        "prompt_tokens": 1418,
+        "completion_tokens": 578,
+        "total_cost": 0.006566,
+        "duration": 12,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,28 @@
+method: on_llm_end [2023-08-20 19:27:23]
+llm_output: {"token_usage": {"prompt_tokens": 867, "completion_tokens": 135, "total_tokens": 1002}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: saddle_points.py
+```python
+def saddle_points(matrix):
+    if not matrix:
+        return []
+
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+
+    # Check if the matrix is irregular
+    for row in matrix:
+        if len(row) != num_cols:
+            raise ValueError("irregular matrix")
+
+    saddle_points = []
+
+    for i in range(num_rows):
+        for j in range(num_cols):
+            value = matrix[i][j]
+            if value == max(matrix[i]) and value == min(row[j] for row in matrix):
+                saddle_points.append((i, j))
+
+    return saddle_points
+```
+---

@@ -1,0 +1,34 @@
+method: on_llm_end [2023-08-20 19:26:45]
+llm_output: {"token_usage": {"prompt_tokens": 850, "completion_tokens": 178, "total_tokens": 1028}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: variable_length_quantity.py
+```python
+def encode(numbers):
+    encoded_bytes = []
+    for number in numbers:
+        if number < 0 or number > 0xFFFFFFFF:
+            raise ValueError("Number out of range")
+        while True:
+            byte = number & 0x7F
+            number >>= 7
+            if number:
+                byte |= 0x80
+            encoded_bytes.append(byte)
+            if not number:
+                break
+    return encoded_bytes
+
+
+def decode(bytes_):
+    numbers = []
+    number = 0
+    for byte in bytes_:
+        number = (number << 7) | (byte & 0x7F)
+        if not byte & 0x80:
+            numbers.append(number)
+            number = 0
+    if number:
+        raise ValueError("Incomplete sequence")
+    return numbers
+```
+---

@@ -1,0 +1,48 @@
+method: on_llm_end [2023-08-20 19:26:29]
+llm_output: {"token_usage": {"prompt_tokens": 899, "completion_tokens": 354, "total_tokens": 1253}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: complex_numbers.py
+```python
+import math
+
+class ComplexNumber:
+    def __init__(self, real, imaginary):
+        self.real = real
+        self.imaginary = imaginary
+
+    def __eq__(self, other):
+        return self.real == other.real and self.imaginary == other.imaginary
+
+    def __add__(self, other):
+        real = self.real + other.real
+        imaginary = self.imaginary + other.imaginary
+        return ComplexNumber(real, imaginary)
+
+    def __mul__(self, other):
+        real = self.real * other.real - self.imaginary * other.imaginary
+        imaginary = self.imaginary * other.real + self.real * other.imaginary
+        return ComplexNumber(real, imaginary)
+
+    def __sub__(self, other):
+        real = self.real - other.real
+        imaginary = self.imaginary - other.imaginary
+        return ComplexNumber(real, imaginary)
+
+    def __truediv__(self, other):
+        denominator = other.real ** 2 + other.imaginary ** 2
+        real = (self.real * other.real + self.imaginary * other.imaginary) / denominator
+        imaginary = (self.imaginary * other.real - self.real * other.imaginary) / denominator
+        return ComplexNumber(real, imaginary)
+
+    def __abs__(self):
+        return math.sqrt(self.real ** 2 + self.imaginary ** 2)
+
+    def conjugate(self):
+        return ComplexNumber(self.real, -self.imaginary)
+
+    def exp(self):
+        real = math.exp(self.real) * math.cos(self.imaginary)
+        imaginary = math.exp(self.real) * math.sin(self.imaginary)
+        return ComplexNumber(real, imaginary)
+```
+---

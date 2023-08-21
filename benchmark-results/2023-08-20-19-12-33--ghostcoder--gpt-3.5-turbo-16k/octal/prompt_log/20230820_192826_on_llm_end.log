@@ -1,0 +1,22 @@
+method: on_llm_end [2023-08-20 19:28:26]
+llm_output: {"token_usage": {"prompt_tokens": 979, "completion_tokens": 178, "total_tokens": 1157}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+I apologize for the oversight. The issue is that the code is not correctly handling invalid octal input. To fix this, we need to raise a `ValueError` when the input contains any digits that are not valid octal digits (0-7).
+
+Here's the updated code:
+
+Filepath: octal.py
+```python
+def parse_octal(digits):
+    if not all(digit.isdigit() and int(digit) < 8 for digit in digits):
+        raise ValueError("Invalid octal input")
+    decimal = 0
+    power = 0
+    for digit in reversed(digits):
+        decimal += int(digit) * (8 ** power)
+        power += 1
+    return decimal
+```
+
+With this update, the code will raise a `ValueError` if the input contains any non-octal digits. This will resolve the test failures.
+---

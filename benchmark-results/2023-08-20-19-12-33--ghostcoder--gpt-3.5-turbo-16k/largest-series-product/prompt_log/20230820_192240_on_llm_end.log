@@ -1,0 +1,24 @@
+method: on_llm_end [2023-08-20 19:22:40]
+llm_output: {"token_usage": {"prompt_tokens": 898, "completion_tokens": 135, "total_tokens": 1033}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: largest_series_product.py
+```python
+def largest_product(series, size):
+    if size > len(series):
+        raise ValueError("span must be smaller than string length")
+    if size < 0:
+        raise ValueError("span must not be negative")
+    if not series.isdigit():
+        raise ValueError("digits input must only contain digits")
+
+    max_product = 0
+    for i in range(len(series) - size + 1):
+        product = 1
+        for j in range(i, i + size):
+            product *= int(series[j])
+        if product > max_product:
+            max_product = product
+
+    return max_product
+```
+---

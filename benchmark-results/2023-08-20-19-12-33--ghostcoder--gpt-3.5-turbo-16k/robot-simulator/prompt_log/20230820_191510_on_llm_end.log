@@ -1,0 +1,50 @@
+method: on_llm_end [2023-08-20 19:15:10]
+llm_output: {"token_usage": {"prompt_tokens": 486, "completion_tokens": 280, "total_tokens": 766}, "model_name": "gpt-3.5-turbo-16k"}
+prompt:
+Filepath: robot_simulator.py
+```python
+# Globals for the directions
+# Change the values as you see fit
+EAST = 'EAST'
+NORTH = 'NORTH'
+WEST = 'WEST'
+SOUTH = 'SOUTH'
+
+
+class Robot:
+    def __init__(self, direction=NORTH, x_pos=0, y_pos=0):
+        self.direction = direction
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+    def turn_right(self):
+        if self.direction == NORTH:
+            self.direction = EAST
+        elif self.direction == EAST:
+            self.direction = SOUTH
+        elif self.direction == SOUTH:
+            self.direction = WEST
+        elif self.direction == WEST:
+            self.direction = NORTH
+
+    def turn_left(self):
+        if self.direction == NORTH:
+            self.direction = WEST
+        elif self.direction == WEST:
+            self.direction = SOUTH
+        elif self.direction == SOUTH:
+            self.direction = EAST
+        elif self.direction == EAST:
+            self.direction = NORTH
+
+    def advance(self):
+        if self.direction == NORTH:
+            self.y_pos += 1
+        elif self.direction == EAST:
+            self.x_pos += 1
+        elif self.direction == SOUTH:
+            self.y_pos -= 1
+        elif self.direction == WEST:
+            self.x_pos -= 1
+```
+---

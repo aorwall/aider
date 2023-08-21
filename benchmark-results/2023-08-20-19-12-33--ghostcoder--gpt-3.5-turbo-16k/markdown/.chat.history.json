@@ -1,0 +1,67 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nRefactor a Markdown parser.\n\nThe markdown exercise is a refactoring exercise.\nThere is code that parses a given string with [Markdown syntax][markdown] and returns the associated HTML for that string.\nEven though this code is confusingly written and hard to follow, somehow it works and all the tests are passing!\nYour challenge is to re-write this code to make it easier to read and maintain while still making sure that all the tests keep passing.\n\nIt would be helpful if you made notes of what you did in your refactoring in comments so reviewers can see that, but it isn't strictly necessary.\nThe most important thing is to make the code better!\n\n[markdown]: https://guides.github.com/features/mastering-markdown/\n\n####\n\nUse the above instructions to modify the supplied files: markdown.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "file_path": "markdown.py",
+        "content": "import re\n\n\ndef parse(markdown):\n    lines = markdown.split('\\n')\n    res = ''\n    in_list = False\n    in_list_append = False\n    for i in lines:\n        if re.match('###### (.*)', i) is not None:\n            i = '<h6>' + i[7:] + '</h6>'\n        elif re.match('##### (.*)', i) is not None:\n            i = '<h5>' + i[6:] + '</h5>'\n        elif re.match('#### (.*)', i) is not None:\n            i = '<h4>' + i[5:] + '</h4>'\n        elif re.match('### (.*)', i) is not None:\n            i = '<h3>' + i[4:] + '</h3>'\n        elif re.match('## (.*)', i) is not None:\n            i = '<h2>' + i[3:] + '</h2>'\n        elif re.match('# (.*)', i) is not None:\n            i = '<h1>' + i[2:] + '</h1>'\n        m = re.match(r'\\* (.*)', i)\n        if m:\n            if not in_list:\n                in_list = True\n                is_bold = False\n                is_italic = False\n                curr = m.group(1)\n                m1 = re.match('(.*)__(.*)__(.*)', curr)\n                if m1:\n                    curr = m1.group(1) + '<strong>' + \\\n                        m1.group(2) + '</strong>' + m1.group(3)\n                    is_bold = True\n                m1 = re.match('(.*)_(.*)_(.*)', curr)\n                if m1:\n                    curr = m1.group(1) + '<em>' + m1.group(2) + \\\n                        '</em>' + m1.group(3)\n                    is_italic = True\n                i = '<ul><li>' + curr + '</li>'\n            else:\n                is_bold = False\n                is_italic = False\n                curr = m.group(1)\n                m1 = re.match('(.*)__(.*)__(.*)', curr)\n                if m1:\n                    is_bold = True\n                m1 = re.match('(.*)_(.*)_(.*)', curr)\n                if m1:\n                    is_italic = True\n                if is_bold:\n                    curr = m1.group(1) + '<strong>' + \\\n                        m1.group(2) + '</strong>' + m1.group(3)\n                if is_italic:\n                    curr = m1.group(1) + '<em>' + m1.group(2) + \\\n                        '</em>' + m1.group(3)\n                i = '<li>' + curr + '</li>'\n        else:\n            if in_list:\n                in_list_append = True\n                in_list = False\n\n        m = re.match('<h|<ul|<p|<li', i)\n        if not m:\n            i = '<p>' + i + '</p>'\n        m = re.match('(.*)__(.*)__(.*)', i)\n        if m:\n            i = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)\n        m = re.match('(.*)_(.*)_(.*)', i)\n        if m:\n            i = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)\n        if in_list_append:\n            i = '</ul>' + i\n            in_list_append = False\n        res += i\n    if in_list:\n        res += '</ul>'\n    return res\n",
+        "readonly": false,
+        "information": null
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "file_path": "markdown.py",
+        "content": "import re\n\n\ndef parse(markdown):\n    lines = markdown.split('\\n')\n    res = ''\n    in_list = False\n    in_list_append = False\n    for i in lines:\n        if re.match('###### (.*)', i) is not None:\n            i = '<h6>' + i[7:] + '</h6>'\n        elif re.match('##### (.*)', i) is not None:\n            i = '<h5>' + i[6:] + '</h5>'\n        elif re.match('#### (.*)', i) is not None:\n            i = '<h4>' + i[5:] + '</h4>'\n        elif re.match('### (.*)', i) is not None:\n            i = '<h3>' + i[4:] + '</h3>'\n        elif re.match('## (.*)', i) is not None:\n            i = '<h2>' + i[3:] + '</h2>'\n        elif re.match('# (.*)', i) is not None:\n            i = '<h1>' + i[2:] + '</h1>'\n        m = re.match(r'\\* (.*)', i)\n        if m:\n            if not in_list:\n                in_list = True\n                is_bold = False\n                is_italic = False\n                curr = m.group(1)\n                m1 = re.match('(.*)__(.*)__(.*)', curr)\n                if m1:\n                    curr = m1.group(1) + '<strong>' + \\\n                        m1.group(2) + '</strong>' + m1.group(3)\n                    is_bold = True\n                m1 = re.match('(.*)_(.*)_(.*)', curr)\n                if m1:\n                    curr = m1.group(1) + '<em>' + m1.group(2) + \\\n                        '</em>' + m1.group(3)\n                    is_italic = True\n                i = '<ul><li>' + curr + '</li>'\n            else:\n                is_bold = False\n                is_italic = False\n                curr = m.group(1)\n                m1 = re.match('(.*)__(.*)__(.*)', curr)\n                if m1:\n                    is_bold = True\n                m1 = re.match('(.*)_(.*)_(.*)', curr)\n                if m1:\n                    is_italic = True\n                if is_bold:\n                    curr = m1.group(1) + '<strong>' + \\\n                        m1.group(2) + '</strong>' + m1.group(3)\n                if is_italic:\n                    curr = m1.group(1) + '<em>' + m1.group(2) + \\\n                        '</em>' + m1.group(3)\n                i = '<li>' + curr + '</li>'\n        else:\n            if in_list:\n                in_list_append = True\n                in_list = False\n\n        m = re.match('<h|<ul|<p|<li', i)\n        if not m:\n            i = '<p>' + i + '</p>'\n        m = re.match('(.*)__(.*)__(.*)', i)\n        if m:\n            i = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)\n        m = re.match('(.*)_(.*)_(.*)', i)\n        if m:\n            i = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)\n        if in_list_append:\n            i = '</ul>' + i\n            in_list_append = False\n        res += i\n    if in_list:\n        res += '</ul>'\n    return res\n",
+        "information": null,
+        "diff": "",
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "ImplementationPrompt",
+        "model_name": "gpt-3.5-turbo-16k",
+        "total_tokens": 1938,
+        "prompt_tokens": 1152,
+        "completion_tokens": 786,
+        "total_cost": 0.0066,
+        "duration": 14,
+        "extra": {
+          "file_items": 1,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 1,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 1,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]
