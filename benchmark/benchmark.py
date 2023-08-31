@@ -819,14 +819,14 @@ class GhostCoderAgent(CodeAgent):
             ))
         elif provider == "huggingface":
             import torch
-            from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+            from transformers import AutoTokenizer, pipeline
             from langchain.llms import HuggingFacePipeline
-            from auto_gptq import exllama_set_max_input_length
+            from auto_gptq import exllama_set_max_input_length, AutoGPTQForCausalLM
 
             global _pipe
             if not _pipe:
 
-                model = AutoModelForCausalLM.from_pretrained(model_name,
+                model = AutoGPTQForCausalLM.from_quantized(model_name,
                                                              torch_dtype=torch.float16,
                                                              device_map="auto",
                                                              revision="main")
