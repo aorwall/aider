@@ -13,7 +13,7 @@ from collections import defaultdict
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from types import SimpleNamespace
-from typing import List
+from typing import List, Optional
 
 import git
 import lox
@@ -32,6 +32,7 @@ from aider import models
 from aider.coders import Coder
 from aider.dump import dump  # noqa: F401
 from aider.io import InputOutput
+from ghostcoder.llm import LLMWrapper
 from ghostcoder.schema import UpdatedFileItem
 
 BENCHMARK_DNAME = Path(os.environ["AIDER_BENCHMARK_DIR"])
@@ -791,13 +792,16 @@ class AiderAgent(CodeAgent):
         return self.coder.chat_completion_response_hashes
 
 
+_ghostcoder_llm = None
+
+
 class GhostCoderAgent(CodeAgent):
 
     def __init__(self, testdir: Path, model_name: str, edit_format: str, provider: str, fnames: List[Path], verbose: bool):
         from ghostcoder import FileRepository
         from ghostcoder.callback import LogCallbackHandler
         from ghostcoder.actions import WriteCodeAction
-        from ghostcoder.llm import LLMWrapper, LlamaLLMWrapper, ChatLLMWrapper
+        from ghostcoder.llm import LLMWrapper, ChatLLMWrapper
         from ghostcoder.llm.alpaca import AlpacaLLMWrapper
 
         callback = LogCallbackHandler(str(testdir / "prompt_log"))
@@ -805,47 +809,49 @@ class GhostCoderAgent(CodeAgent):
         import logging
         logging.basicConfig(level=logging.INFO)
 
-        if provider == "vertex-ai":
-            llm = LLMWrapper(llm=VertexAI(
-                model_name=model_name,
-                project="albert-test-368916", # TODO: Configure this
-                max_output_tokens=2048,
-                temperature=0.0,
-                callbacks=[callback]
-            ))
-        elif provider == "huggingface":
-            import torch
-            from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-            from langchain.llms import HuggingFacePipeline
+        global _ghostcoder_llm
+        if not _ghostcoder_llm:
+            if provider == "vertex-ai":
+                _ghostcoder_llm = LLMWrapper(llm=VertexAI(
+                    model_name=model_name,
+                    project="albert-test-368916", # TODO: Configure this
+                    max_output_tokens=2048,
+                    temperature=0.0,
+                    callbacks=[callback]
+                ))
+            elif provider == "huggingface":
+                import torch
+                from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+                from langchain.llms import HuggingFacePipeline
 
-            model = AutoModelForCausalLM.from_pretrained(model_name,
-                                                         torch_dtype=torch.float16,
-                                                         device_map="auto",
-                                                         revision="main")
+                model = AutoModelForCausalLM.from_pretrained(model_name,
+                                                             torch_dtype=torch.float16,
+                                                             device_map="auto",
+                                                             revision="main")
 
-            tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
-            pipe = pipeline(
-                "text-generation",
-                model=model,
-                tokenizer=tokenizer,
-                max_new_tokens=1024,
-                temperature=0.01,
-            )
-            # TODO: Configure this
-            llm = AlpacaLLMWrapper(
-                HuggingFacePipeline(pipeline=pipe,
-                                    callbacks=[callback],
-                                    verbose=True))
-        else:
-            llm = ChatLLMWrapper(ChatOpenAI(
-                model=model_name,
-                temperature=0,
-                callbacks=[callback]
-            ))
+                tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+                pipe = pipeline(
+                    "text-generation",
+                    model=model,
+                    tokenizer=tokenizer,
+                    max_new_tokens=1024,
+                    temperature=0.01,
+                )
+                # TODO: Configure this
+                _ghostcoder_llm = AlpacaLLMWrapper(
+                    HuggingFacePipeline(pipeline=pipe,
+                                        callbacks=[callback],
+                                        verbose=True))
+            else:
+                _ghostcoder_llm = ChatLLMWrapper(ChatOpenAI(
+                    model=model_name,
+                    temperature=0,
+                    callbacks=[callback]
+                ))
 
         repository = FileRepository(repo_path=str(testdir), use_git=False)
         self.action = WriteCodeAction(
-            llm=llm,
+            llm=_ghostcoder_llm,
             repository=repository,
             sys_prompt_id=edit_format
         )
