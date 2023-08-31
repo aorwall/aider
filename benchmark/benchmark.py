@@ -807,20 +807,12 @@ class GhostCoderAgent(CodeAgent):
 
         if provider == "vertex-ai":
             llm = LLMWrapper(llm=VertexAI(
-                model_name="code-bison",
-                project="albert-test-368916",
+                model_name=model_name,
+                project="albert-test-368916", # TODO: Configure this
                 max_output_tokens=2048,
                 temperature=0.0,
                 callbacks=[callback]
             ))
-        elif provider == "huggingface-endpoint":
-            huggingface_endpoint = HuggingFaceEndpoint(
-                endpoint_url="https://w7uj7nmjofyucktp.us-east-1.aws.endpoints.huggingface.cloud",
-                callbacks=[callback],
-                task="text-generation",
-                model_kwargs={"temperature": 0.01, "max_new_tokens": 1000}
-            )
-            llm = LlamaLLMWrapper(huggingface_endpoint)
         elif provider == "huggingface":
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
@@ -839,9 +831,11 @@ class GhostCoderAgent(CodeAgent):
                 max_new_tokens=1024,
                 temperature=0.01,
             )
-            llm = AlpacaLLMWrapper(HuggingFacePipeline(pipeline=pipe,
-                callback_manager=[callback],
-                verbose=True))
+            # TODO: Configure this
+            llm = AlpacaLLMWrapper(
+                HuggingFacePipeline(pipeline=pipe,
+                                    callbacks=[callback],
+                                    verbose=True))
         else:
             llm = ChatLLMWrapper(ChatOpenAI(
                 model=model_name,
