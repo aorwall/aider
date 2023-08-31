@@ -825,11 +825,12 @@ class GhostCoderAgent(CodeAgent):
 
             global _pipe
             if not _pipe:
-
-                model = AutoGPTQForCausalLM.from_pretrained(model_name,
-                                                             torch_dtype=torch.float16,
-                                                             device_map="auto",
-                                                             revision="main")
+                model = AutoGPTQForCausalLM.from_quantized(model_name,
+                        use_safetensors=True,
+                        trust_remote_code=False,
+                        device="cuda:0",
+                        use_triton=False,
+                        quantize_config=None)
 
                 model = exllama_set_max_input_length(model, 4096)
 
