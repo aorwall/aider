@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 from langchain.chat_models import ChatOpenAI
 from langchain.llms import HuggingFaceEndpoint, VertexAI
+from transformers import LlamaForCausalLM
 
 import prompts
 import typer
@@ -825,16 +826,15 @@ class GhostCoderAgent(CodeAgent):
 
             global _pipe
             if not _pipe:
-                model = AutoGPTQForCausalLM.from_quantized(model_name,
-                        use_safetensors=True,
-                        trust_remote_code=False,
-                        device="cuda:0",
-                        use_triton=False,
-                        inject_fused_attention=False,
-                        quantize_config=None)
-
-                model = exllama_set_max_input_length(model, 4096)
-
+                model = LlamaForCausalLM.from_pretrained(model_name, device_map="auto")
+                #model = AutoGPTQForCausalLM.from_quantized(model_name,
+                #        use_safetensors=True,
+                #        trust_remote_code=False,
+                #        device="cuda:0",
+                #        use_triton=False,
+                #        inject_fused_attention=False,
+                #        quantize_config=None)
+                #model = exllama_set_max_input_length(model, 4096)
                 tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
                 _pipe = pipeline(
                     "text-generation",
