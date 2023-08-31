@@ -830,6 +830,7 @@ class GhostCoderAgent(CodeAgent):
                         trust_remote_code=False,
                         device="cuda:0",
                         use_triton=False,
+                        inject_fused_attention=False,
                         quantize_config=None)
 
                 model = exllama_set_max_input_length(model, 4096)
