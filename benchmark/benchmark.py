@@ -826,7 +826,7 @@ class GhostCoderAgent(CodeAgent):
             global _pipe
             if not _pipe:
 
-                model = AutoGPTQForCausalLM.from_quantized(model_name,
+                model = AutoGPTQForCausalLM.from_pretrained(model_name,
                                                              torch_dtype=torch.float16,
                                                              device_map="auto",
                                                              revision="main")
