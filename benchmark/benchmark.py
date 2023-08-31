@@ -821,6 +821,7 @@ class GhostCoderAgent(CodeAgent):
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
             from langchain.llms import HuggingFacePipeline
+            from auto_gptq import exllama_set_max_input_length
 
             global _pipe
             if not _pipe:
@@ -829,6 +830,8 @@ class GhostCoderAgent(CodeAgent):
                                                              torch_dtype=torch.float16,
                                                              device_map="auto",
                                                              revision="main")
+
+                model = exllama_set_max_input_length(model, 4096)
 
                 tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
                 _pipe = pipeline(
