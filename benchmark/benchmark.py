@@ -822,6 +822,7 @@ class GhostCoderAgent(CodeAgent):
             from transformers import AutoTokenizer, pipeline
             from langchain.llms import HuggingFacePipeline
             from auto_gptq import exllama_set_max_input_length, AutoGPTQForCausalLM
+            from optimum.bettertransformer import BetterTransformer
 
             global _pipe
             if not _pipe:
@@ -835,10 +836,12 @@ class GhostCoderAgent(CodeAgent):
 
                 model = exllama_set_max_input_length(model, 4096)
 
+                better_model = BetterTransformer.transform(model)
+
                 tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
                 _pipe = pipeline(
                     "text-generation",
-                    model=model,
+                    model=better_model,
                     tokenizer=tokenizer,
                     max_new_tokens=1024,
                     temperature=0.01,
