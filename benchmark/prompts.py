@@ -3,6 +3,7 @@ instructions_addendum = """
 
 Use the above instructions to modify the supplied files: {file_list}
 Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
 Only use standard python libraries, don't suggest installing any packages.
 """
 

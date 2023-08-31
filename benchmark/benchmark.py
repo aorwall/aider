@@ -19,9 +19,9 @@ import git
 import lox
 import matplotlib.pyplot as plt
 import numpy as np
-import openai
 import pandas as pd
 from langchain.chat_models import ChatOpenAI
+from langchain.llms import HuggingFaceEndpoint, VertexAI
 
 import prompts
 import typer
@@ -32,6 +32,7 @@ from aider import models
 from aider.coders import Coder
 from aider.dump import dump  # noqa: F401
 from aider.io import InputOutput
+from ghostcoder.schema import UpdatedFileItem
 
 BENCHMARK_DNAME = Path(os.environ["AIDER_BENCHMARK_DIR"])
 
@@ -231,7 +232,7 @@ def resolve_dirname(dirname, use_single_prior, make_new, agent, model, edit_form
     if not re.match(r"\d\d\d\d-\d\d-\d\d-", str(dirname)):
         now = datetime.datetime.now()
         now = now.strftime("%Y-%m-%d-%H-%M-%S--")
-        dirname = now + agent + "--" + model
+        dirname = now + agent + "--" + model.replace("/", "-")
         if edit_format:
             dirname += "--" + edit_format
 
@@ -243,6 +244,7 @@ def resolve_dirname(dirname, use_single_prior, make_new, agent, model, edit_form
 def main(
     dirnames: List[str] = typer.Argument(..., help="Directory names"),
     agent: str = typer.Option("aider", "--agent", "-a", help="Agent name"),
+    provider: str = typer.Option("openai", "--provider", "-p", help="LLM runtime provider name"),
     model: str = typer.Option("gpt-3.5-turbo", "--model", "-m", help="Model name"),
     edit_format: str = typer.Option(None, "--edit-format", "-e", help="Edit format"),
     keywords: str = typer.Option(
@@ -336,6 +338,7 @@ def main(
                 dirname / testname,
                 agent,
                 model,
+                provider,
                 edit_format,
                 tries,
                 no_unit_tests,
@@ -517,7 +520,7 @@ def summarize_results(dirname):
 
 
 def run_test(
-    testdir, agent_name, model_name, edit_format, tries, no_unit_tests, no_aider, verbose, commit_hash
+    testdir, agent_name, model_name, provider, edit_format, tries, no_unit_tests, no_aider, verbose, commit_hash
 ):
     if not os.path.isdir(testdir):
         print("Not a dir:", testdir)
@@ -574,6 +577,7 @@ def run_test(
             testdir=testdir,
             model_name=model_name,
             edit_format=edit_format,
+            provider=provider,
             fnames=fnames,
             verbose=verbose
         )
@@ -789,27 +793,67 @@ class AiderAgent(CodeAgent):
 
 class GhostCoderAgent(CodeAgent):
 
-    def __init__(self, testdir: Path, model_name: str, edit_format: str, fnames: List[Path], verbose: bool):
+    def __init__(self, testdir: Path, model_name: str, edit_format: str, provider: str, fnames: List[Path], verbose: bool):
         from ghostcoder import FileRepository
         from ghostcoder.callback import LogCallbackHandler
-        from ghostcoder.prompts.implement import ImplementationPrompt
+        from ghostcoder.actions import WriteCodeAction
+        from ghostcoder.llm import LLMWrapper, LlamaLLMWrapper, ChatLLMWrapper
+        from ghostcoder.llm.alpaca import AlpacaLLMWrapper
 
         callback = LogCallbackHandler(str(testdir / "prompt_log"))
 
         import logging
         logging.basicConfig(level=logging.INFO)
 
-        gpt = ChatOpenAI(
-            model=model_name,
-            temperature=0,
-            callbacks=[callback]
-        )
+        if provider == "vertex-ai":
+            llm = LLMWrapper(llm=VertexAI(
+                model_name="code-bison",
+                project="albert-test-368916",
+                max_output_tokens=2048,
+                temperature=0.0,
+                callbacks=[callback]
+            ))
+        elif provider == "huggingface-endpoint":
+            huggingface_endpoint = HuggingFaceEndpoint(
+                endpoint_url="https://w7uj7nmjofyucktp.us-east-1.aws.endpoints.huggingface.cloud",
+                callbacks=[callback],
+                task="text-generation",
+                model_kwargs={"temperature": 0.01, "max_new_tokens": 1000}
+            )
+            llm = LlamaLLMWrapper(huggingface_endpoint)
+        elif provider == "huggingface":
+            import torch
+            from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+            from langchain.llms import HuggingFacePipeline
+
+            model = AutoModelForCausalLM.from_pretrained(model_name,
+                                                         torch_dtype=torch.float16,
+                                                         device_map="auto",
+                                                         revision="main")
+
+            tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+            pipe = pipeline(
+                "text-generation",
+                model=model,
+                tokenizer=tokenizer,
+                max_new_tokens=1024,
+                temperature=0.01,
+            )
+            llm = AlpacaLLMWrapper(HuggingFacePipeline(pipeline=pipe,
+                callback_manager=[callback],
+                verbose=True))
+        else:
+            llm = ChatLLMWrapper(ChatOpenAI(
+                model=model_name,
+                temperature=0,
+                callbacks=[callback]
+            ))
 
         repository = FileRepository(repo_path=str(testdir), use_git=False)
-        self.action = ImplementationPrompt(
-            llm=gpt,
+        self.action = WriteCodeAction(
+            llm=llm,
             repository=repository,
-            prompt_template=edit_format if edit_format else "expect_incomplete"
+            sys_prompt_id=edit_format
         )
         self.chat_history_fname = testdir / ".chat.history.json"
         self.fnames = fnames
@@ -820,30 +864,37 @@ class GhostCoderAgent(CodeAgent):
     def run(self, with_message: str):
         from ghostcoder.schema import FileItem, TextItem, Message
 
-        items = [TextItem(text=with_message)]
+        items = []
         items.extend([FileItem(file_path=str(fname.name), language="pyton") for fname in self.fnames])
+        items.append(TextItem(text=with_message))
+
         human_msg = Message(sender="Human", items=items)
-        ai_messages = self.action.run(message=human_msg, message_history=self.message_history)
+        ai_messages = self.action.execute(message=human_msg, message_history=self.message_history)
+
         self.message_history.append(human_msg)
         self.message_history.extend(ai_messages)
+        for message in self.message_history:
+            message.items = [item for item in message.items
+                             if not isinstance(item, FileItem) and not isinstance(item, UpdatedFileItem)]
         self._save_message(self.chat_history_fname, self.message_history)
 
-        usages = [msg.sum_usage() for msg in ai_messages if msg.usage]
-        if usages:
-            total_usage = sum(usages[1:], usages[0])
+        stats = [msg.stats for msg in ai_messages if msg.stats]
+        if stats:
+            total_usage = sum(stats[1:], stats[0])
             self._total_cost += total_usage.total_cost
 
         if len(ai_messages[-1].find_items_by_type("updated_file")) == 0:
             print("Missing updated_file in ai_message")
             self._num_error_outputs += 1
 
-        if ai_messages[-1].usage[0].extra["hallucinated_file"] > 0:
-            print("Hallucinated file in ai_message")
-            self._num_error_outputs += 1
+        if ai_messages[-1].stats and ai_messages[-1].stats.metrics:
+            if ai_messages[-1].stats.metrics.get("hallucinated_file", 0) > 0:
+                print("Hallucinated file in ai_message")
+                self._num_error_outputs += 1
 
-        if ai_messages[-1].usage[0].extra["no_change"] > 0:
-            print("No change in updated file")
-            self._num_error_outputs += 1
+            if ai_messages[-1].stats.metrics.get("no_change", 0) > 0:
+                print("No change in updated file")
+                self._num_error_outputs += 1
 
     def _save_message(self, cfile: Path, messages):
         dicts = [msg.dict() for msg in messages]
