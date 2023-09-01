@@ -20,10 +20,6 @@ import lox
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
-from langchain import LlamaCpp
-from langchain.chat_models import ChatOpenAI
-from langchain.llms import HuggingFaceEndpoint, VertexAI
 
 import prompts
 import typer
@@ -808,6 +804,7 @@ class GhostCoderAgent(CodeAgent):
         logging.basicConfig(level=logging.INFO)
 
         if provider == "vertex-ai":
+            from langchain.llms import VertexAI
             llm = LLMWrapper(llm=VertexAI(
                 model_name=model_name,
                 project="albert-test-368916", # TODO: Configure this
@@ -816,10 +813,12 @@ class GhostCoderAgent(CodeAgent):
                 callbacks=[callback]
             ))
         elif provider == "llamacpp":
+            from langchain import LlamaCpp
             llm = AlpacaLLMWrapper(LlamaCpp(
                 model_path="/root/llama.cpp/models/Phind-CodeLlama-34B-v2-GGUF/phind-codellama-34b-v2.Q5_K_M.gguf",
-                temperature=0.01,
-                max_tokens=300,
+                temperature=0.0,
+                max_tokens=1000,
+                n_ctx=6000,
                 top_p=1,
                 n_gpu_layers=51,
                 n_batch=512,
@@ -827,6 +826,7 @@ class GhostCoderAgent(CodeAgent):
                 verbose=True,
             ))
         elif provider == "huggingface-endpoint":
+            from langchain.llms import HuggingFaceEndpoint
             huggingface_hub = HuggingFaceEndpoint(
                 endpoint_url="https://ylr6gy8wxzuvn8wh.us-east-1.aws.endpoints.huggingface.cloud",
                 callbacks=[callback],
@@ -838,15 +838,7 @@ class GhostCoderAgent(CodeAgent):
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
             from langchain.llms import HuggingFacePipeline
-            model = AutoGPTQForCausalLM.from_quantized(model_name,
-                                                       use_safetensors=True,
-                                                       trust_remote_code=False,
-                                                       device="cuda:0",
-                                                       use_triton=False,
-                                                       inject_fused_attention=False,
-                                                       quantize_config=None)
-
-            model = exllama_set_max_input_length(model, 4096)
+            from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
 
             model = AutoModelForCausalLM.from_pretrained(model_name,
                                                          torch_dtype=torch.float16,
@@ -867,6 +859,7 @@ class GhostCoderAgent(CodeAgent):
                                     callbacks=[callback],
                                     verbose=True))
         else:
+            from langchain.chat_models import ChatOpenAI
             llm = ChatLLMWrapper(ChatOpenAI(
                 model=model_name,
                 temperature=0,
