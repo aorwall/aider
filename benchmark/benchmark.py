@@ -869,6 +869,7 @@ class GhostCoderAgent(CodeAgent):
                     callbacks=[_callback]
                 ))
         else:
+            os.makedirs(testdir / "prompt_log", exist_ok=True)
             _callback.log_dir = str(testdir / "prompt_log")
 
         repository = FileRepository(repo_path=str(testdir), use_git=False)
