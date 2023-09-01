@@ -788,6 +788,8 @@ class AiderAgent(CodeAgent):
     def chat_completion_response_hashes(self):
         return self.coder.chat_completion_response_hashes
 
+_llm = None
+_callback = None
 
 class GhostCoderAgent(CodeAgent):
 
@@ -798,73 +800,76 @@ class GhostCoderAgent(CodeAgent):
         from ghostcoder.llm import LLMWrapper, LlamaLLMWrapper, ChatLLMWrapper
         from ghostcoder.llm.alpaca import AlpacaLLMWrapper
 
-        callback = LogCallbackHandler(str(testdir / "prompt_log"))
-
         import logging
         logging.basicConfig(level=logging.INFO)
 
-        if provider == "vertex-ai":
-            from langchain.llms import VertexAI
-            llm = LLMWrapper(llm=VertexAI(
-                model_name=model_name,
-                project="albert-test-368916", # TODO: Configure this
-                max_output_tokens=2048,
-                temperature=0.0,
-                callbacks=[callback]
-            ))
-        elif provider == "llamacpp":
-            from langchain import LlamaCpp
-            llm = AlpacaLLMWrapper(LlamaCpp(
-                model_path="/root/llama.cpp/models/Phind-CodeLlama-34B-v2-GGUF/phind-codellama-34b-v2.Q5_K_M.gguf",
-                temperature=0.0,
-                max_tokens=1000,
-                n_ctx=6000,
-                top_p=1,
-                n_gpu_layers=51,
-                n_batch=512,
-                callbacks=[callback],
-                verbose=True,
-            ))
-        elif provider == "huggingface-endpoint":
-            from langchain.llms import HuggingFaceEndpoint
-            huggingface_hub = HuggingFaceEndpoint(
-                endpoint_url="https://ylr6gy8wxzuvn8wh.us-east-1.aws.endpoints.huggingface.cloud",
-                callbacks=[callback],
-                task="text-generation",
-                model_kwargs={"temperature": 0.01, "max_new_tokens": 1024}
-            )
-            llm = LlamaLLMWrapper(huggingface_hub)
-        elif provider == "huggingface":
-            import torch
-            from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-            from langchain.llms import HuggingFacePipeline
-            from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
+        global _llm, _callback
+        if not _llm:
+            _callback = LogCallbackHandler(str(testdir / "prompt_log"))
+            if provider == "vertex-ai":
+                from langchain.llms import VertexAI
+                _llm = LLMWrapper(llm=VertexAI(
+                    model_name=model_name,
+                    project="albert-test-368916", # TODO: Configure this
+                    max_output_tokens=2048,
+                    temperature=0.0,
+                    callbacks=[callback]
+                ))
+            elif provider == "llamacpp":
+                from langchain import LlamaCpp
+                _llm = AlpacaLLMWrapper(LlamaCpp(
+                    model_path="/root/llama.cpp/models/Phind-CodeLlama-34B-v2-GGUF/phind-codellama-34b-v2.Q5_K_M.gguf",
+                    temperature=0.0,
+                    max_tokens=1000,
+                    n_ctx=6000,
+                    top_p=1,
+                    n_gpu_layers=51,
+                    n_batch=512,
+                    callbacks=[callback],
+                    verbose=True,
+                ))
+            elif provider == "huggingface-endpoint":
+                from langchain.llms import HuggingFaceEndpoint
+                huggingface_hub = HuggingFaceEndpoint(
+                    endpoint_url="https://ylr6gy8wxzuvn8wh.us-east-1.aws.endpoints.huggingface.cloud",
+                    callbacks=[callback],
+                    task="text-generation",
+                    model_kwargs={"temperature": 0.01, "max_new_tokens": 1024}
+                )
+                _llm = LlamaLLMWrapper(huggingface_hub)
+            elif provider == "huggingface":
+                import torch
+                from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+                from langchain.llms import HuggingFacePipeline
+                from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
 
-            model = AutoModelForCausalLM.from_pretrained(model_name,
-                                                         torch_dtype=torch.float16,
-                                                         device_map="auto",
-                                                         revision="main")
+                model = AutoModelForCausalLM.from_pretrained(model_name,
+                                                             torch_dtype=torch.float16,
+                                                             device_map="auto",
+                                                             revision="main")
 
-            tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
-            pipe = pipeline(
-                "text-generation",
-                model=model,
-                tokenizer=tokenizer,
-                max_new_tokens=1024,
-                temperature=0.01,
-            )
-            # TODO: Configure this
-            llm = AlpacaLLMWrapper(
-                HuggingFacePipeline(pipeline=pipe,
-                                    callbacks=[callback],
-                                    verbose=True))
+                tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+                pipe = pipeline(
+                    "text-generation",
+                    model=model,
+                    tokenizer=tokenizer,
+                    max_new_tokens=1024,
+                    temperature=0.01,
+                )
+                # TODO: Configure this
+                _llm = AlpacaLLMWrapper(
+                    HuggingFacePipeline(pipeline=pipe,
+                                        callbacks=[callback],
+                                        verbose=True))
+            else:
+                from langchain.chat_models import ChatOpenAI
+                _llm = ChatLLMWrapper(ChatOpenAI(
+                    model=model_name,
+                    temperature=0,
+                    callbacks=[callback]
+                ))
         else:
-            from langchain.chat_models import ChatOpenAI
-            llm = ChatLLMWrapper(ChatOpenAI(
-                model=model_name,
-                temperature=0,
-                callbacks=[callback]
-            ))
+            _callback.log_dir = str(testdir / "prompt_log")
 
         repository = FileRepository(repo_path=str(testdir), use_git=False)
         self.action = WriteCodeAction(
