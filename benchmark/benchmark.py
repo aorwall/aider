@@ -20,6 +20,8 @@ import lox
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
+from langchain import LlamaCpp
 from langchain.chat_models import ChatOpenAI
 from langchain.llms import HuggingFaceEndpoint, VertexAI
 
@@ -813,10 +815,38 @@ class GhostCoderAgent(CodeAgent):
                 temperature=0.0,
                 callbacks=[callback]
             ))
+        elif provider == "llamacpp":
+            llm = AlpacaLLMWrapper(LlamaCpp(
+                model_path="/root/llama.cpp/models/Phind-CodeLlama-34B-v2-GGUF/phind-codellama-34b-v2.Q5_K_M.gguf",
+                temperature=0.01,
+                max_tokens=300,
+                top_p=1,
+                n_gpu_layers=51,
+                n_batch=512,
+                callbacks=[callback],
+                verbose=True,
+            ))
+        elif provider == "huggingface-endpoint":
+            huggingface_hub = HuggingFaceEndpoint(
+                endpoint_url="https://ylr6gy8wxzuvn8wh.us-east-1.aws.endpoints.huggingface.cloud",
+                callbacks=[callback],
+                task="text-generation",
+                model_kwargs={"temperature": 0.01, "max_new_tokens": 1024}
+            )
+            llm = LlamaLLMWrapper(huggingface_hub)
         elif provider == "huggingface":
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
             from langchain.llms import HuggingFacePipeline
+            model = AutoGPTQForCausalLM.from_quantized(model_name,
+                                                       use_safetensors=True,
+                                                       trust_remote_code=False,
+                                                       device="cuda:0",
+                                                       use_triton=False,
+                                                       inject_fused_attention=False,
+                                                       quantize_config=None)
+
+            model = exllama_set_max_input_length(model, 4096)
 
             model = AutoModelForCausalLM.from_pretrained(model_name,
                                                          torch_dtype=torch.float16,
@@ -865,11 +895,12 @@ class GhostCoderAgent(CodeAgent):
         human_msg = Message(sender="Human", items=items)
         ai_messages = self.action.execute(message=human_msg, message_history=self.message_history)
 
+        for item in human_msg.items:
+            if isinstance(item, FileItem):
+                item.content = ""
+
         self.message_history.append(human_msg)
         self.message_history.extend(ai_messages)
-        for message in self.message_history:
-            message.items = [item for item in message.items
-                             if not isinstance(item, FileItem) and not isinstance(item, UpdatedFileItem)]
         self._save_message(self.chat_history_fname, self.message_history)
 
         stats = [msg.stats for msg in ai_messages if msg.stats]
