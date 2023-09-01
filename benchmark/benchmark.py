@@ -813,7 +813,7 @@ class GhostCoderAgent(CodeAgent):
                     project="albert-test-368916", # TODO: Configure this
                     max_output_tokens=2048,
                     temperature=0.0,
-                    callbacks=[callback]
+                    callbacks=[_callback]
                 ))
             elif provider == "llamacpp":
                 from langchain import LlamaCpp
@@ -825,14 +825,14 @@ class GhostCoderAgent(CodeAgent):
                     top_p=1,
                     n_gpu_layers=51,
                     n_batch=512,
-                    callbacks=[callback],
+                    callbacks=[_callback],
                     verbose=True,
                 ))
             elif provider == "huggingface-endpoint":
                 from langchain.llms import HuggingFaceEndpoint
                 huggingface_hub = HuggingFaceEndpoint(
                     endpoint_url="https://ylr6gy8wxzuvn8wh.us-east-1.aws.endpoints.huggingface.cloud",
-                    callbacks=[callback],
+                    callbacks=[_callback],
                     task="text-generation",
                     model_kwargs={"temperature": 0.01, "max_new_tokens": 1024}
                 )
@@ -859,14 +859,14 @@ class GhostCoderAgent(CodeAgent):
                 # TODO: Configure this
                 _llm = AlpacaLLMWrapper(
                     HuggingFacePipeline(pipeline=pipe,
-                                        callbacks=[callback],
+                                        callbacks=[_callback],
                                         verbose=True))
             else:
                 from langchain.chat_models import ChatOpenAI
                 _llm = ChatLLMWrapper(ChatOpenAI(
                     model=model_name,
                     temperature=0,
-                    callbacks=[callback]
+                    callbacks=[_callback]
                 ))
         else:
             _callback.log_dir = str(testdir / "prompt_log")
