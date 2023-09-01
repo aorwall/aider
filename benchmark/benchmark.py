@@ -873,7 +873,7 @@ class GhostCoderAgent(CodeAgent):
 
         repository = FileRepository(repo_path=str(testdir), use_git=False)
         self.action = WriteCodeAction(
-            llm=llm,
+            llm=_llm,
             repository=repository,
             sys_prompt_id=edit_format
         )
