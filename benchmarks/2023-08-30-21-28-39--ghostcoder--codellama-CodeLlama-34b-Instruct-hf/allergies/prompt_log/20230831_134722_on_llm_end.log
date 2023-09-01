@@ -1,0 +1,60 @@
+method: on_llm_end [2023-08-31 13:47:22]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+class Allergies:
+    def __init__(self, score):
+        self.score = score
+
+    def allergic_to(self, item):
+        if self.score & item.value:
+            return True
+        return False
+
+    @property
+    def lst(self):
+        lst = []
+        for item in Allergen.items:
+            if self.allergic_to(item):
+                lst.append(item.name)
+        return lst
+
+class Allergen:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+Allergen.items = [
+    Allergen("eggs", 1),
+    Allergen("peanuts", 2),
+    Allergen("shellfish", 4),
+    Allergen("strawberries", 8),
+    Allergen("tomatoes", 16),
+    Allergen("chocolate", 32),
+    Allergen("pollen", 64),
+    Allergen("cats", 128)
+]
+[/PYTHON]
+[TESTS]
+# Test case 1:
+assert Allergies(0).lst == []
+# Test case 2:
+assert Allergies(1).lst == ["eggs"]
+# Test case 3:
+assert Allergies(2).lst == ["peanuts"]
+# Test case 4:
+assert Allergies(4).lst == ["shellfish"]
+# Test case 5:
+assert Allergies(8).lst == ["strawberries"]
+# Test case 6:
+assert Allergies(16).lst == ["tomatoes"]
+# Test case 7:
+assert Allergies(32).lst == ["chocolate"]
+# Test case 8:
+assert Allergies(64).lst == ["pollen"]
+# Test case 9:
+assert Allergies(128).lst == ["cats"]
+[/TESTS]
+
+---

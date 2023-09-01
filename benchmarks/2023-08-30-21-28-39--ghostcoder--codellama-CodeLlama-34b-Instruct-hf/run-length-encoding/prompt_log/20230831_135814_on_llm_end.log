@@ -1,0 +1,35 @@
+method: on_llm_end [2023-08-31 13:58:14]
+llm_output: null
+prompt:
+ Filepath: run_length_encoding.py
+```python
+def encode(string):
+    encoded_string = ""
+    count = 1
+    for i in range(len(string)):
+        if i > 0 and string[i] != string[i-1]:
+            encoded_string += str(count) + string[i-1]
+            count = 1
+        else:
+            count += 1
+    encoded_string += str(count) + string[i]
+    return encoded_string
+
+def decode(string):
+    decoded_string = ""
+    i = 0
+    while i < len(string):
+        count = int(string[i])
+        decoded_string += count * string[i+1]
+        i += 2
+    return decoded_string
+
+```
+Explanation:
+
+In the encode function, we iterate through the input string and keep track of the count of consecutive characters. When the character changes, we append the count and the character to the encoded string. At the end, we append the count and the last character to the encoded string.
+
+In the decode function, we iterate through the encoded string and extract the count and character at each index. We then append the character to the decoded string the specified number of times.
+
+Note that in the encode function, we use the range function to iterate through the indices of the input string, and in the decode function, we use a while loop to iterate through the indices of the encoded string. This is because the range function returns a sequence of numbers, while the while loop allows us to iterate through the string until a certain condition is met.
+---

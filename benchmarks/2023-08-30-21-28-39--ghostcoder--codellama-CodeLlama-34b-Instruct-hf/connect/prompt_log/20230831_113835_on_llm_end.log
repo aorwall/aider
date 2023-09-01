@@ -1,0 +1,31 @@
+method: on_llm_end [2023-08-31 11:38:35]
+llm_output: null
+prompt:
+ The errors are caused by the `get_winner` method not returning the correct value in certain cases. Specifically, the method is not returning `None` when the game is not over and no winner has been found, and it is not returning the correct player when a winner has been found.
+
+To fix the errors, you can modify the `get_winner` method as follows:
+```python
+def get_winner(self):
+    # Check if there is a winner
+    if self.winner:
+        return self.winner
+
+    # Check if the game is over
+    if self.is_game_over():
+        return None
+
+    # Check if player O has won
+    if self.has_won(self.player_o):
+        self.winner = self.player_o
+        return self.winner
+
+    # Check if player X has won
+    if self.has_won(self.player_x):
+        self.winner = self.player_x
+        return self.winner
+
+    # If the game is not over and no winner has been found, return None
+    return None
+```
+This modified version of the `get_winner` method will return `None` when the game is not over and no winner has been found, and it will return the correct player when a winner has been found. This should resolve the testing errors.
+---

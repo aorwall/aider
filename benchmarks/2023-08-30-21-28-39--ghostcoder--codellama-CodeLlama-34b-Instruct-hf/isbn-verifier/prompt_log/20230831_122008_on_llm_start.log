@@ -1,0 +1,152 @@
+method: on_llm_start [2023-08-31 12:20:08]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+# Instructions
+
+The [ISBN-10 verification process][isbn-verification] is used to validate book identification numbers.
+These normally contain dashes and look like: `3-598-21508-8`
+
+## ISBN
+
+The ISBN-10 format is 9 digits (0 to 9) plus one check character (either a digit or an X only).
+In the case the check character is an X, this represents the value '10'.
+These may be communicated with or without hyphens, and can be checked for their validity by the following formula:
+
+```text
+(d₁ * 10 + d₂ * 9 + d₃ * 8 + d₄ * 7 + d₅ * 6 + d₆ * 5 + d₇ * 4 + d₈ * 3 + d₉ * 2 + d₁₀ * 1) mod 11 == 0
+```
+
+If the result is 0, then it is a valid ISBN-10, otherwise it is invalid.
+
+## Example
+
+Let's take the ISBN-10 `3-598-21508-8`.
+We plug it in to the formula, and get:
+
+```text
+(3 * 10 + 5 * 9 + 9 * 8 + 8 * 7 + 2 * 6 + 1 * 5 + 5 * 4 + 0 * 3 + 8 * 2 + 8 * 1) mod 11 == 0
+```
+
+Since the result is 0, this proves that our ISBN is valid.
+
+## Task
+
+Given a string the program should check if the provided string is a valid ISBN-10.
+Putting this into place requires some thinking about preprocessing/parsing of the string prior to calculating the check digit for the ISBN.
+
+The program should be able to verify ISBN-10 both with and without separating dashes.
+
+## Caveats
+
+Converting from strings to numbers can be tricky in certain languages.
+Now, it's even trickier since the check digit of an ISBN-10 may be 'X' (representing '10').
+For instance `3-598-21507-X` is a valid ISBN-10.
+
+[isbn-verification]: https://en.wikipedia.org/wiki/International_Standard_Book_Number
+
+####
+
+Use the above instructions to modify the supplied files: isbn_verifier.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST] </s>
+<s>[INST]Filepath: isbn_verifier.py
+```python
+def is_valid(isbn):
+    pass
+
+```
+FFFFFFFFFFFFFFFFFFF
+====
+FAIL: test_check_digit_is_a_character_other_than_x (isbn_verifier_test.IsbnVerifierTest.test_check_digit_is_a_character_other_than_x)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/isbn-verifier/isbn_verifier_test.py", line 23, in test_check_digit_is_a_character_other_than_x
+    self.assertIs(is_valid("3-598-21507-A"), False)
+AssertionError: None is not False
+
+====
+FAIL: test_check_digit_of_x_should_not_be_used_for_0 (isbn_verifier_test.IsbnVerifierTest.test_check_digit_of_x_should_not_be_used_for_0)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/isbn-verifier/isbn_verifier_test.py", line 53, in test_check_digit_of_x_should_not_be_used_for_0
+    self.assertIs(is_valid("3-598-21515-X"), False)
+AssertionError: None is not False
+
+====
+FAIL: test_empty_isbn (isbn_verifier_test.IsbnVerifierTest.test_empty_isbn)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/isbn-verifier/isbn_verifier_test.py", line 56, in test_empty_isbn
+    self.assertIs(is_valid(""), False)
+AssertionError: None is not False
+
+====
+FAIL: test_input_is_9_characters (isbn_verifier_test.IsbnVerifierTest.test_input_is_9_characters)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/isbn-verifier/isbn_verifier_test.py", line 59, in test_input_is_9_characters
+    self.assertIs(is_valid("134456729"), False)
+AssertionError: None is not False
+
+====
+FAIL: test_input_is_too_long_but_contains_a_valid_isbn (isbn_verifier_test.IsbnVerifierTest.test_input_is_too_long_but_contains_a_valid_isbn)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/isbn-verifier/isbn_verifier_test.py", line 68, in test_input_is_too_long_but_contains_a_valid_isbn
+    self.assertIs(is_valid("98245726788"), False)
+AssertionError: None is not False
+
+====
+FAIL: test_invalid_character_in_isbn_is_not_treated_as_zero (isbn_verifier_test.IsbnVerifierTest.test_invalid_character_in_isbn_is_not_treated_as_zero)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/isbn-verifier/isbn_verifier_test.py", line 29, in test_invalid_character_in_isbn_is_not_treated_as_zero
+    self.assertIs(is_valid("3-598-P1581-X"), False)
+AssertionError: None is not False
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in isbn_verifier.py to resolve the errors.
+[/INST]
+

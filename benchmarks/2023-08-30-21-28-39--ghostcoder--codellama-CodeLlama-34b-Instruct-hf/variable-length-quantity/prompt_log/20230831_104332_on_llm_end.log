@@ -1,0 +1,34 @@
+method: on_llm_end [2023-08-31 10:43:32]
+llm_output: null
+prompt:
+ The issue is that the `encode` function is not correctly encoding the input numbers as variable-length quantities. The function is not shifting the input number correctly, and it is not setting the most significant bit of the last byte correctly.
+
+Here is the corrected `encode` function:
+```python
+def encode(numbers):
+    result = []
+    for number in numbers:
+        result.append(number & 0x7f)
+        while number > 0x7f:
+            number >>= 7
+            result.append((number & 0x7f) | 0x80)
+    return result
+```
+This function correctly encodes the input numbers as variable-length quantities.
+
+The `decode` function is also not correctly decoding the input bytes. The function is not shifting the input byte correctly, and it is not setting the most significant bit of the last byte correctly.
+
+Here is the corrected `decode` function:
+```python
+def decode(bytes_):
+    result = 0
+    for byte in bytes_:
+        result = (result << 7) | (byte & 0x7f)
+        if byte & 0x80 == 0:
+            break
+    return result
+```
+This function correctly decodes the input bytes as variable-length quantities.
+
+With these corrections, the `encode` and `decode` functions should work correctly.
+---

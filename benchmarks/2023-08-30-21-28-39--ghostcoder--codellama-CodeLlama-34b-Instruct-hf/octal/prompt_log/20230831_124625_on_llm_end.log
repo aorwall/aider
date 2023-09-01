@@ -1,0 +1,17 @@
+method: on_llm_end [2023-08-31 12:46:25]
+llm_output: null
+prompt:
+ The issue with the code in `octal.py` is that it is not handling the case where the input string contains a digit greater than 7. In the `parse_octal` function, the `int` function is being used to convert the digit characters to integers, but this will result in an error if the digit is greater than 7.
+
+To fix this issue, you can use the `ord` function to get the ASCII code of the digit character, and then subtract the ASCII code of '0' to get the integer value of the digit. This will work for all digits, regardless of whether they are greater than 7 or not.
+
+Here is the corrected code:
+```
+def parse_octal(digits):
+    result = 0
+    for i, digit in enumerate(digits):
+        result += (ord(digit) - ord('0')) * 8 ** i
+    return result
+```
+This code should now pass all the tests.
+---

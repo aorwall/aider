@@ -1,0 +1,27 @@
+method: on_llm_end [2023-08-31 10:56:14]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+def annotate(minefield):
+    """
+    Add the mine counts to a completed Minesweeper board.
+
+    Args:
+        minefield (list[list[str]]): The Minesweeper board.
+
+    Returns:
+        list[list[str]]: The updated Minesweeper board with mine counts.
+    """
+    updated_board = []
+    for i in range(len(minefield)):
+        updated_board.append([])
+        for j in range(len(minefield[i])):
+            if minefield[i][j] == '*':
+                for k in range(max(0, i - 1), min(len(minefield) - 1, i + 1)):
+                    for l in range(max(0, j - 1), min(len(minefield[i]) - 1, j + 1)):
+                        updated_board[k][l] += 1
+    return updated_board
+[/PYTHON]
+
+---

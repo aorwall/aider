@@ -1,0 +1,29 @@
+method: on_llm_end [2023-08-31 12:23:13]
+llm_output: null
+prompt:
+ Filepath: knapsack.py
+```python
+def maximum_value(W, items):
+    # Initialize a dictionary to store the maximum value for each weight
+    dp = {0: 0}
+    for item in items:
+        # Loop through the items and update the dictionary
+        for w in range(W + 1):
+            if w < item["weight"]:
+                dp[w] = dp.get(w, 0)
+            else:
+                dp[w] = max(dp.get(w, 0), dp.get(w - item["weight"], 0) + item["value"])
+    return dp[W]
+```
+Explanation:
+In the `maximum_value` function, we first initialize a dictionary `dp` to store the maximum value for each weight.
+We then loop through the items and update the dictionary using the following recurrence relation:
+
+dp[w] = max(dp[w], dp[w - item["weight"]] + item["value"])
+
+This recurrence relation ensures that we are always choosing the item with the highest value for each weight.
+Finally, we return the maximum value for the given weight limit `W`.
+
+Note that we use the `get` method with a default value of 0 to handle the case where the weight is less than the item's weight.
+This ensures that we don't try to access a key that doesn't exist in the dictionary.
+---

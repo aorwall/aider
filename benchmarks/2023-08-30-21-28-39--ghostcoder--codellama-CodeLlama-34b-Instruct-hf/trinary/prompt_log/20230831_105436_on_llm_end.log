@@ -1,0 +1,20 @@
+method: on_llm_end [2023-08-31 10:54:36]
+llm_output: null
+prompt:
+ The issue is that the `trinary` function is not handling invalid trinary strings correctly. The function is assuming that the input string is a valid trinary string, but the test case `13201` is not a valid trinary string because it contains the digit `3`, which is not a valid trinary digit.
+
+To fix the issue, you can modify the `trinary` function to check if the input string is a valid trinary string before attempting to convert it. Here's an updated version of the function that includes this check:
+```python
+def trinary(string):
+    if not is_valid_trinary(string):
+        return 0
+    result = 0
+    for i, char in enumerate(string):
+        result += int(char) * 3 ** (len(string) - i - 1)
+    return result
+
+def is_valid_trinary(string):
+    return all(char in '012' for char in string)
+```
+With this updated function, the test case `13201` will now return 0, as expected.
+---

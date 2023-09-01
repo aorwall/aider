@@ -1,0 +1,24 @@
+method: on_llm_end [2023-08-31 11:00:45]
+llm_output: null
+prompt:
+ The issue is that the `is_paired` function is not implemented. The function is defined, but it does not have any code inside it.
+
+To fix the issue, you need to implement the function. Here's an example implementation:
+```python
+def is_paired(input_string):
+    opening_brackets = ["[", "{", "("]
+    closing_brackets = ["]", "}", ")"]
+    stack = []
+    for char in input_string:
+        if char in opening_brackets:
+            stack.append(char)
+        elif char in closing_brackets:
+            if not stack or opening_brackets.index(stack[-1]) != closing_brackets.index(char):
+                return False
+            stack.pop()
+    return not stack
+```
+This implementation uses a stack to keep track of the opening brackets. It iterates through the input string and checks if each character is an opening or closing bracket. If it's an opening bracket, it adds it to the stack. If it's a closing bracket, it checks if the top of the stack is the corresponding opening bracket. If it's not, it returns `False`. If the stack is empty at the end, it means that all the brackets are paired, so it returns `True`.
+
+With this implementation, all the tests should pass.
+---

@@ -1,0 +1,158 @@
+method: on_llm_start [2023-08-31 12:51:23]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+# Instructions
+
+Manage a game player's High Score list.
+
+Your task is to build a high-score component of the classic Frogger game, one of the highest selling and most addictive games of all time, and a classic of the arcade era.
+Your task is to write methods that return the highest score from the list, the last added score and the three highest scores.
+# Instructions append
+
+In this exercise, you're going to use and manipulate lists. Python lists are very versatile, and you'll find yourself using them again and again in problems both simple and complex.
+
+- [**Data Structures (Python 3 Documentation Tutorial)**](https://docs.python.org/3/tutorial/datastructures.html)
+- [**Lists and Tuples in Python (Real Python)**](https://realpython.com/python-lists-tuples/)
+- [**Python Lists (Google for Education)**](https://developers.google.com/edu/python/lists)
+
+####
+
+Use the above instructions to modify the supplied files: high_scores.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST] [PYTHON]
+def get_high_score(self):
+    return max(self.scores)
+
+def get_last_score(self):
+    return self.scores[-1]
+
+def get_top_scores(self, n):
+    return sorted(self.scores, reverse=True)[:n]
+[/PYTHON]
+####
+
+Explanation:
+
+I added three methods to the `HighScores` class:
+
+* `get_high_score()`: This method returns the highest score from the list of scores.
+* `get_last_score()`: This method returns the last added score.
+* `get_top_scores(n)`: This method returns a list of the top `n` scores, sorted in descending order.
+
+I used the built-in `max()` function to get the highest score, and the built-in `sorted()` function to sort the scores in descending order.
+
+I also added a new file, `high_scores.py`, which contains the `HighScores` class and its methods.
+<</SYS>>
+<</SYS>>
+<</SYS>></s>
+<s>[INST]Filepath: high_scores.py
+```python
+class HighScores:
+    def __init__(self, scores):
+        self.scores = scores
+
+    def get_high_score(self):
+        return max(self.scores)
+
+    def get_last_score(self):
+        return self.scores[-1]
+
+    def get_top_scores(self, n):
+        return sorted(self.scores, reverse=True)[:n]
+
+```
+EEE.EEEEEEEE
+====
+ERROR: test_latest_score (high_scores_test.HighScoresTest.test_latest_score)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/high-scores/high_scores_test.py", line 21, in test_latest_score
+    self.assertEqual(HighScores(scores).latest(), expected)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'HighScores' object has no attribute 'latest'
+
+====
+ERROR: test_latest_score_after_personal_best (high_scores_test.HighScoresTest.test_latest_score_after_personal_best)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/high-scores/high_scores_test.py", line 71, in test_latest_score_after_personal_best
+    highscores.personal_best()
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'HighScores' object has no attribute 'personal_best'
+
+====
+ERROR: test_latest_score_after_personal_top_scores (high_scores_test.HighScoresTest.test_latest_score_after_personal_top_scores)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/high-scores/high_scores_test.py", line 57, in test_latest_score_after_personal_top_scores
+    highscores.personal_top_three()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'HighScores' object has no attribute 'personal_top_three'
+
+====
+ERROR: test_personal_best (high_scores_test.HighScoresTest.test_personal_best)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/high-scores/high_scores_test.py", line 26, in test_personal_best
+    self.assertEqual(HighScores(scores).personal_best(), expected)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'HighScores' object has no attribute 'personal_best'
+
+====
+ERROR: test_personal_top_highest_to_lowest (high_scores_test.HighScoresTest.test_personal_top_highest_to_lowest)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/high-scores/high_scores_test.py", line 36, in test_personal_top_highest_to_lowest
+    self.assertEqual(HighScores(scores).personal_top_three(), expected)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'HighScores' object has no attribute 'personal_top_three'
+
+====
+ERROR: test_personal_top_three_from_a_list_of_scores (high_scores_test.HighScoresTest.test_personal_top_three_from_a_list_of_scores)
+----
+Traceback (most recent call last):
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in high_scores.py to resolve the errors.
+[/INST]
+

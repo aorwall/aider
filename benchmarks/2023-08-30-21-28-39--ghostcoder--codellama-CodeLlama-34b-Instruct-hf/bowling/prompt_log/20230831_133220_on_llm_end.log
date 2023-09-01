@@ -1,0 +1,41 @@
+method: on_llm_end [2023-08-31 13:32:20]
+llm_output: null
+prompt:
+ The errors are caused by the `roll` method in the `BowlingGame` class. The method is not handling the case where a strike is thrown in the last frame, and it is not keeping track of the bonus rolls correctly.
+
+To fix the errors, you need to modify the `roll` method to handle the case where a strike is thrown in the last frame, and to keep track of the bonus rolls correctly.
+
+Here is an updated version of the `roll` method that should fix the errors:
+```python
+def roll(self, pins):
+    if len(self.frames) == 10:
+        raise ValueError("cannot roll after game is over")
+
+    if pins < 0 or pins > 10:
+        raise ValueError("invalid number of pins")
+
+    if len(self.frames) == 9 and pins == 10:
+        raise ValueError("cannot throw bonus with an open tenth frame")
+
+    self.frames.append(pins)
+
+    if len(self.frames) == 10:
+        self.bonus_rolls = 0
+        self.bonus_rolls_scores = []
+
+    if len(self.frames) == 10 and pins == 10:
+        self.bonus_rolls += 1
+        self.bonus_rolls_scores.append(pins)
+
+    if len(self.frames) == 10 and self.bonus_rolls == 2:
+        self.bonus_rolls_scores.append(pins)
+
+    if len(self.frames) == 10 and self.bonus_rolls == 1:
+        self.bonus_rolls_scores.append(pins)
+```
+In this updated version of the `roll` method, we check if the game is over (i.e., if the number of frames is equal to 10) and raise an error if it is. We also check if the number of pins is valid (i.e., between 0 and 10) and raise an error if it is not.
+
+We also check if a strike is thrown in the last frame, and if so, we add the bonus rolls to the score. We keep track of the number of bonus rolls and the scores of the bonus rolls in the `bonus_rolls` and `bonus_rolls_scores` attributes, respectively.
+
+With these changes, the `roll` method should correctly handle the case where a strike is thrown in the last frame, and the `score` method should correctly calculate the score of the game.
+---

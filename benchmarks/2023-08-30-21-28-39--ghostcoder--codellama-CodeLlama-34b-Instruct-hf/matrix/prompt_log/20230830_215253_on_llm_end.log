@@ -1,0 +1,62 @@
+method: on_llm_end [2023-08-30 21:52:53]
+llm_output: null
+prompt:
+ I have updated the `matrix.py` file to include a class called `Matrix` that has the following methods:
+
+* `__init__`: initializes the matrix with a string representing the matrix
+* `row`: returns a list of the values in a given row of the matrix
+* `column`: returns a list of the values in a given column of the matrix
+
+Here is the updated code:
+```
+class Matrix:
+    def __init__(self, matrix_string):
+        self.matrix = []
+        for row in matrix_string.splitlines():
+            self.matrix.append(row.split())
+
+    def row(self, index):
+        return self.matrix[index]
+
+    def column(self, index):
+        return [row[index] for row in self.matrix]
+```
+I also added a new file called `test_matrix.py` that contains unit tests for the `Matrix` class.
+
+Filepath: matrix.py
+```python
+class Matrix:
+    def __init__(self, matrix_string):
+        self.matrix = []
+        for row in matrix_string.splitlines():
+            self.matrix.append(row.split())
+
+    def row(self, index):
+        return self.matrix[index]
+
+    def column(self, index):
+        return [row[index] for row in self.matrix]
+```
+Filepath: test_matrix.py
+```python
+import unittest
+from matrix import Matrix
+
+class TestMatrix(unittest.TestCase):
+    def test_row(self):
+        matrix = Matrix("9 8 7\n5 3 2\n6 6 7")
+        self.assertEqual(matrix.row(0), [9, 8, 7])
+        self.assertEqual(matrix.row(1), [5, 3, 2])
+        self.assertEqual(matrix.row(2), [6, 6, 7])
+
+    def test_column(self):
+        matrix = Matrix("9 8 7\n5 3 2\n6 6 7")
+        self.assertEqual(matrix.column(0), [9, 5, 6])
+        self.assertEqual(matrix.column(1), [8, 3, 6])
+        self.assertEqual(matrix.column(2), [7, 2, 7])
+
+if __name__ == '__main__':
+    unittest.main()
+```
+Note that the `test_matrix.py` file contains unit tests for the `Matrix` class, and the `matrix.py` file contains the implementation of the `Matrix` class.
+---

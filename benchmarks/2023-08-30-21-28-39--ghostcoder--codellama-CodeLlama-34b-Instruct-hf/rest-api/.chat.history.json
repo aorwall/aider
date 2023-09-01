@@ -1,0 +1,128 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a RESTful API for tracking IOUs.\n\nFour roommates have a habit of borrowing money from each other frequently, and have trouble remembering who owes whom, and how much.\n\nYour task is to implement a simple [RESTful API][restful-wikipedia] that receives [IOU][iou]s as POST requests, and can deliver specified summary information via GET requests.\n\n## API Specification\n\n### User object\n\n```json\n{\n  \"name\": \"Adam\",\n  \"owes\": {\n    \"Bob\": 12.0,\n    \"Chuck\": 4.0,\n    \"Dan\": 9.5\n  },\n  \"owed_by\": {\n    \"Bob\": 6.5,\n    \"Dan\": 2.75,\n  },\n  \"balance\": \"<(total owed by other users) - (total owed to other users)>\"\n}\n```\n\n### Methods\n\n| Description | HTTP Method | URL | Payload Format | Response w/o Payload | Response w/ Payload |\n| --- | --- | --- | --- | --- | --- |\n| List of user information | GET | /users | `{\"users\":[\"Adam\",\"Bob\"]}` | `{\"users\":<List of all User objects>}` | `{\"users\":<List of User objects for <users> (sorted by name)}` |\n| Create user | POST | /add | `{\"user\":<name of new user (unique)>}` | N/A | `<User object for new user>` |\n| Create IOU | POST | /iou | `{\"lender\":<name of lender>,\"borrower\":<name of borrower>,\"amount\":5.25}` | N/A | `{\"users\":<updated User objects for <lender> and <borrower> (sorted by name)>}` |\n\n## Other Resources\n\n- [REST API Tutorial][restfulapi]\n- Example RESTful APIs\n  - [GitHub][github-rest]\n  - [Reddit][reddit-rest]\n\n[restful-wikipedia]: https://en.wikipedia.org/wiki/Representational_state_transfer\n[iou]: https://en.wikipedia.org/wiki/IOU\n[github-rest]: https://developer.github.com/v3/\n[reddit-rest]: https://www.reddit.com/dev/api/\n[restfulapi]: https://restfulapi.net/\n\n####\n\nUse the above instructions to modify the supplied files: rest_api.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "I have modified the `rest_api.py` file to implement the RESTful API for tracking IOUs. Here is the updated file:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "file_path": "rest_api.py",
+        "content": "import json\nclass RestAPI:\n    def __init__(self, database=None):\n        self.database = database\n\n    def get(self, url, payload=None):\n        if url == \"/users\":\n            if payload is None:\n                return json.dumps({\"users\": self.database.get_all_users()})\n            else:\n                users = payload.get(\"users\")\n                return json.dumps({\"users\": self.database.get_users(users)})\n        elif url == \"/add\":\n            user = payload.get(\"user\")\n            self.database.add_user(user)\n            return json.dumps({\"user\": user})\n        elif url == \"/iou\":\n            lender = payload.get(\"lender\")\n            borrower = payload.get(\"borrower\")\n            amount = payload.get(\"amount\")\n            self.database.add_iou(lender, borrower, amount)\n            return json.dumps({\"users\": self.database.get_users([lender, borrower])})\n        else:\n            return json.dumps({\"error\": \"Invalid URL\"})\n\n    def post(self, url, payload=None):\n        if url == \"/users\":\n            users = payload.get(\"users\")\n            self.database.add_users(users)\n            return json.dumps({\"users\": self.database.get_users(users)})\n        elif url == \"/add\":\n            user = payload.get(\"user\")\n            self.database.add_user(user)\n            return json.dumps({\"user\": user})\n        elif url == \"/iou\":\n            lender = payload.get(\"lender\")\n            borrower = payload.get(\"borrower\")\n            amount = payload.get(\"amount\")\n            self.database.add_iou(lender, borrower, amount)\n            return json.dumps({\"users\": self.database.get_users([lender, borrower])})\n        else:\n            return json.dumps({\"error\": \"Invalid URL\"})\n",
+        "diff": "--- rest_api.py\n+++ rest_api.py\n@@ -1,9 +1,42 @@\n+import json\n class RestAPI:\n     def __init__(self, database=None):\n-        pass\n+        self.database = database\n \n     def get(self, url, payload=None):\n-        pass\n+        if url == \"/users\":\n+            if payload is None:\n+                return json.dumps({\"users\": self.database.get_all_users()})\n+            else:\n+                users = payload.get(\"users\")\n+                return json.dumps({\"users\": self.database.get_users(users)})\n+        elif url == \"/add\":\n+            user = payload.get(\"user\")\n+            self.database.add_user(user)\n+            return json.dumps({\"user\": user})\n+        elif url == \"/iou\":\n+            lender = payload.get(\"lender\")\n+            borrower = payload.get(\"borrower\")\n+            amount = payload.get(\"amount\")\n+            self.database.add_iou(lender, borrower, amount)\n+            return json.dumps({\"users\": self.database.get_users([lender, borrower])})\n+        else:\n+            return json.dumps({\"error\": \"Invalid URL\"})\n \n     def post(self, url, payload=None):\n-        pass+        if url == \"/users\":\n+            users = payload.get(\"users\")\n+            self.database.add_users(users)\n+            return json.dumps({\"users\": self.database.get_users(users)})\n+        elif url == \"/add\":\n+            user = payload.get(\"user\")\n+            self.database.add_user(user)\n+            return json.dumps({\"user\": user})\n+        elif url == \"/iou\":\n+            lender = payload.get(\"lender\")\n+            borrower = payload.get(\"borrower\")\n+            amount = payload.get(\"amount\")\n+            self.database.add_iou(lender, borrower, amount)\n+            return json.dumps({\"users\": self.database.get_users([lender, borrower])})\n+        else:\n+            return json.dumps({\"error\": \"Invalid URL\"})",
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "I have also added a `database.py` file to handle the database operations:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "file_path": "rest_api.py",
+        "content": "import json\n\nclass Database:\n    def __init__(self):\n        self.users = {}\n        self.ious = {}\n\n    def get_all_users(self):\n        return list(self.users.keys())\n\n    def get_users(self, users):\n        return [self.users[user] for user in users]\n\n    def add_user(self, user):\n        self.users[user] = {\"name\": user, \"owes\": {}, \"owed_by\": {}}\n\n    def add_users(self, users):\n        for user in users:\n            self.add_user(user)\n\n    def add_iou(self, lender, borrower, amount):\n        if lender not in self.users:\n            self.add_user(lender)\n        if borrower not in self.users:\n            self.add_user(borrower)\n        self.users[lender][\"owes\"][borrower] = amount\n        self.users[borrower][\"owed_by\"][lender] = amount\n        self.ious[(lender, borrower)] = amount\n\n    def get_ious(self, lender, borrower):\n        return self.ious.get((lender, borrower), 0)\nclass RestAPI:\n    def __init__(self, database=None):\n        self.database = database\n\n    def get(self, url, payload=None):\n        if url == \"/users\":\n            if payload is None:\n                return json.dumps({\"users\": self.database.get_all_users()})\n            else:\n                users = payload.get(\"users\")\n                return json.dumps({\"users\": self.database.get_users(users)})\n        elif url == \"/add\":\n            user = payload.get(\"user\")\n            self.database.add_user(user)\n            return json.dumps({\"user\": user})\n        elif url == \"/iou\":\n            lender = payload.get(\"lender\")\n            borrower = payload.get(\"borrower\")\n            amount = payload.get(\"amount\")\n            self.database.add_iou(lender, borrower, amount)\n            return json.dumps({\"users\": self.database.get_users([lender, borrower])})\n        else:\n            return json.dumps({\"error\": \"Invalid URL\"})\n\n    def post(self, url, payload=None):\n        if url == \"/users\":\n            users = payload.get(\"users\")\n            self.database.add_users(users)\n            return json.dumps({\"users\": self.database.get_users(users)})\n        elif url == \"/add\":\n            user = payload.get(\"user\")\n            self.database.add_user(user)\n            return json.dumps({\"user\": user})\n        elif url == \"/iou\":\n            lender = payload.get(\"lender\")\n            borrower = payload.get(\"borrower\")\n            amount = payload.get(\"amount\")\n            self.database.add_iou(lender, borrower, amount)\n            return json.dumps({\"users\": self.database.get_users([lender, borrower])})\n        else:\n            return json.dumps({\"error\": \"Invalid URL\"})\n",
+        "diff": "--- rest_api.py\n+++ rest_api.py\n@@ -1,4 +1,34 @@\n import json\n+\n+class Database:\n+    def __init__(self):\n+        self.users = {}\n+        self.ious = {}\n+\n+    def get_all_users(self):\n+        return list(self.users.keys())\n+\n+    def get_users(self, users):\n+        return [self.users[user] for user in users]\n+\n+    def add_user(self, user):\n+        self.users[user] = {\"name\": user, \"owes\": {}, \"owed_by\": {}}\n+\n+    def add_users(self, users):\n+        for user in users:\n+            self.add_user(user)\n+\n+    def add_iou(self, lender, borrower, amount):\n+        if lender not in self.users:\n+            self.add_user(lender)\n+        if borrower not in self.users:\n+            self.add_user(borrower)\n+        self.users[lender][\"owes\"][borrower] = amount\n+        self.users[borrower][\"owed_by\"][lender] = amount\n+        self.ious[(lender, borrower)] = amount\n+\n+    def get_ious(self, lender, borrower):\n+        return self.ious.get((lender, borrower), 0)\n class RestAPI:\n     def __init__(self, database=None):\n         self.database = database\n",
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "LlamaLLMWrapper",
+        "model_name": "unknown",
+        "total_tokens": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_cost": 0.0,
+        "duration": 128,
+        "extra": {
+          "file_items": 2,
+          "retry": 0,
+          "no_filename_in_block": 2,
+          "guess_file_item": 2,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 2,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 1,
+          "gpt_tweaks": [
+            "next_original_match_insert"
+          ]
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEEEEEE\n====\nERROR: test_add_user (rest_api_test.RestApiTest.test_add_user)\n----\nTraceback (most recent call last):\n  File \"rest-api/rest_api_test.py\", line 26, in test_add_user\n    response = api.post(\"/add\", payload)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"rest-api/rest_api.py\", line 62, in post\n    user = payload.get(\"user\")\n           ^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n\n====\nERROR: test_borrower_has_negative_balance (rest_api_test.RestApiTest.test_borrower_has_negative_balance)\n----\nTraceback (most recent call last):\n  File \"rest-api/rest_api_test.py\", line 73, in test_borrower_has_negative_balance\n    response = api.post(\"/iou\", payload)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"rest-api/rest_api.py\", line 66, in post\n    lender = payload.get(\"lender\")\n             ^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n\n====\nERROR: test_both_users_have_0_balance (rest_api_test.RestApiTest.test_both_users_have_0_balance)\n----\nTraceback (most recent call last):\n  File \"rest-api/rest_api_test.py\", line 54, in test_both_users_have_0_balance\n    response = api.post(\"/iou\", payload)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"rest-api/rest_api.py\", line 66, in post\n    lender = payload.get(\"lender\")\n             ^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n\n====\nERROR: test_get_single_user (rest_api_test.RestApiTest.test_get_single_user)\n----\nTraceback (most recent call last):\n  File \"rest-api/rest_api_test.py\", line 39, in test_get_single_user\n    response = api.get(\"/users\", payload)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"rest-api/rest_api.py\", line 41, in get\n    users = payload.get(\"users\")\n            ^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in rest_api.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "usage": [],
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [],
+    "sender": "AI",
+    "summary": null,
+    "usage": [
+      {
+        "prompt": "LlamaLLMWrapper",
+        "model_name": "unknown",
+        "total_tokens": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_cost": 0.0,
+        "duration": 15,
+        "extra": {
+          "file_items": 0,
+          "retry": 0,
+          "no_filename_in_block": 0,
+          "guess_file_item": 0,
+          "files_with_errors": 0,
+          "not_complete_file": 0,
+          "hallucinated_file": 0,
+          "no_change": 0,
+          "failed_to_update_file": 0,
+          "replaced_files": 0,
+          "added_files": 0,
+          "merged_files": 0,
+          "merged_files_with_errors": 0,
+          "did_gpt_tweaks": 0
+        }
+      }
+    ],
+    "commit_id": null,
+    "discarded": false
+  }
+]

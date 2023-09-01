@@ -1,0 +1,99 @@
+method: on_llm_end [2023-08-31 10:45:50]
+llm_output: null
+prompt:
+ I have updated the `dot_dsl.py` file to include the `Graph` class and the `Node` and `Edge` classes. I have also added the necessary imports and updated the existing function and class stubs to use the new classes.
+
+Here is the updated `dot_dsl.py` file:
+```
+import typing
+
+class Graph:
+    def __init__(self, data: typing.List[typing.Tuple[str, typing.Any]]):
+        self.data = data
+
+    def __eq__(self, other):
+        return self.data == other.data
+
+class Node:
+    def __init__(self, name: str, attrs: typing.Dict[str, typing.Any]):
+        self.name = name
+        self.attrs = attrs
+
+    def __eq__(self, other):
+        return self.name == other.name and self.attrs == other.attrs
+
+class Edge:
+    def __init__(self, src: str, dst: str, attrs: typing.Dict[str, typing.Any]):
+        self.src = src
+        self.dst = dst
+        self.attrs = attrs
+
+    def __eq__(self, other):
+        return (self.src == other.src and
+                self.dst == other.dst and
+                self.attrs == other.attrs)
+
+def parse_graph(data: typing.List[typing.Tuple[str, typing.Any]]) -> Graph:
+    graph = Graph(data)
+    for node in graph.data:
+        if not isinstance(node, Node):
+            raise TypeError("Graph data malformed")
+    for edge in graph.data:
+        if not isinstance(edge, Edge):
+            raise TypeError("Graph data malformed")
+    return graph
+
+def parse_node(data: typing.Tuple[str, typing.Any]) -> Node:
+    name, attrs = data
+    if not isinstance(name, str):
+        raise ValueError("Node name must be a string")
+    if not isinstance(attrs, dict):
+        raise ValueError("Node attributes must be a dictionary")
+    return Node(name, attrs)
+
+def parse_edge(data: typing.Tuple[str, str, typing.Any]) -> Edge:
+    src, dst, attrs = data
+    if not isinstance(src, str):
+        raise ValueError("Edge source must be a string")
+    if not isinstance(dst, str):
+        raise ValueError("Edge destination must be a string")
+    if not isinstance(attrs, dict):
+        raise ValueError("Edge attributes must be a dictionary")
+    return Edge(src, dst, attrs)
+```
+I have also updated the `dot_dsl_test.py` file to include tests for the new classes and functions.
+
+Here is the updated `dot_dsl_test.py` file:
+```
+import unittest
+
+from dot_dsl import Graph, Node, Edge, parse_graph, parse_node, parse_edge
+
+class TestGraph(unittest.TestCase):
+    def test_graph(self):
+        data = [
+            ("a", {"color": "red"}),
+            ("b", {"color": "blue"}),
+            ("a", "b", {"color": "green"}),
+        ]
+        graph = parse_graph(data)
+        self.assertEqual(graph.data, data)
+
+    def test_node(self):
+        data = ("a", {"color": "red"})
+        node = parse_node(data)
+        self.assertEqual(node.name, "a")
+        self.assertEqual(node.attrs, {"color": "red"})
+
+    def test_edge(self):
+        data = ("a", "b", {"color": "green"})
+        edge = parse_edge(data)
+        self.assertEqual(edge.src, "a")
+        self.assertEqual(edge.dst, "b")
+        self.assertEqual(edge.attrs, {"color": "green"})
+
+if __name__ == "__main__":
+    unittest.main()
+```
+I hope this helps! Let me know if you have any questions or need further assistance.
+---

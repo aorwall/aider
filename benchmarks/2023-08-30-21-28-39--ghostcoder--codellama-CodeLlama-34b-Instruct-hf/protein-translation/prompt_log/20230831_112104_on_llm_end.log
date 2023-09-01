@@ -1,0 +1,36 @@
+method: on_llm_end [2023-08-31 11:21:04]
+llm_output: null
+prompt:
+ Filepath: protein_translation.py
+```python
+def proteins(strand):
+    codons = [strand[i:i+3] for i in range(0, len(strand), 3)]
+    amino_acids = []
+    for codon in codons:
+        if codon == "AUG":
+            amino_acids.append("Methionine")
+        elif codon == "UUU" or codon == "UUC":
+            amino_acids.append("Phenylalanine")
+        elif codon == "UUA" or codon == "UUG":
+            amino_acids.append("Leucine")
+        elif codon == "UCU" or codon == "UCC" or codon == "UCA" or codon == "UCG":
+            amino_acids.append("Serine")
+        elif codon == "UAU" or codon == "UAC":
+            amino_acids.append("Tyrosine")
+        elif codon == "UGU" or codon == "UGC":
+            amino_acids.append("Cysteine")
+        elif codon == "UGG":
+            amino_acids.append("Tryptophan")
+        elif codon == "UAA" or codon == "UAG" or codon == "UGA":
+            break
+    return amino_acids
+```
+Explanation:
+In the `proteins` function, we first extract the codons from the RNA strand by iterating over it in steps of 3 and appending each codon to a list.
+We then initialize an empty list `amino_acids` to store the resulting amino acids.
+For each codon, we check if it matches any of the 20 amino acids and append the corresponding amino acid to the `amino_acids` list.
+If a stop codon is encountered, we break out of the loop and return the `amino_acids` list.
+The function returns the list of amino acids corresponding to the input RNA strand.
+
+Note that the function does not handle invalid codons or RNA strands with a length that is not a multiple of 3.
+---

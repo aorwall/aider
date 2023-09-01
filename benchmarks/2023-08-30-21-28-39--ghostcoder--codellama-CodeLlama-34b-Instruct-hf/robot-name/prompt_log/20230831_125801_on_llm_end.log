@@ -1,0 +1,57 @@
+method: on_llm_end [2023-08-31 12:58:01]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+import random
+import string
+
+class Robot:
+    def __init__(self):
+        self.name = None
+        self.name_dict = {}
+
+    def generate_name(self):
+        while True:
+            name = ''.join(random.choice(string.ascii_uppercase) for _ in range(2)) + ''.join(random.choice(string.digits) for _ in range(3))
+            if name not in self.name_dict:
+                self.name_dict[name] = True
+                break
+        self.name = name
+
+    def reset(self):
+        self.name = None
+        self.name_dict = {}
+
+
+def test_robot_name(self):
+    robot = Robot()
+    robot.generate_name()
+    self.assertIsNotNone(robot.name)
+    self.assertIsInstance(robot.name, str)
+    self.assertTrue(robot.name.isupper())
+    self.assertEqual(len(robot.name), 5)
+
+def test_name_matches_dictionary(self):
+    robot = Robot()
+    robot.generate_name()
+    self.assertIn(robot.name, robot.name_dict)
+
+def test_different_robots_have_different_names(self):
+    robot1 = Robot()
+    robot1.generate_name()
+    robot2 = Robot()
+    robot2.generate_name()
+    self.assertNotEqual(robot1.name, robot2.name)
+
+def test_reset_name(self):
+    robot = Robot()
+    robot.generate_name()
+    name = robot.name
+    robot.reset()
+    self.assertIsNone(robot.name)
+    robot.generate_name()
+    self.assertNotEqual(name, robot.name)
+[/PYTHON]
+
+---

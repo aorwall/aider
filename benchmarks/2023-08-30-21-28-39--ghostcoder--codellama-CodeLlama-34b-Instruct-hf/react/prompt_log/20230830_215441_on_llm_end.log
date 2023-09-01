@@ -1,0 +1,56 @@
+method: on_llm_end [2023-08-30 21:54:41]
+llm_output: null
+prompt:
+ To implement a basic reactive system, we need to create a class for input cells and a class for compute cells. The input cells will have a settable value, while the compute cells will have a value computed in terms of other cells. We also need to implement updates so that when an input value is changed, the values propagate to reach a new stable system state. Additionally, compute cells should allow for registering change notification callbacks, which will be called when the cell's value in a new stable state has changed from the previous stable state.
+
+Here's an example implementation of the input and compute cells:
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self.value = initial_value
+
+    def set_value(self, new_value):
+        self.value = new_value
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.value = None
+        self.callbacks = []
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+
+    def update(self):
+        new_value = self.compute_function(self.inputs)
+        if new_value != self.value:
+            self.value = new_value
+            for callback in self.callbacks:
+                callback(self.value)
+```
+In this implementation, the `InputCell` class has a `set_value` method that sets the value of the cell, and the `ComputeCell` class has an `add_callback` method that adds a callback function to be called when the cell's value changes, and a `remove_callback` method that removes a callback function. The `update` method of the `ComputeCell` class computes the new value of the cell based on the values of the input cells, and if the new value is different from the current value, it updates the value and calls the callback functions.
+
+Here's an example usage of the classes:
+```python
+# Create an input cell with an initial value of 5
+input_cell = InputCell(5)
+
+# Create a compute cell that takes the input cell as input
+compute_cell = ComputeCell(input_cell, lambda x: x * 2)
+
+# Add a callback function to the compute cell
+def callback(new_value):
+    print(f"New value: {new_value}")
+compute_cell.add_callback(callback)
+
+# Update the input cell value
+input_cell.set_value(10)
+
+# The callback function should be called with the new value of the compute cell
+```
+This code creates an input cell with an initial value of 5, and a compute cell that takes the input cell as input and multiplies its value by 2. It then adds a callback function to the compute cell that prints the new value of the compute cell. Finally, it updates the input cell value to 10, which should trigger the callback function to be called with the new value of the compute cell (20).
+---

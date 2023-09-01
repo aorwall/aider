@@ -1,0 +1,212 @@
+method: on_llm_start [2023-08-31 10:35:13]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+# Introduction
+
+You are working on a project to develop a train scheduling system for a busy railway network.
+
+You've been asked to develop a prototype for the train routes in the scheduling system.
+Each route consists of a sequence of train stations that a given train stops at.
+# Instructions
+
+Your team has decided to use a doubly linked list to represent each train route in the schedule.
+Each station along the train's route will be represented by a node in the linked list.
+
+You don't need to worry about arrival and departure times at the stations.
+Each station will simply be represented by a number.
+
+Routes can be extended, adding stations to the beginning or end of a route.
+They can also be shortened by removing stations from the beginning or the end of a route.
+
+Sometimes a station gets closed down, and in that case the station needs to be removed from the route, even if it is not at the beginning or end of the route.
+
+The size of a route is measured not by how far the train travels, but by how many stations it stops at.
+
+~~~~exercism/note
+The linked list is a fundamental data structure in computer science, often used in the implementation of other data structures.
+As the name suggests, it is a list of nodes that are linked together.
+It is a list of "nodes", where each node links to its neighbor or neighbors.
+In a **singly linked list** each node links only to the node that follows it.
+In a **doubly linked list** each node links to both the node that comes before, as well as the node that comes after.
+
+If you want to dig deeper into linked lists, check out [this article][intro-linked-list] that explains it using nice drawings.
+
+[intro-linked-list]: https://medium.com/basecs/whats-a-linked-list-anyway-part-1-d8b7e6508b9d
+~~~~
+# Instructions append
+
+## How this Exercise is Structured in Python
+
+While linked lists can be implemented in a variety of ways with a variety of underlying data structures, we ask here that you implement your linked list in an OOP fashion.
+
+In the stub file, you will see the start of a `Node` class, as well as a `LinkedList` class.
+Your `Node` class should keep track of its value, as well as which other nodes preceed or follow.
+Your `push`, `pop`, `shift`, `unshift`, and the special method for `len` should be implemented in the `LinkedList` class.
+You might also find it useful to implement a special `iter` method for iteration.
+
+Unlike the core exercise, we will be testing error conditions by calling `pop` and `shift` on empty `LinkedLists`, so you will need to `raise` errors appropriately.
+
+Finally, we would like you to implement `delete` in addition to the methods outlined above.
+`delete` will take one argument, which is the value to be removed from the linked list.
+If the value appears more than once, only the **first** occurrence should be removed.
+
+<br>
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception][raising]. When you do this, you should always include a **meaningful error message** to indicate what the source of the error is.
+This makes your code more readable and helps significantly with debugging.
+For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types][error types], but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement][raise] to "throw" a `ValueError` when a node value being `delete()`-ed is not found in the linked list.
+Additionally, an `IndexError` should be thrown if there are no nodes left to `pop()`.
+The tests will only pass if you both `raise` these `exceptions` and include messages with them.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# When the value passed to `delete()` is not found.
+if not found:
+    raise ValueError("Value not found")
+
+```
+
+To raise an `IndexError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# When pop() is called and there are no nodes left in the linked list
+if self.length == 0:
+    raise IndexError("List is empty")
+
+```
+
+
+## Special Methods in Python
+
+The tests for this exercise will also be calling `len()` on your `LinkedList`.
+In order for `len()` to work, you will need to create a `__len__` special method.
+For details on implementing special or "dunder" methods in Python, see [Python Docs: Basic Object Customization][basic customization] and [Python Docs: object.__len__(self)][__len__].
+
+We also recommend creating a special [`__iter__`][__iter__] method to help with iterating over your linked list.
+
+<br>
+
+[__iter__]: https://docs.python.org/3/reference/datamodel.html#object.__iter__
+[__len__]: https://docs.python.org/3/reference/datamodel.html#object.__len__
+[basic customization]: https://docs.python.org/3/reference/datamodel.html#basic-customization
+[error types]: https://docs.python.org/3/library/exceptions.html#base-classes
+[raise]: https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement
+[raising]: https://docs.python.org/3/tutorial/errors.html#raising-exceptions
+
+####
+
+Use the above instructions to modify the supplied files: linked_list.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST] </s>
+<s>[INST]Filepath: linked_list.py
+```python
+class Node:
+    def __init__(self, value, succeeding=None, previous=None):
+        pass
+
+
+class LinkedList:
+    def __init__(self):
+        pass
+
+```
+EEEEEEEEEEEEEEEEEEEEEEEE
+====
+ERROR: test_can_return_with_pop_and_then_raise_an_error_if_empty (linked_list_test.LinkedListTest.test_can_return_with_pop_and_then_raise_an_error_if_empty)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/linked-list/linked_list_test.py", line 176, in test_can_return_with_pop_and_then_raise_an_error_if_empty
+    lst.push(1)
+    ^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'push'
+
+====
+ERROR: test_can_return_with_shift_and_then_raise_an_error_if_empty (linked_list_test.LinkedListTest.test_can_return_with_shift_and_then_raise_an_error_if_empty)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/linked-list/linked_list_test.py", line 194, in test_can_return_with_shift_and_then_raise_an_error_if_empty
+    lst.push(1)
+    ^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'push'
+
+====
+ERROR: test_count_a_list_with_items (linked_list_test.LinkedListTest.test_count_a_list_with_items)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/linked-list/linked_list_test.py", line 63, in test_count_a_list_with_items
+    lst.push(37)
+    ^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'push'
+
+====
+ERROR: test_count_an_empty_list (linked_list_test.LinkedListTest.test_count_an_empty_list)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/linked-list/linked_list_test.py", line 59, in test_count_an_empty_list
+    self.assertEqual(len(lst), 0)
+                     ^^^^^^^^
+TypeError: object of type 'LinkedList' has no len()
+
+====
+ERROR: test_count_is_correct_after_mutation (linked_list_test.LinkedListTest.test_count_is_correct_after_mutation)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/linked-list/linked_list_test.py", line 69, in test_count_is_correct_after_mutation
+    lst.push(31)
+    ^^^^^^^^
+AttributeError: 'LinkedList' object has no attribute 'push'
+
+====
+ERROR: test_deletes_only_the_first_occurrence (linked_list_test.LinkedListTest.test_deletes_only_the_first_occurrence)
+----
+Traceback (most recent call last):
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in linked_list.py to resolve the errors.
+[/INST]
+

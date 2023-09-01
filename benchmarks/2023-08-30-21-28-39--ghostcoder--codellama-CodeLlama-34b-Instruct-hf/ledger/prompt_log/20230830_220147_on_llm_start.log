@@ -1,0 +1,367 @@
+method: on_llm_start [2023-08-30 22:01:47]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+Filepath: ledger.py
+```python
+# -*- coding: utf-8 -*-
+from datetime import datetime
+
+
+class LedgerEntry:
+    def __init__(self):
+        self.date = None
+        self.description = None
+        self.change = None
+
+
+def create_entry(date, description, change):
+    entry = LedgerEntry()
+    entry.date = datetime.strptime(date, '%Y-%m-%d')
+    entry.description = description
+    entry.change = change
+    return entry
+
+
+def format_entries(currency, locale, entries):
+    if locale == 'en_US':
+        # Generate Header Row
+        table = 'Date'
+        for _ in range(7):
+            table += ' '
+        table += '| Description'
+        for _ in range(15):
+            table += ' '
+        table += '| Change'
+        for _ in range(7):
+            table += ' '
+
+        while len(entries) > 0:
+            table += '
+'
+
+            # Find next entry in order
+            min_entry_index = -1
+            for i in range(len(entries)):
+                entry = entries[i]
+                if min_entry_index < 0:
+                    min_entry_index = i
+                    continue
+                min_entry = entries[min_entry_index]
+                if entry.date < min_entry.date:
+                    min_entry_index = i
+                    continue
+                if (
+                    entry.date == min_entry.date and
+                    entry.change < min_entry.change
+                ):
+                    min_entry_index = i
+                    continue
+                if (
+                    entry.date == min_entry.date and
+                    entry.change == min_entry.change and
+                    entry.description < min_entry.description
+                ):
+                    min_entry_index = i
+                    continue
+            entry = entries[min_entry_index]
+            entries.pop(min_entry_index)
+
+            # Write entry date to table
+            month = entry.date.month
+            month = str(month)
+            if len(month) < 2:
+                month = '0' + month
+            date_str = month
+            date_str += '/'
+            day = entry.date.day
+            day = str(day)
+            if len(day) < 2:
+                day = '0' + day
+            date_str += day
+            date_str += '/'
+            year = entry.date.year
+            year = str(year)
+            while len(year) < 4:
+                year = '0' + year
+            date_str += year
+            table += date_str
+            table += ' | '
+
+            # Write entry description to table
+            # Truncate if necessary
+            if len(entry.description) > 25:
+                for i in range(22):
+                    table += entry.description[i]
+                table += '...'
+            else:
+                for i in range(25):
+                    if len(entry.description) > i:
+                        table += entry.description[i]
+                    else:
+                        table += ' '
+            table += ' | '
+
+            # Write entry change to table
+            if currency == 'USD':
+                change_str = ''
+                if entry.change < 0:
+                    change_str = '('
+                change_str += '$'
+                change_dollar = abs(int(entry.change / 100.0))
+                dollar_parts = []
+                while change_dollar > 0:
+                    dollar_parts.insert(0, str(change_dollar % 1000))
+                    change_dollar = change_dollar // 1000
+                if len(dollar_parts) == 0:
+                    change_str += '0'
+                else:
+                    while True:
+                        change_str += dollar_parts[0]
+                        dollar_parts.pop(0)
+                        if len(dollar_parts) == 0:
+                            break
+                        change_str += ','
+                change_str += '.'
+                change_cents = abs(entry.change) % 100
+                change_cents = str(change_cents)
+                if len(change_cents) < 2:
+                    change_cents = '0' + change_cents
+                change_str += change_cents
+                if entry.change < 0:
+                    change_str += ')'
+                else:
+                    change_str += ' '
+                while len(change_str) < 13:
+                    change_str = ' ' + change_str
+                table += change_str
+            elif currency == 'EUR':
+                change_str = ''
+                if entry.change < 0:
+                    change_str = '('
+                change_str += u'€'
+                change_euro = abs(int(entry.change / 100.0))
+                euro_parts = []
+                while change_euro > 0:
+                    euro_parts.insert(0, str(change_euro % 1000))
+                    change_euro = change_euro // 1000
+                if len(euro_parts) == 0:
+                    change_str += '0'
+                else:
+                    while True:
+                        change_str += euro_parts[0]
+                        euro_parts.pop(0)
+                        if len(euro_parts) == 0:
+                            break
+                        change_str += ','
+                change_str += '.'
+                change_cents = abs(entry.change) % 100
+                change_cents = str(change_cents)
+                if len(change_cents) < 2:
+                    change_cents = '0' + change_cents
+                change_str += change_cents
+                if entry.change < 0:
+                    change_str += ')'
+                else:
+                    change_str += ' '
+                while len(change_str) < 13:
+                    change_str = ' ' + change_str
+                table += change_str
+        return table
+    elif locale == 'nl_NL':
+        # Generate Header Row
+        table = 'Datum'
+        for _ in range(6):
+            table += ' '
+        table += '| Omschrijving'
+        for _ in range(14):
+            table += ' '
+        table += '| Verandering'
+        for _ in range(2):
+            table += ' '
+
+        while len(entries) > 0:
+            table += '
+'
+
+            # Find next entry in order
+            min_entry_index = -1
+            for i in range(len(entries)):
+                entry = entries[i]
+                if min_entry_index < 0:
+                    min_entry_index = i
+                    continue
+                min_entry = entries[min_entry_index]
+                if entry.date < min_entry.date:
+                    min_entry_index = i
+                    continue
+                if (
+                    entry.date == min_entry.date and
+                    entry.change < min_entry.change
+                ):
+                    min_entry_index = i
+                    continue
+                if (
+                    entry.date == min_entry.date and
+                    entry.change == min_entry.change and
+                    entry.description < min_entry.description
+                ):
+                    min_entry_index = i
+                    continue
+            entry = entries[min_entry_index]
+            entries.pop(min_entry_index)
+
+            # Write entry date to table
+            day = entry.date.day
+            day = str(day)
+            if len(day) < 2:
+                day = '0' + day
+            date_str = day
+            date_str += '-'
+            month = entry.date.month
+            month = str(month)
+            if len(month) < 2:
+                month = '0' + month
+            date_str += month
+            date_str += '-'
+            year = entry.date.year
+            year = str(year)
+            while len(year) < 4:
+                year = '0' + year
+            date_str += year
+            table += date_str
+            table += ' | '
+
+            # Write entry description to table
+            # Truncate if necessary
+            if len(entry.description) > 25:
+                for i in range(22):
+                    table += entry.description[i]
+                table += '...'
+            else:
+                for i in range(25):
+                    if len(entry.description) > i:
+                        table += entry.description[i]
+                    else:
+                        table += ' '
+            table += ' | '
+
+            # Write entry change to table
+            if currency == 'USD':
+                change_str = '$ '
+                if entry.change < 0:
+                    change_str += '-'
+                change_dollar = abs(int(entry.change / 100.0))
+                dollar_parts = []
+                while change_dollar > 0:
+                    dollar_parts.insert(0, str(change_dollar % 1000))
+                    change_dollar = change_dollar // 1000
+                if len(dollar_parts) == 0:
+                    change_str += '0'
+                else:
+                    while True:
+                        change_str += dollar_parts[0]
+                        dollar_parts.pop(0)
+                        if len(dollar_parts) == 0:
+                            break
+                        change_str += '.'
+                change_str += ','
+                change_cents = abs(entry.change) % 100
+                change_cents = str(change_cents)
+                if len(change_cents) < 2:
+                    change_cents = '0' + change_cents
+                change_str += change_cents
+                change_str += ' '
+                while len(change_str) < 13:
+                    change_str = ' ' + change_str
+                table += change_str
+            elif currency == 'EUR':
+                change_str = u'€ '
+                if entry.change < 0:
+                    change_str += '-'
+                change_euro = abs(int(entry.change / 100.0))
+                euro_parts = []
+                while change_euro > 0:
+                    euro_parts.insert(0, str(change_euro % 1000))
+                    change_euro = change_euro // 1000
+                if len(euro_parts) == 0:
+                    change_str += '0'
+                else:
+                    while True:
+                        change_str += euro_parts[0]
+                        euro_parts.pop(0)
+                        if len(euro_parts) == 0:
+                            break
+                        change_str += '.'
+                change_str += ','
+                change_cents = abs(entry.change) % 100
+                change_cents = str(change_cents)
+                if len(change_cents) < 2:
+                    change_cents = '0' + change_cents
+                change_str += change_cents
+                change_str += ' '
+                while len(change_str) < 13:
+                    change_str = ' ' + change_str
+                table += change_str
+        return table
+
+
+```
+# Instructions
+
+Refactor a ledger printer.
+
+The ledger exercise is a refactoring exercise.
+There is code that prints a nicely formatted ledger, given a locale (American or Dutch) and a currency (US dollar or euro).
+The code however is rather badly written, though (somewhat surprisingly) it consistently passes the test suite.
+
+Rewrite this code.
+Remember that in refactoring the trick is to make small steps that keep the tests passing.
+That way you can always quickly go back to a working version.
+Version control tools like git can help here as well.
+
+Please keep a log of what changes you've made and make a comment on the exercise containing that log, this will help reviewers.
+
+####
+
+Use the above instructions to modify the supplied files: ledger.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST]
+

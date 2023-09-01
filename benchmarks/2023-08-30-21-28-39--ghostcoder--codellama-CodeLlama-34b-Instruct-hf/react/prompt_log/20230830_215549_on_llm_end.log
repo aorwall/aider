@@ -1,0 +1,50 @@
+method: on_llm_end [2023-08-30 21:55:49]
+llm_output: null
+prompt:
+ The errors in the test cases are caused by the `InputCell` and `ComputeCell` classes not properly updating their values and firing callbacks when their dependencies change.
+
+Here's a corrected version of the `InputCell` and `ComputeCell` classes that should resolve the errors:
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self.value = initial_value
+        self.callbacks = []
+
+    def set_value(self, new_value):
+        self.value = new_value
+        for callback in self.callbacks:
+            callback(self.value)
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.value = None
+        self.callbacks = []
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+
+    def update(self):
+        new_value = self.compute_function(self.inputs)
+        if new_value != self.value:
+            self.value = new_value
+            for callback in self.callbacks:
+                callback(self.value)
+```
+In the `InputCell` class, we've added a `callbacks` list to store the callback functions that should be called when the cell's value changes. In the `set_value` method, we iterate over the callbacks and call them with the new value.
+
+In the `ComputeCell` class, we've also added a `callbacks` list to store the callback functions that should be called when the cell's value changes. In the `update` method, we iterate over the callbacks and call them with the new value.
+
+With these changes, the `InputCell` and `ComputeCell` classes should properly update their values and fire callbacks when their dependencies change, resolving the errors in the test cases.
+---

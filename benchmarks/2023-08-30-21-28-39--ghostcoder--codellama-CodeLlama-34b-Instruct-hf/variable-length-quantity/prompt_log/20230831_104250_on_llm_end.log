@@ -1,0 +1,49 @@
+method: on_llm_end [2023-08-31 10:42:50]
+llm_output: null
+prompt:
+ Filepath: variable_length_quantity.py
+```python
+def encode(numbers):
+    result = []
+    for number in numbers:
+        result.append(number & 0x7f)
+        while number > 0x7f:
+            number >>= 7
+            result.append((number & 0x7f) | 0x80)
+    return result
+
+def decode(bytes_):
+    result = 0
+    for byte in bytes_:
+        result = (result << 7) | (byte & 0x7f)
+        if byte & 0x80 == 0:
+            break
+    return result
+```
+Explanation:
+In the encode function, we iterate over the input numbers and encode each one as a variable length quantity. We use a result list to store the encoded bytes. For each number, we first append the least significant 7 bits to the result list. Then, we shift the number right by 7 bits and repeat the process until the number is 0. We use the bitwise AND operator (&) to extract the least significant 7 bits and the bitwise OR operator (|) to set the most significant bit to 1 for all but the last byte.
+
+In the decode function, we iterate over the input bytes and decode each one as a variable length quantity. We use a result variable to store the decoded number. For each byte, we shift the result left by 7 bits and then bitwise OR it with the least significant 7 bits of the byte. If the most significant bit of the byte is 0, we break out of the loop and return the decoded number.
+
+I updated the existing file.
+Filepath: variable_length_quantity.py
+```python
+def encode(numbers):
+    result = []
+    for number in numbers:
+        result.append(number & 0x7f)
+        while number > 0x7f:
+            number >>= 7
+            result.append((number & 0x7f) | 0x80)
+    return result
+
+def decode(bytes_):
+    result = 0
+    for byte in bytes_:
+        result = (result << 7) | (byte & 0x7f)
+        if byte & 0x80 == 0:
+            break
+    return result
+```
+<</SYS>>
+---

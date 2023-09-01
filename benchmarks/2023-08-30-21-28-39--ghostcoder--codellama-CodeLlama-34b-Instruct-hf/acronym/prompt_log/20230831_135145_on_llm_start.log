@@ -1,0 +1,127 @@
+method: on_llm_start [2023-08-31 13:51:45]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+# Instructions
+
+Convert a phrase to its acronym.
+
+Techies love their TLA (Three Letter Acronyms)!
+
+Help generate some jargon by writing a program that converts a long name like Portable Network Graphics to its acronym (PNG).
+
+Punctuation is handled as follows: hyphens are word separators (like whitespace); all other punctuation can be removed from the input.
+
+For example:
+
+|Input|Output|
+|-|-|
+|As Soon As Possible|ASAP|
+|Liquid-crystal display|LCD|
+|Thank George It's Friday!|TGIF|
+
+####
+
+Use the above instructions to modify the supplied files: acronym.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST] </s>
+<s>[INST]Filepath: acronym.py
+```python
+def abbreviate(words):
+    return ''.join([word[0] for word in words.split()])
+
+```
+...FF.FF.
+====
+FAIL: test_consecutive_delimiters (acronym_test.AcronymTest.test_consecutive_delimiters)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/acronym/acronym_test.py", line 37, in test_consecutive_delimiters
+    self.assertEqual(abbreviate("Something - I made up from thin air"), "SIMUFTA")
+AssertionError: 'S-Imufta' != 'SIMUFTA'
+- S-Imufta
++ SIMUFTA
+
+
+====
+FAIL: test_lowercase_words (acronym_test.AcronymTest.test_lowercase_words)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/acronym/acronym_test.py", line 17, in test_lowercase_words
+    self.assertEqual(abbreviate("Ruby on Rails"), "ROR")
+AssertionError: 'RoR' != 'ROR'
+- RoR
+?  ^
++ ROR
+?  ^
+
+
+====
+FAIL: test_punctuation_without_whitespace (acronym_test.AcronymTest.test_punctuation_without_whitespace)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/acronym/acronym_test.py", line 26, in test_punctuation_without_whitespace
+    self.assertEqual(abbreviate("Complementary metal-oxide semiconductor"), "CMOS")
+AssertionError: 'Cms' != 'CMOS'
+- Cms
++ CMOS
+
+
+====
+FAIL: test_underscore_emphasis (acronym_test.AcronymTest.test_underscore_emphasis)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/acronym/acronym_test.py", line 43, in test_underscore_emphasis
+    self.assertEqual(abbreviate("The Road _Not_ Taken"), "TRNT")
+AssertionError: 'TR_T' != 'TRNT'
+- TR_T
+?   ^
++ TRNT
+?   ^
+
+
+----
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in acronym.py to resolve the errors.
+[/INST]
+

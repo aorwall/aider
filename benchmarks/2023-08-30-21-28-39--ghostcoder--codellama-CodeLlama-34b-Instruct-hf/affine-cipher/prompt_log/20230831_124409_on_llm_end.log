@@ -1,0 +1,102 @@
+method: on_llm_end [2023-08-31 12:44:09]
+llm_output: null
+prompt:
+ Filepath: affine_cipher.py
+```python
+def encode(plain_text, a, b):
+    """
+    Encodes the plain text using the affine cipher.
+
+    Parameters:
+        plain_text (str): The plain text to encode.
+        a (int): The first parameter of the affine cipher.
+        b (int): The second parameter of the affine cipher.
+
+    Returns:
+        str: The encoded text.
+    """
+    # Check if a and m are coprime
+    if a < 1 or a > 26 or b < 1 or b > 26 or math.gcd(a, 26) != 1:
+        raise ValueError("a and m must be coprime.")
+
+    # Encrypt the text
+    cipher_text = ""
+    for char in plain_text:
+        if char.isalpha():
+            index = ord(char) - ord("A")
+            cipher_text += chr((a * index + b) % 26 + ord("A"))
+        else:
+            cipher_text += char
+
+    # Return the encrypted text
+    return cipher_text
+
+
+def decode(cipher_text, a, b):
+    """
+    Decodes the cipher text using the affine cipher.
+
+    Parameters:
+        cipher_text (str): The cipher text to decode.
+        a (int): The first parameter of the affine cipher.
+        b (int): The second parameter of the affine cipher.
+
+    Returns:
+        str: The decoded text.
+    """
+    # Check if a and m are coprime
+    if a < 1 or a > 26 or b < 1 or b > 26 or math.gcd(a, 26) != 1:
+        raise ValueError("a and m must be coprime.")
+
+    # Decrypt the text
+    plain_text = ""
+    for char in cipher_text:
+        if char.isalpha():
+            index = ord(char) - ord("A")
+            plain_text += chr((math.modinv(a, 26) * (index - b)) % 26 + ord("A"))
+        else:
+            plain_text += char
+
+    # Return the decrypted text
+    return plain_text
+```
+# Instructions
+
+Create an implementation of the affine cipher, an ancient encryption system created in the Middle East.
+
+The affine cipher is a type of monoalphabetic substitution cipher.
+Each character is mapped to its numeric equivalent, encrypted with a mathematical function and then converted to the letter relating to its new numeric value.
+Although all monoalphabetic ciphers are weak, the affine cipher is much stronger than the atbash cipher, because it has many more keys.
+
+[//]: # ( monoalphabetic as spelled by Merriam-Webster, compare to polyalphabetic )
+
+## Encryption
+
+The encryption function is:
+
+```text
+E(x) = (ai + b) mod m
+```
+
+Where:
+
+- `i` is the letter's index from `0` to the length of the alphabet - 1
+- `m` is the length of the alphabet.
+  For the Roman alphabet `m` is `26`.
+- `a` and `b` are integers which make the encryption key
+
+Values `a` and `m` must be *coprime* (or, *relatively prime*) for automatic decryption to succeed, i.e., they have number `1` as their only common factor (more information can be found in the [Wikipedia article about coprime integers][coprime-integers]).
+In case `a` is not coprime to `m`, your program should indicate that this is an error.
+Otherwise it should encrypt or decrypt with the provided key.
+
+For the purpose of this exercise, digits are valid input but they are not encrypted.
+Spaces and punctuation characters are excluded.
+Ciphertext is written out in groups of fixed length separated by space, the traditional group size being `5` letters.
+This is to make it harder to guess encrypted text based on word boundaries.
+
+## Decryption
+
+The decryption function is:
+
+
+---

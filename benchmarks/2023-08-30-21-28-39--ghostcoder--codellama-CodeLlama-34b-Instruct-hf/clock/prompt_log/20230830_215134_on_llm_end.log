@@ -1,0 +1,35 @@
+method: on_llm_end [2023-08-30 21:51:34]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+class Clock:
+    def __init__(self, hour, minute):
+        self.hour = hour
+        self.minute = minute
+
+    def __repr__(self):
+        return f"Clock({self.hour}, {self.minute})"
+
+    def __str__(self):
+        return f"{self.hour:02d}:{self.minute:02d}"
+
+    def __eq__(self, other):
+        return self.hour == other.hour and self.minute == other.minute
+
+    def __add__(self, minutes):
+        self.minute += minutes
+        if self.minute >= 60:
+            self.hour += 1
+            self.minute -= 60
+        return self
+
+    def __sub__(self, minutes):
+        self.minute -= minutes
+        if self.minute < 0:
+            self.hour -= 1
+            self.minute += 60
+        return self
+[/PYTHON]
+
+---

@@ -1,0 +1,129 @@
+method: on_llm_end [2023-08-31 14:04:29]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+class BufferFullException(Exception):
+    """Exception raised when CircularBuffer is full.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        self.message = message
+
+
+class BufferEmptyException(Exception):
+    """Exception raised when CircularBuffer is empty.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        self.message = message
+
+
+class CircularBuffer:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.buffer = []
+
+    def read(self):
+        if len(self.buffer) == 0:
+            raise BufferEmptyException("Circular buffer is empty")
+        return self.buffer.pop(0)
+
+    def write(self, data):
+        if len(self.buffer) == self.capacity:
+            raise BufferFullException("Circular buffer is full")
+        self.buffer.append(data)
+
+    def overwrite(self, data):
+        if len(self.buffer) == self.capacity:
+            self.buffer.pop(0)
+        self.buffer.append(data)
+
+    def clear(self):
+        self.buffer = []
+
+
+def test_initial_clear_does_not_affect_wrapping_around():
+    buf = CircularBuffer(5)
+    buf.write("1")
+    buf.write("2")
+    buf.write("3")
+    buf.write("4")
+    buf.write("5")
+    buf.clear()
+    buf.write("6")
+    buf.write("7")
+    buf.write("8")
+    buf.write("9")
+    buf.write("10")
+    assert buf.read() == "6"
+    assert buf.read() == "7"
+    assert buf.read() == "8"
+    assert buf.read() == "9"
+    assert buf.read() == "10"
+
+
+def test_overwrite_replaces_the_oldest_item_on_full_buffer():
+    buf = CircularBuffer(5)
+    buf.write("1")
+    buf.write("2")
+    buf.write("3")
+    buf.write("4")
+    buf.write("5")
+    buf.overwrite("6")
+    assert buf.read() == "2"
+    assert buf.read() == "3"
+    assert buf.read() == "4"
+    assert buf.read() == "5"
+    assert buf.read() == "6"
+
+
+def test_overwrite_replaces_the_oldest_item_remaining_in_buffer_following_a_read():
+    buf = CircularBuffer(5)
+    buf.write("1")
+    buf.write("2")
+    buf.write("3")
+    buf.write("4")
+    buf.write("5")
+    buf.read()
+    buf.overwrite("6")
+    assert buf.read() == "3"
+    assert buf.read() == "4"
+    assert buf.read() == "5"
+    assert buf.read() == "6"
+
+
+def test_overwrite_acts_like_write_on_non_full_buffer():
+    buf = CircularBuffer(5)
+    buf.write("1")
+    buf.write("2")
+    buf.overwrite("3")
+    assert buf.read() == "1"
+    assert buf.read() == "2"
+    assert buf.read() == "3"
+
+
+def test_clear_empties_the_buffer():
+    buf = CircularBuffer(5)
+    buf.write("1")
+    buf.write("2")
+    buf.write("3")
+    buf.clear()
+    assert buf.read() is None
+
+
+def test_write_does_not_overwrite_when_full():
+    buf = CircularBuffer(5)
+    buf.write("1")
+    buf.write("2")
+    buf.write("3")
+    buf.write("4")
+    buf.write("5")
+    buf.write("6")
+    assert buf.read() == "1"
+   
+---

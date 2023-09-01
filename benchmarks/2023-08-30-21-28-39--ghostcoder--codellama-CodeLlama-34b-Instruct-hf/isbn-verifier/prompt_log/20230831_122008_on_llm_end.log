@@ -1,0 +1,30 @@
+method: on_llm_end [2023-08-31 12:20:08]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+def is_valid_isbn(isbn):
+    isbn = isbn.replace("-", "")
+    if len(isbn) != 10:
+        return False
+    sum = 0
+    for i in range(10):
+        if i == 9 and isbn[i] == "X":
+            sum += 10
+        else:
+            sum += int(isbn[i]) * (10 - i)
+    return sum % 11 == 0
+[/PYTHON]
+
+####
+
+The above code defines a function `is_valid_isbn` that takes an ISBN as a string and returns a boolean indicating whether the ISBN is valid or not.
+The function first replaces any hyphens in the ISBN with empty strings using the `replace` method.
+It then checks if the length of the ISBN is 10 characters. If it's not, the function returns `False`.
+Next, the function calculates the sum of the digits of the ISBN using a for loop.
+For each digit, it multiplies the digit by its position (10 - position) and adds it to the sum.
+If the digit is 'X' and it's the last position (position 9), the function adds 10 to the sum.
+Finally, the function checks if the sum is divisible by 11. If it is, the ISBN is valid, and the function returns `True`. Otherwise, it returns `False`.
+
+Note that the function assumes that the input ISBN is a string. If the input is not a string, the function will raise a `TypeError`.
+---

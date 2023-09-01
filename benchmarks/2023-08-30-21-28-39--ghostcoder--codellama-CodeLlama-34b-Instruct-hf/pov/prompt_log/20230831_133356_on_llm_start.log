@@ -1,0 +1,134 @@
+method: on_llm_start [2023-08-31 13:33:56]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+Filepath: pov.py
+```python
+from json import dumps
+
+
+class Tree:
+    def __init__(self, label, children=None):
+        self.label = label
+        self.children = children if children is not None else []
+
+    def __dict__(self):
+        return {self.label: [c.__dict__() for c in sorted(self.children)]}
+
+    def __str__(self, indent=None):
+        return dumps(self.__dict__(), indent=indent)
+
+    def __lt__(self, other):
+        return self.label < other.label
+
+    def __eq__(self, other):
+        return self.__dict__() == other.__dict__()
+
+    def from_pov(self, from_node):
+        pass
+
+    def path_to(self, from_node, to_node):
+        pass
+
+```
+# Instructions
+
+Reparent a tree on a selected node.
+
+A [tree][wiki-tree] is a special type of [graph][wiki-graph] where all nodes are connected but there are no cycles.
+That means, there is exactly one path to get from one node to another for any pair of nodes.
+
+This exercise is all about re-orientating a tree to see things from a different point of view.
+For example family trees are usually presented from the ancestor's perspective:
+
+```text
+    +------0------+
+    |      |      |
+  +-1-+  +-2-+  +-3-+
+  |   |  |   |  |   |
+  4   5  6   7  8   9
+```
+
+But there is no inherent direction in a tree.
+The same information can be presented from the perspective of any other node in the tree, by pulling it up to the root and dragging its relationships along with it.
+So the same tree from 6's perspective would look like:
+
+```text
+        6
+        |
+  +-----2-----+
+  |           |
+  7     +-----0-----+
+        |           |
+      +-1-+       +-3-+
+      |   |       |   |
+      4   5       8   9
+```
+
+This lets us more simply describe the paths between two nodes.
+So for example the path from 6-9 (which in the first tree goes up to the root and then down to a different leaf node) can be seen to follow the path 6-2-0-3-9.
+
+This exercise involves taking an input tree and re-orientating it from the point of view of one of the nodes.
+
+[wiki-graph]: https://en.wikipedia.org/wiki/Tree_(graph_theory)
+[wiki-tree]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to "throw" multiple `ValueErrors` if the `Tree()` class is passed a tree that cannot be reoriented, or a path cannot be found between a `start node` and an `end node`. The tests will only pass if you both `raise` the `exception` and include a message with it.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# when a tree cannot be oriented to a new node POV
+raise ValueError("Tree could not be reoriented")
+
+#when a path cannot be found between a start and end node on the tree.
+raise ValueError("No path found")
+```
+####
+
+Use the above instructions to modify the supplied files: pov.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST]
+

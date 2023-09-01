@@ -1,0 +1,57 @@
+method: on_llm_end [2023-08-31 13:09:18]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+class Queen:
+    def __init__(self, row, column):
+        if row < 0 or column < 0:
+            raise ValueError("row and column must be positive")
+        if row > 7 or column > 7:
+            raise ValueError("row and column must be on the board")
+        self.row = row
+        self.column = column
+
+    def can_attack(self, another_queen):
+        if self.row == another_queen.row and self.column == another_queen.column:
+            raise ValueError("Invalid queen position: both queens in the same square")
+        return self.row == another_queen.row or self.column == another_queen.column
+
+def test_queen_must_have_positive_row():
+    with pytest.raises(ValueError, match="row not positive"):
+        Queen(-1, 2)
+
+def test_queen_must_have_positive_column():
+    with pytest.raises(ValueError, match="column not positive"):
+        Queen(2, -1)
+
+def test_queen_must_have_row_on_board():
+    with pytest.raises(ValueError, match="row not on board"):
+        Queen(8, 2)
+
+def test_queen_must_have_column_on_board():
+    with pytest.raises(ValueError, match="column not on board"):
+        Queen(2, 8)
+
+def test_can_attack_on_first_diagonal():
+    queen = Queen(2, 2)
+    another_queen = Queen(0, 4)
+    assert queen.can_attack(another_queen) == True
+
+def test_can_attack_on_second_diagonal():
+    queen = Queen(2, 2)
+    another_queen = Queen(3, 1)
+    assert queen.can_attack(another_queen) == True
+
+def test_can_attack_on_third_diagonal():
+    queen = Queen(2, 2)
+    another_queen = Queen(1, 1)
+    assert queen.can_attack(another_queen) == True
+
+def test_can_attack_on_fourth_diagonal():
+    queen = Queen(1, 7)
+    another_queen = Queen(0, 6)
+    assert queen.can_attack(another_queen) == True
+[/PYTHON]
+
+---

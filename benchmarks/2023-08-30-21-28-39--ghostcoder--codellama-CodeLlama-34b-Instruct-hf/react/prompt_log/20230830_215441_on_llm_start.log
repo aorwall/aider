@@ -1,0 +1,200 @@
+method: on_llm_start [2023-08-30 21:54:41]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+# Instructions
+
+Implement a basic reactive system.
+
+Reactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.
+
+Implement a basic reactive system with cells with settable values ("input" cells) and cells with values computed in terms of other cells ("compute" cells).
+Implement updates so that when an input value is changed, values propagate to reach a new stable system state.
+
+In addition, compute cells should allow for registering change notification callbacks.
+Call a cell’s callbacks when the cell’s value in a new stable state has changed from the previous stable state.
+
+####
+
+Use the above instructions to modify the supplied files: react.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST] To implement a basic reactive system, we need to create a class for input cells and a class for compute cells. The input cells will have a settable value, while the compute cells will have a value computed in terms of other cells. We also need to implement updates so that when an input value is changed, the values propagate to reach a new stable system state. Additionally, compute cells should allow for registering change notification callbacks, which will be called when the cell's value in a new stable state has changed from the previous stable state.
+
+Here's an example implementation of the input and compute cells:
+I updated a file.
+Filepath: react.py
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self.value = initial_value
+
+    def set_value(self, new_value):
+        self.value = new_value
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.value = None
+        self.callbacks = []
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+
+    def update(self):
+        new_value = self.compute_function(self.inputs)
+        if new_value != self.value:
+            self.value = new_value
+            for callback in self.callbacks:
+                callback(self.value)
+    
+```
+In this implementation, the `InputCell` class has a `set_value` method that sets the value of the cell, and the `ComputeCell` class has an `add_callback` method that adds a callback function to be called when the cell's value changes, and a `remove_callback` method that removes a callback function. The `update` method of the `ComputeCell` class computes the new value of the cell based on the values of the input cells, and if the new value is different from the current value, it updates the value and calls the callback functions.
+
+Here's an example usage of the classes:
+```python
+# Create an input cell with an initial value of 5
+input_cell = InputCell(5)
+
+# Create a compute cell that takes the input cell as input
+compute_cell = ComputeCell(input_cell, lambda x: x * 2)
+
+# Add a callback function to the compute cell
+def callback(new_value):
+    print(f"New value: {new_value}")
+compute_cell.add_callback(callback)
+
+# Update the input cell value
+input_cell.set_value(10)
+
+# The callback function should be called with the new value of the compute cell
+```</s>
+<s>[INST]Filepath: react.py
+```python
+class InputCell:
+    def __init__(self, initial_value):
+        self.value = initial_value
+
+    def set_value(self, new_value):
+        self.value = new_value
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self.inputs = inputs
+        self.compute_function = compute_function
+        self.value = None
+        self.callbacks = []
+
+    def add_callback(self, callback):
+        self.callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        self.callbacks.remove(callback)
+
+    def update(self):
+        new_value = self.compute_function(self.inputs)
+        if new_value != self.value:
+            self.value = new_value
+            for callback in self.callbacks:
+                callback(self.value)
+    
+```
+.EEEE.EFFEFF.E
+====
+ERROR: test_callback_cells_only_fire_on_change (react_test.ReactTest.test_callback_cells_only_fire_on_change)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 105, in test_callback_cells_only_fire_on_change
+    self.assertEqual(cb1_observer[-1], 222)
+                     ~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+====
+ERROR: test_callbacks_can_be_added_and_removed (react_test.ReactTest.test_callbacks_can_be_added_and_removed)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 164, in test_callbacks_can_be_added_and_removed
+    self.assertEqual(cb1_observer[-1], 32)
+                     ~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+====
+ERROR: test_callbacks_can_fire_from_multiple_cells (react_test.ReactTest.test_callbacks_can_fire_from_multiple_cells)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 144, in test_callbacks_can_fire_from_multiple_cells
+    self.assertEqual(cb1_observer[-1], 11)
+                     ~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+====
+ERROR: test_callbacks_do_not_report_already_reported_values (react_test.ReactTest.test_callbacks_do_not_report_already_reported_values)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 119, in test_callbacks_do_not_report_already_reported_values
+    self.assertEqual(cb1_observer[-1], 3)
+                     ~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+====
+ERROR: test_callbacks_should_only_be_called_once_even_if_multiple_dependencies_change (react_test.ReactTest.test_callbacks_should_only_be_called_once_even_if_multiple_dependencies_change)
+----
+Traceback (most recent call last):
+  File "react/react_test.py", line 229, in test_callbacks_should_only_be_called_once_even_if_multiple_dependencies_change
+    self.assertEqual(cb1_observer[-1], 10)
+                     ~~~~~~~~~~~~^^^^
+IndexError: list index out of range
+
+====
+ERROR: test_compute_cells_fire_callbacks (react_test.ReactTest.test_compute_cells_fire_callbacks)
+----
+Traceback (most recent call last):
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in react.py to resolve the errors.
+[/INST]
+

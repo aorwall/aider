@@ -1,0 +1,31 @@
+method: on_llm_end [2023-08-31 11:17:24]
+llm_output: null
+prompt:
+ I have modified the `simple_cipher.py` file to implement the Caesar Cipher and the Substitution Cipher.
+
+Here is the updated code:
+```python
+import random
+
+class Cipher:
+    def __init__(self, key=None):
+        self.key = key
+
+    def encode(self, text):
+        if self.key is None:
+            self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(100))
+        return ''.join(chr((ord(c) + self.key[i % len(self.key)]) % 26) for i, c in enumerate(text))
+
+    def decode(self, text):
+        if self.key is None:
+            self.key = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(100))
+        return ''.join(chr((ord(c) - self.key[i % len(self.key)]) % 26) for i, c in enumerate(text))
+```
+Explanation:
+
+* I added a new attribute `key` to the `Cipher` class, which will store the key used for the substitution cipher.
+* In the `encode` method, I first check if the `key` attribute is `None`. If it is, I generate a random key using the `random` module. I then use the `ord` function to get the ASCII value of each character in the `text` and add the corresponding value from the `key` to it. I then use the `chr` function to convert the resulting value back to a character.
+* In the `decode` method, I first check if the `key` attribute is `None`. If it is, I generate a random key using the `random` module. I then use the `ord` function to get the ASCII value of each character in the `text` and subtract the corresponding value from the `key` from it. I then use the `chr` function to convert the resulting value back to a character.
+
+Note that this implementation is not secure and should not be used for actual cryptography. It is only intended for educational purposes.
+---

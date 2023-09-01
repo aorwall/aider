@@ -1,0 +1,227 @@
+method: on_llm_start [2023-08-31 13:30:58]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "huggingface_endpoint", "HuggingFaceEndpoint"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a helpful Senior Developer helping a Human to write code.
+
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+* ALL files should be presented in the following format:
+Filepath: file_path
+```language
+code
+```
+
+
+Examples:
+[INST]Write a function called factorial that takes an integer n as an argument and calculates the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```[/INST] Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+I added a new file.
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+<</SYS>>
+# Instructions
+
+Score a bowling game.
+
+Bowling is a game where players roll a heavy ball to knock down pins arranged in a triangle.
+Write code to keep track of the score of a game of bowling.
+
+## Scoring Bowling
+
+The game consists of 10 frames.
+A frame is composed of one or two ball throws with 10 pins standing at frame initialization.
+There are three cases for the tabulation of a frame.
+
+- An open frame is where a score of less than 10 is recorded for the frame.
+  In this case the score for the frame is the number of pins knocked down.
+
+- A spare is where all ten pins are knocked down by the second throw.
+  The total value of a spare is 10 plus the number of pins knocked down in their next throw.
+
+- A strike is where all ten pins are knocked down by the first throw.
+  The total value of a strike is 10 plus the number of pins knocked down in the next two throws.
+  If a strike is immediately followed by a second strike, then the value of the first strike cannot be determined until the ball is thrown one more time.
+
+Here is a three frame example:
+
+| Frame 1         | Frame 2       | Frame 3                |
+| :-------------: |:-------------:| :---------------------:|
+| X (strike)      | 5/ (spare)    | 9 0 (open frame)       |
+
+Frame 1 is (10 + 5 + 5) = 20
+
+Frame 2 is (5 + 5 + 9) = 19
+
+Frame 3 is (9 + 0) = 9
+
+This means the current running total is 48.
+
+The tenth frame in the game is a special case.
+If someone throws a spare or a strike then they get one or two fill balls respectively.
+Fill balls exist to calculate the total of the 10th frame.
+Scoring a strike or spare on the fill ball does not give the player more fill balls.
+The total value of the 10th frame is the total number of pins knocked down.
+
+For a tenth frame of X1/ (strike and a spare), the total value is 20.
+
+For a tenth frame of XXX (three strikes), the total value is 30.
+
+## Requirements
+
+Write code to keep track of the score of a game of bowling.
+It should support two operations:
+
+- `roll(pins : int)` is called each time the player rolls a ball.
+  The argument is the number of pins knocked down.
+- `score() : int` is called only at the very end of the game.
+  It returns the total score for that game.
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to "throw" an error when the scoring or playing rules are not followed. The tests will only pass if you both `raise` the `exception` and include a message with it.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# example when a bonus is attempted with an open frame
+raise IndexError("cannot throw bonus with an open tenth frame")
+
+# example when fill balls are invalid
+raise ValueError("invalid fill balls")
+```
+
+####
+
+Use the above instructions to modify the supplied files: bowling.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+[/INST] I have updated the `bowling.py` file with the necessary changes to implement the scoring system for a game of bowling. Here is the updated file:</s>
+<s>[INST]Filepath: bowling.py
+```python
+class BowlingGame:
+    def __init__(self):
+        self.frames = []
+        self.bonus_rolls = 0
+        self.bonus_rolls_scores = []
+
+    def roll(self, pins):
+        if len(self.frames) == 10:
+            raise ValueError("cannot roll after game is over")
+
+        if pins < 0 or pins > 10:
+            raise ValueError("invalid number of pins")
+
+        if len(self.frames) == 9 and pins == 10:
+            raise ValueError("cannot throw bonus with an open tenth frame")
+
+        self.frames.append(pins)
+
+        if len(self.frames) == 10:
+            self.bonus_rolls = 0
+            self.bonus_rolls_scores = []
+
+        if len(self.frames) == 10 and pins == 10:
+            self.bonus_rolls += 1
+            self.bonus_rolls_scores.append(pins)
+
+        if len(self.frames) == 10 and self.bonus_rolls == 2:
+            self.bonus_rolls_scores.append(pins)
+
+    def score(self):
+        if len(self.frames) != 10:
+            raise ValueError("game is not over")
+
+        score = 0
+        for i in range(10):
+            if self.frames[i] == 10:
+                score += 10 + self.frames[i + 1] + self.frames[i + 2]
+            else:
+                score += self.frames[i]
+
+        if self.bonus_rolls == 1:
+            score += self.bonus_rolls_scores[0]
+        elif self.bonus_rolls == 2:
+            score += self.bonus_rolls_scores[0] + self.bonus_rolls_scores[1]
+
+        return score
+
+```
+.EEEEEE..EEEEEEEEEEEEE.EEEEEEEF
+====
+ERROR: test_a_spare_followed_by_zeros_is_worth_ten_points (bowling_test.BowlingTest.test_a_spare_followed_by_zeros_is_worth_ten_points)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 31, in test_a_spare_followed_by_zeros_is_worth_ten_points
+    game = self.roll_new_game(rolls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 16, in roll_new_game
+    game.roll(roll)
+  File "/home/albert/repos/albert/aider/bowling/bowling.py", line 9, in roll
+    raise ValueError("cannot roll after game is over")
+ValueError: cannot roll after game is over
+
+====
+ERROR: test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once (bowling_test.BowlingTest.test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 46, in test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once
+    game = self.roll_new_game(rolls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 16, in roll_new_game
+    game.roll(roll)
+  File "/home/albert/repos/albert/aider/bowling/bowling.py", line 9, in roll
+    raise ValueError("cannot roll after game is over")
+ValueError: cannot roll after game is over
+
+====
+ERROR: test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll (bowling_test.BowlingTest.test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 51, in test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll
+    game = self.roll_new_game(rolls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 16, in roll_new_game
+    game.roll(roll)
+  File "/home/albert/repos/albert/aider/bowling/bowling.py", line 9, in roll
+    raise ValueError("cannot roll after game is over")
+ValueError: cannot roll after game is over
+
+====
+ERROR: test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once (bowling_test.BowlingTest.test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 70, in test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once
+    game = self.roll_new_game(rolls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/albert/repos/albert/aider/bowling/bowling_test.py", line 16, in roll_new_game
+    game.roll(roll)
+  File "/home/albert/repos/albert/aider/bowling/bowling.py", line 9, in roll
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in bowling.py to resolve the errors.
+[/INST]
+

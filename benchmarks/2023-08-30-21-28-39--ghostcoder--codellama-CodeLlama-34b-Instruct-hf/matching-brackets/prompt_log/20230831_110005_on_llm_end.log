@@ -1,0 +1,30 @@
+method: on_llm_end [2023-08-31 11:00:05]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+def is_paired(input_string):
+    stack = []
+    for char in input_string:
+        if char == "(":
+            stack.append(")")
+        elif char == "{":
+            stack.append("}")
+        elif char == "[":
+            stack.append("]")
+        elif char in [")", "}", "]"]:
+            if not stack or char != stack.pop():
+                return False
+    return not stack
+[/PYTHON]
+
+Explanation:
+
+The `is_paired` function takes a string as input and checks if all the brackets in the string are correctly paired. The function uses a stack to keep track of the opening brackets and checks if the corresponding closing bracket is present in the correct order.
+
+The function first initializes an empty stack. Then it iterates through each character in the input string. If the character is an opening bracket, it is pushed onto the stack. If the character is a closing bracket, it is checked against the top element of the stack. If the top element is not the corresponding closing bracket, the function returns `False`. If the stack is empty or the closing bracket does not match the top element, the function also returns `False`.
+
+After iterating through the entire string, if the stack is not empty, it means that there are unmatched opening brackets, so the function returns `False`. Otherwise, if the stack is empty, it means that all the brackets are correctly paired, and the function returns `True`.
+
+The function uses a stack to keep track of the opening brackets and checks if the corresponding closing bracket is present in the correct order. This approach ensures that the function can handle nested brackets correctly.
+---

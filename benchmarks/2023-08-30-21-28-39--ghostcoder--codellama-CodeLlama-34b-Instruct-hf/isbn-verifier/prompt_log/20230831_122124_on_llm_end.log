@@ -1,0 +1,49 @@
+method: on_llm_end [2023-08-31 12:21:24]
+llm_output: null
+prompt:
+ The code in isbn_verifier.py is not complete, and it is causing the test cases to fail. The function `is_valid` is not implemented, and it is returning `None` instead of a boolean value.
+
+To fix the code, you need to implement the `is_valid` function and make sure it returns a boolean value. You can use the test cases to guide your implementation.
+
+Here is an example of how you can implement the `is_valid` function:
+```python
+def is_valid(isbn):
+    # Check if the input is a valid ISBN
+    if not isbn.isdigit():
+        return False
+
+    # Check if the input is a valid ISBN-10
+    if len(isbn) == 10:
+        # Calculate the check digit
+        check_digit = 0
+        for i in range(9):
+            check_digit += int(isbn[i]) * (10 - i)
+        check_digit %= 11
+
+        # Check if the check digit is valid
+        if check_digit != int(isbn[9]):
+            return False
+
+    # Check if the input is a valid ISBN-13
+    elif len(isbn) == 13:
+        # Calculate the check digit
+        check_digit = 0
+        for i in range(12):
+            check_digit += int(isbn[i]) * (13 - i)
+        check_digit %= 11
+
+        # Check if the check digit is valid
+        if check_digit != int(isbn[12]):
+            return False
+
+    # If the input is not a valid ISBN-10 or ISBN-13, return False
+    else:
+        return False
+
+    # If the input is a valid ISBN, return True
+    return True
+```
+This implementation checks if the input is a valid ISBN-10 or ISBN-13, and returns `True` if it is, and `False` otherwise. It also checks if the check digit is valid for both ISBN-10 and ISBN-13.
+
+You can use this implementation to fix the code in isbn_verifier.py and make the test cases pass.
+---
