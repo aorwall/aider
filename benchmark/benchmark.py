@@ -815,6 +815,19 @@ class GhostCoderAgent(CodeAgent):
                     temperature=0.0,
                     callbacks=[_callback]
                 ))
+            elif provider == "exllama":
+                from ghostcoder.llm.exllama import Exllama
+                _llm = AlpacaLLMWrapper(Exllama(
+                    model_directory="/root/Phind-CodeLlama-34B-v2-GPTQ",
+                    temperature=0.01,
+                    top_k = 1,
+                    top_p = 0.01,
+                    max_new_tokens = 1024,
+                    max_seq_len = 8192,
+                    max_input_len = 6144,
+                    compress_pos_emb = 4
+                ))
+
             elif provider == "llamacpp":
                 from langchain import LlamaCpp
                 _llm = AlpacaLLMWrapper(LlamaCpp(
