@@ -798,7 +798,7 @@ class GhostCoderAgent(CodeAgent):
         from ghostcoder.callback import LogCallbackHandler
         from ghostcoder.actions import WriteCodeAction
         from ghostcoder.llm import LLMWrapper, LlamaLLMWrapper, ChatLLMWrapper
-        from ghostcoder.llm.alpaca import AlpacaLLMWrapper
+        from ghostcoder.llm.phind import PhindLLMWrapper
 
         import logging
         logging.basicConfig(level=logging.INFO)
@@ -817,7 +817,7 @@ class GhostCoderAgent(CodeAgent):
                 ))
             elif provider == "exllama":
                 from ghostcoder.llm.exllama import Exllama
-                _llm = AlpacaLLMWrapper(Exllama(
+                _llm = PhindLLMWrapper(Exllama(
                     model_directory="/root/Phind-CodeLlama-34B-v2-GPTQ",
                     temperature=0.01,
                     top_k = 1,
@@ -830,7 +830,7 @@ class GhostCoderAgent(CodeAgent):
                 ))
             elif provider == "llamacpp":
                 from langchain import LlamaCpp
-                _llm = AlpacaLLMWrapper(LlamaCpp(
+                _llm = PhindLLMWrapper(LlamaCpp(
                     model_path="/root/llama.cpp/models/Phind-CodeLlama-34B-v2-GGUF/phind-codellama-34b-v2.Q5_K_M.gguf",
                     temperature=0.0,
                     max_tokens=1000,
@@ -870,7 +870,7 @@ class GhostCoderAgent(CodeAgent):
                     temperature=0.01,
                 )
                 # TODO: Configure this
-                _llm = AlpacaLLMWrapper(
+                _llm = PhindLLMWrapper(
                     HuggingFacePipeline(pipeline=pipe,
                                         callbacks=[_callback],
                                         verbose=True))
