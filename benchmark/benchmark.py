@@ -891,7 +891,9 @@ class GhostCoderAgent(CodeAgent):
         self.action = WriteCodeAction(
             llm=_llm,
             repository=repository,
-            sys_prompt_id=edit_format
+            sys_prompt_id=edit_format,
+            role_prompt="Act as a an automated AI with superior programming skills.",
+            auto_mode=True,
         )
         self.chat_history_fname = testdir / ".chat.history.json"
         self.fnames = fnames
