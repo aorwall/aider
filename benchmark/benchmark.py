@@ -825,7 +825,8 @@ class GhostCoderAgent(CodeAgent):
                     max_new_tokens = 1024,
                     max_seq_len = 8192,
                     max_input_len = 6144,
-                    compress_pos_emb = 4
+                    compress_pos_emb = 4,
+                    callbacks=[_callback]
                 ))
             elif provider == "llamacpp":
                 from langchain import LlamaCpp
