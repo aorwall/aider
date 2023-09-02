@@ -827,7 +827,6 @@ class GhostCoderAgent(CodeAgent):
                     max_input_len = 6144,
                     compress_pos_emb = 4
                 ))
-
             elif provider == "llamacpp":
                 from langchain import LlamaCpp
                 _llm = AlpacaLLMWrapper(LlamaCpp(
@@ -874,13 +873,15 @@ class GhostCoderAgent(CodeAgent):
                     HuggingFacePipeline(pipeline=pipe,
                                         callbacks=[_callback],
                                         verbose=True))
-            else:
+            elif provider == "openai":
                 from langchain.chat_models import ChatOpenAI
                 _llm = ChatLLMWrapper(ChatOpenAI(
                     model=model_name,
                     temperature=0,
                     callbacks=[_callback]
                 ))
+            else:
+                raise ValueError(f"Unknown provider: {provider}")
         else:
             os.makedirs(testdir / "prompt_log", exist_ok=True)
             _callback.log_dir = str(testdir / "prompt_log")
