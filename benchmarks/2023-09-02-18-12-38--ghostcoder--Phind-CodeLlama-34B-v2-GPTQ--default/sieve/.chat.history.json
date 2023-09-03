@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "sieve.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou bought a big box of random computer parts at a garage sale.\nYou've started putting the parts together to build custom computers.\n\nYou want to test the performance of different combinations of parts, and decide to create your own benchmarking program to see how your computers compare.\nYou choose the famous \"Sieve of Eratosthenes\" algorithm, an ancient algorithm, but one that should push your computers to the limits.\n# Instructions\n\nYour task is to create a program that implements the Sieve of Eratosthenes algorithm to find prime numbers.\n\nA prime number is a number that is only divisible by 1 and itself.\nFor example, 2, 3, 5, 7, 11, and 13 are prime numbers.\n\nThe Sieve of Eratosthenes is an ancient algorithm that works by taking a list of numbers and crossing out all the numbers that aren't prime.\n\nA number that is **not** prime is called a \"composite number\".\n\nTo use the Sieve of Eratosthenes, you first create a list of all the numbers between 2 and your given number.\nThen you repeat the following steps:\n\n1. Find the next unmarked number in your list. This is a prime number.\n2. Mark all the multiples of that prime number as composite (not prime).\n\nYou keep repeating these steps until you've gone through every number in your list.\nAt the end, all the unmarked numbers are prime.\n\n~~~~exercism/note\n[Wikipedia's Sieve of Eratosthenes article][eratosthenes] has a useful graphic that explains the algorithm.\n\nThe tests don't check that you've implemented the algorithm, only that you've come up with the correct list of primes.\nA good first test is to check that you do not use division or remainder operations.\n\n[eratosthenes]: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes\n~~~~\n\n####\n\nUse the above instructions to modify the supplied files: sieve.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def primes(limit):\n    # Create a boolean array \"prime[0..n]\" and initialize all entries it as true.\n    # A value in prime[i] will finally be false if i is Not a prime, else true.\n    prime = [True for _ in range(limit + 1)]\n    p = 2\n    while (p * p <= limit):\n        # If prime[p] is not changed, then it is a prime\n        if (prime[p] == True):\n            # Update all multiples of p\n            for i in range(p * p, limit + 1, p):\n                prime[i] = False\n        p += 1\n\n    # Collect and return all prime numbers\n    return [p for p in range(2, limit) if prime[p]]\n",
+        "language": null,
+        "file_path": "sieve.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "sieve.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "F..F.\n====\nFAIL: test_find_first_prime (sieve_test.SieveTest)\n----\nTraceback (most recent call last):\n  File \"sieve/sieve_test.py\", line 17, in test_find_first_prime\n    self.assertEqual(primes(2), [2])\nAssertionError: Lists differ: [] != [2]\n\nSecond list contains 1 additional elements.\nFirst extra element 0:\n2\n\n- []\n+ [2]\n?  +\n\n\n====\nFAIL: test_limit_is_prime (sieve_test.SieveTest)\n----\nTraceback (most recent call last):\n  File \"sieve/sieve_test.py\", line 23, in test_limit_is_prime\n    self.assertEqual(primes(13), [2, 3, 5, 7, 11, 13])\nAssertionError: Lists differ: [2, 3, 5, 7, 11] != [2, 3, 5, 7, 11, 13]\n\nSecond list contains 1 additional elements.\nFirst extra element 5:\n13\n\n- [2, 3, 5, 7, 11]\n+ [2, 3, 5, 7, 11, 13]\n?                ++++\n\n\n----\n\n\nFAILED (failures=2)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in sieve.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def primes(limit):\n    # Create a boolean array \"prime[0..n]\" and initialize all entries it as true.\n    # A value in prime[i] will finally be false if i is Not a prime, else true.\n    prime = [True for _ in range(limit + 1)]\n    p = 2\n    while (p * p <= limit):\n        # If prime[p] is not changed, then it is a prime\n        if (prime[p] == True):\n            # Update all multiples of p\n            for i in range(p * p, limit + 1, p):\n                prime[i] = False\n        p += 1\n\n    # Collect and return all prime numbers\n    return [p for p in range(2, limit + 1) if prime[p]]\n",
+        "language": null,
+        "file_path": "sieve.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

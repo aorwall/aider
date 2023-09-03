@@ -1,0 +1,57 @@
+method: on_llm_end [2023-09-02 18:50:21]
+llm_output: null
+prompt:
+Here is how you can update `resistor_color_expert.py`:
+
+```python
+def resistor_label(colors):
+    color_codes = {
+        'black': 0,
+        'brown': 1,
+        'red': 2,
+        'orange': 3,
+        'yellow': 4,
+        'green': 5,
+        'blue': 6,
+        'violet': 7,
+        'grey': 8,
+        'white': 9
+    }
+    
+    multiplier_codes = {
+        'black': 1,
+        'brown': 10,
+        'red': 100,
+        'orange': 1000,
+        'yellow': 10000,
+        'green': 100000,
+        'blue': 1000000,
+        'violet': 10000000,
+        'grey': 100000000,
+        'gold': 0.1,
+        'silver': 0.01
+    }
+    
+    value_1 = color_codes[colors[0]] * 10
+    value_2 = color_codes[colors[1]]
+    multiplier = multiplier_codes[colors[2]]
+    tolerance = multiplier_codes[colors[3]] if len(colors) == 4 else None
+    
+    resistance = (value_1 + value_2) * multiplier
+    
+    unit = "ohms"
+    if resistance >= 1000:
+        resistance /= 1000
+        unit = "kiloohms"
+    elif resistance >= 1000000:
+        resistance /= 1000000
+        unit = "megaohms"
+        
+    label = f"{resistance} {unit}"
+    if tolerance is not None:
+        label += f" ±{tolerance}%"
+        
+    return label
+```
+This function first sets up dictionaries to map the colors to their corresponding values. Then it extracts `value_1`, `value_2`, `multiplier` and `tolerance` from the given colors. It calculates the resistance using these values, adjusting the unit of measurement accordingly. Finally, it generates a string representation for the resistor's label.
+---

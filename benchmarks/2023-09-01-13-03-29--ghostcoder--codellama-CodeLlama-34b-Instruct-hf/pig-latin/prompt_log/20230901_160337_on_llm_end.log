@@ -1,0 +1,31 @@
+method: on_llm_end [2023-09-01 16:03:37]
+llm_output: null
+prompt:
+ The issue is that the `translate` function is not implemented in `pig_latin.py`. The function is defined, but it does not contain any code to perform the translation.
+
+To fix the issue, you need to implement the translation logic in the `translate` function. Here's an example of how you could do this:
+```pyton
+def translate(text):
+    # Split the text into words
+    words = text.split()
+    # Iterate over each word and translate it
+    for i, word in enumerate(words):
+        # If the word starts with a vowel, add "ay" to the end
+        if word.startswith(("a", "e", "i", "o", "u")):
+            words[i] = word + "ay"
+        # If the word starts with a consonant, move it to the end and add "ay"
+        elif word.startswith(("b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z")):
+            words[i] = word[1:] + word[0] + "ay"
+        # If the word starts with a consonant followed by "qu", move it to the end and add "ay"
+        elif word.startswith(("qu")):
+            words[i] = word[2:] + word[0:2] + "ay"
+        # If the word contains a "y" after a consonant cluster or as the second letter in a two letter word, it makes a vowel sound
+        elif word.startswith(("y")):
+            words[i] = word[1:] + word[0] + "ay"
+    # Join the translated words back into a string
+    return " ".join(words)
+```
+This implementation splits the input text into individual words, iterates over each word, and applies the appropriate translation rules. It then joins the translated words back into a string and returns the result.
+
+With this implementation, the tests should pass.
+---

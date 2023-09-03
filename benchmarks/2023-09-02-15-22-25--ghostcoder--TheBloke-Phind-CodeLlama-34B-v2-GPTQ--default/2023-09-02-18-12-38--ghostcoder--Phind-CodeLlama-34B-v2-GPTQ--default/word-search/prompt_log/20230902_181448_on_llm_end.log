@@ -1,0 +1,41 @@
+method: on_llm_end [2023-09-02 18:14:48]
+llm_output: null
+prompt:
+Filepath: word_search.py
+```python
+class WordSearch:
+    def __init__(self, puzzle):
+        self.puzzle = puzzle
+        self.rows = len(puzzle)
+        self.cols = len(puzzle[0])
+        self.grid = [[''.join(row) for row in zip(*(iter(puzzle),) * 4)] for _ in range(4)]
+
+    # ...
+    
+    def _find_word(self, start_i, start_j, orientation, word):
+        i, j = start_i, start_j
+        first_position = Point(None, None)
+        last_position = Point(None, None)
+
+        for char in word:
+            while 0 <= i < self.rows and 0 <= j < self.cols:
+                if 0 <= i < self.rows and 0 <= j < self.cols and self.grid[i][j] == char:
+                    if first_position.x is None:
+                        first_position.x, first_position.y = i, j
+                    last_position.x, last_position.y = i, j
+                    break
+                else:
+                    return None
+
+                i, j = i + orientation[0], j + orientation[1]
+            else:
+                return None
+
+            i += orientation[0]
+            j += orientation[1]
+
+        return [first_position, last_position]
+```
+
+I have updated the `_find_word` method to check whether `i` and `j` are within bounds before accessing `self.grid[i][j]`. This should resolve the IndexError issues from the test results.
+---

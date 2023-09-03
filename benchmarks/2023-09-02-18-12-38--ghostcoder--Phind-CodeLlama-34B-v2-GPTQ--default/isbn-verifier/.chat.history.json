@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "isbn_verifier.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nThe [ISBN-10 verification process][isbn-verification] is used to validate book identification numbers.\nThese normally contain dashes and look like: `3-598-21508-8`\n\n## ISBN\n\nThe ISBN-10 format is 9 digits (0 to 9) plus one check character (either a digit or an X only).\nIn the case the check character is an X, this represents the value '10'.\nThese may be communicated with or without hyphens, and can be checked for their validity by the following formula:\n\n```text\n(d\u2081 * 10 + d\u2082 * 9 + d\u2083 * 8 + d\u2084 * 7 + d\u2085 * 6 + d\u2086 * 5 + d\u2087 * 4 + d\u2088 * 3 + d\u2089 * 2 + d\u2081\u2080 * 1) mod 11 == 0\n```\n\nIf the result is 0, then it is a valid ISBN-10, otherwise it is invalid.\n\n## Example\n\nLet's take the ISBN-10 `3-598-21508-8`.\nWe plug it in to the formula, and get:\n\n```text\n(3 * 10 + 5 * 9 + 9 * 8 + 8 * 7 + 2 * 6 + 1 * 5 + 5 * 4 + 0 * 3 + 8 * 2 + 8 * 1) mod 11 == 0\n```\n\nSince the result is 0, this proves that our ISBN is valid.\n\n## Task\n\nGiven a string the program should check if the provided string is a valid ISBN-10.\nPutting this into place requires some thinking about preprocessing/parsing of the string prior to calculating the check digit for the ISBN.\n\nThe program should be able to verify ISBN-10 both with and without separating dashes.\n\n## Caveats\n\nConverting from strings to numbers can be tricky in certain languages.\nNow, it's even trickier since the check digit of an ISBN-10 may be 'X' (representing '10').\nFor instance `3-598-21507-X` is a valid ISBN-10.\n\n[isbn-verification]: https://en.wikipedia.org/wiki/International_Standard_Book_Number\n\n####\n\nUse the above instructions to modify the supplied files: isbn_verifier.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def is_valid(isbn):\n    # Remove hyphens from the ISBN\n    isbn = isbn.replace('-', '')\n\n    # Check if the length of the ISBN is 10 characters\n    if len(isbn) != 10:\n        return False\n\n    total = 0\n    for i in range(10):\n        # Multiply each digit by its weight in descending order\n        total += int(isbn[i]) * (10 - i)\n\n    # The check digit is 'X', which represents '10'\n    if isbn[-1] == 'X':\n        total += 10\n\n    # If the sum modulo 11 equals 0, then it is a valid ISBN-10\n    return total % 11 == 0\n",
+        "language": null,
+        "file_path": "isbn_verifier.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "isbn_verifier.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "EE...EE.E...E...E.E\n====\nERROR: test_check_digit_is_a_character_other_than_x (isbn_verifier_test.IsbnVerifierTest)\n----\nTraceback (most recent call last):\n  File \"isbn-verifier/isbn_verifier_test.py\", line 23, in test_check_digit_is_a_character_other_than_x\n    self.assertIs(is_valid(\"3-598-21507-A\"), False)\n  File \"isbn-verifier/isbn_verifier.py\", line 12, in is_valid\n    total += int(isbn[i]) * (10 - i)\nValueError: invalid literal for int() with base 10: 'A'\n\n====\nERROR: test_check_digit_of_x_should_not_be_used_for_0 (isbn_verifier_test.IsbnVerifierTest)\n----\nTraceback (most recent call last):\n  File \"isbn-verifier/isbn_verifier_test.py\", line 53, in test_check_digit_of_x_should_not_be_used_for_0\n    self.assertIs(is_valid(\"3-598-21515-X\"), False)\n  File \"isbn-verifier/isbn_verifier.py\", line 12, in is_valid\n    total += int(isbn[i]) * (10 - i)\nValueError: invalid literal for int() with base 10: 'X'\n\n====\nERROR: test_invalid_character_in_isbn_is_not_treated_as_zero (isbn_verifier_test.IsbnVerifierTest)\n----\nTraceback (most recent call last):\n  File \"isbn-verifier/isbn_verifier_test.py\", line 29, in test_invalid_character_in_isbn_is_not_treated_as_zero\n    self.assertIs(is_valid(\"3-598-P1581-X\"), False)\n  File \"isbn-verifier/isbn_verifier.py\", line 12, in is_valid\n    total += int(isbn[i]) * (10 - i)\nValueError: invalid literal for int() with base 10: 'P'\n\n====\nERROR: test_invalid_characters_are_not_ignored_after_checking_length (isbn_verifier_test.IsbnVerifierTest)\n----\nTraceback (most recent call last):\n  File \"isbn-verifier/isbn_verifier_test.py\", line 62, in test_invalid_characters_are_not_ignored_after_checking_length\n    self.assertIs(is_valid(\"3132P34035\"), False)\n  File \"isbn-verifier/isbn_verifier.py\", line 12, in is_valid\n    total += int(isbn[i]) * (10 - i)\nValueError: invalid literal for int() with base 10: 'P'\n\n====\nERROR: test_invalid_check_digit_in_isbn_is_not_treated_as_zero (isbn_verifier_test.IsbnVerifierTest)\n----\nTraceback (most recent call last):\n  File \"isbn-verifier/isbn_verifier_test.py\", line 26, in test_invalid_check_digit_in_isbn_is_not_treated_as_zero\n    self.assertIs(is_valid(\"4-598-21507-B\"), False)\n  File \"isbn-verifier/isbn_verifier.py\", line 12, in is_valid\n    total += int(isbn[i]) * (10 - i)\nValueError: invalid literal for int() with base 10: 'B'\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in isbn_verifier.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def is_valid(isbn):\n    # Remove hyphens from the ISBN\n    isbn = isbn.replace('-', '')\n\n    # Check if the length of the ISBN is 10 characters\n    if len(isbn) != 10:\n        return False\n\n    total = 0\n    for i in range(10):\n        # Multiply each digit by its weight in descending order\n        try:\n            total += int(isbn[i]) * (10 - i)\n        except ValueError:\n            return False\n\n    # The check digit is 'X', which represents '10'\n    if isbn[-1] == 'X':\n        total += 10\n\n    # If the sum modulo 11 equals 0, then it is a valid ISBN-10\n    return total % 11 == 0\n",
+        "language": null,
+        "file_path": "isbn_verifier.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

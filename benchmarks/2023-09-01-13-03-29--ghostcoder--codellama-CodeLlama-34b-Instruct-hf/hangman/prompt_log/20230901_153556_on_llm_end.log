@@ -1,0 +1,39 @@
+method: on_llm_end [2023-09-01 15:35:56]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+```
+class Hangman:
+    def __init__(self, word):
+        self.remaining_guesses = 9
+        self.status = "ongoing"
+        self.word = word
+        self.masked_word = len(word) * "*"
+
+    def guess(self, char):
+        if self.status != "ongoing":
+            raise ValueError("The game has already ended.")
+
+        if char in self.word:
+            for i, c in enumerate(self.word):
+                if c == char:
+                    self.masked_word = self.masked_word[:i] + char + self.masked_word[i+1:]
+
+            if self.masked_word == self.word:
+                self.status = "win"
+        else:
+            self.remaining_guesses -= 1
+            if self.remaining_guesses == 0:
+                self.status = "lose"
+
+    def get_masked_word(self):
+        return self.masked_word
+
+    def get_status(self):
+        return self.status
+
+```
+[/PYTHON]
+
+---

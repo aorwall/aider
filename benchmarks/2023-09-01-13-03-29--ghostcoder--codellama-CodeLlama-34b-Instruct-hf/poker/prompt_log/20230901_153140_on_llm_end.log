@@ -1,0 +1,87 @@
+method: on_llm_end [2023-09-01 15:31:40]
+llm_output: null
+prompt:
+ The code in poker.py is not complete, and it is causing the test cases to fail. The function `best_hands` is not implemented, and it is returning `None` instead of the expected output.
+
+To fix the code, you need to implement the `best_hands` function correctly. The function should take a list of poker hands as input and return the best hand(s) according to the rules of poker.
+
+Here is an example of how you can implement the `best_hands` function:
+```pyton
+def best_hands(hands):
+    # Initialize an empty list to store the best hands
+    best_hands = []
+
+    # Iterate over the list of hands
+    for hand in hands:
+        # Check if the current hand is the best hand so far
+        if is_best_hand(hand, best_hands):
+            # If it is, add it to the list of best hands
+            best_hands.append(hand)
+
+    # Return the list of best hands
+    return best_hands
+
+def is_best_hand(hand, best_hands):
+    # Initialize a variable to store the rank of the current hand
+    hand_rank = get_hand_rank(hand)
+
+    # Iterate over the list of best hands
+    for best_hand in best_hands:
+        # Check if the current hand has a higher rank than the best hand
+        if hand_rank > get_hand_rank(best_hand):
+            # If it does, return True
+            return True
+
+    # If the current hand is not the best hand, return False
+    return False
+
+def get_hand_rank(hand):
+    # Initialize a variable to store the rank of the hand
+    hand_rank = 0
+
+    # Check if the hand is a royal flush
+    if is_royal_flush(hand):
+        # If it is, set the rank to 10
+        hand_rank = 10
+    # Check if the hand is a straight flush
+    elif is_straight_flush(hand):
+        # If it is, set the rank to 9
+        hand_rank = 9
+    # Check if the hand is a four of a kind
+    elif is_four_of_a_kind(hand):
+        # If it is, set the rank to 8
+        hand_rank = 8
+    # Check if the hand is a full house
+    elif is_full_house(hand):
+        # If it is, set the rank to 7
+        hand_rank = 7
+    # Check if the hand is a flush
+    elif is_flush(hand):
+        # If it is, set the rank to 6
+        hand_rank = 6
+    # Check if the hand is a straight
+    elif is_straight(hand):
+        # If it is, set the rank to 5
+        hand_rank = 5
+    # Check if the hand is three of a kind
+    elif is_three_of_a_kind(hand):
+        # If it is, set the rank to 4
+        hand_rank = 4
+    # Check if the hand is two pair
+    elif is_two_pair(hand):
+        # If it is, set the rank to 3
+        hand_rank = 3
+    # Check if the hand is one pair
+    elif is_one_pair(hand):
+        # If it is, set the rank to 2
+        hand_rank = 2
+    # Check if the hand is high card
+    else:
+        # If it is, set the rank to 1
+        hand_rank = 1
+
+    # Return the rank of the hand
+    return hand_rank
+```
+This implementation of the `best_hands` function should fix the test cases and make them pass.
+---

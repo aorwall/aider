@@ -1,0 +1,115 @@
+method: on_llm_end [2023-09-01 14:33:24]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+def saddle_points(matrix):
+    """
+    Returns a list of tuples containing the coordinates of each saddle point
+    in the given matrix.
+    """
+    # Check if matrix is irregular
+    if len(matrix) == 0 or len(matrix[0]) == 0:
+        raise ValueError("Irregular matrix")
+
+    # Initialize empty list to store saddle point coordinates
+    saddle_points = []
+
+    # Iterate over each row in the matrix
+    for i in range(len(matrix)):
+        # Find the largest element in the row
+        max_row_value = max(matrix[i])
+        # Find the index of the largest element in the row
+        max_row_index = matrix[i].index(max_row_value)
+
+        # Check if the largest element in the row is the smallest element in the column
+        if matrix[i][max_row_index] == min(matrix[max_row_index]):
+            # If it is, add the coordinates to the list of saddle points
+            saddle_points.append((i, max_row_index))
+
+    return saddle_points
+[/PYTHON]
+
+Filepath: saddle_points.py
+
+```python
+def saddle_points(matrix):
+    """
+    Returns a list of tuples containing the coordinates of each saddle point
+    in the given matrix.
+    """
+    # Check if matrix is irregular
+    if len(matrix) == 0 or len(matrix[0]) == 0:
+        raise ValueError("Irregular matrix")
+
+    # Initialize empty list to store saddle point coordinates
+    saddle_points = []
+
+    # Iterate over each row in the matrix
+    for i in range(len(matrix)):
+        # Find the largest element in the row
+        max_row_value = max(matrix[i])
+        # Find the index of the largest element in the row
+        max_row_index = matrix[i].index(max_row_value)
+
+        # Check if the largest element in the row is the smallest element in the column
+        if matrix[i][max_row_index] == min(matrix[max_row_index]):
+            # If it is, add the coordinates to the list of saddle points
+            saddle_points.append((i, max_row_index))
+
+    return saddle_points
+
+```
+
+Filepath: test_saddle_points.py
+
+```python
+import pytest
+
+from saddle_points import saddle_points
+
+def test_empty_matrix():
+    assert saddle_points([[]]) == []
+
+def test_matrix_with_one_element():
+    assert saddle_points([[1]]) == []
+
+def test_matrix_with_one_row():
+    assert saddle_points([[1, 2, 3]]) == []
+
+def test_matrix_with_one_column():
+    assert saddle_points([[1], [2], [3]]) == []
+
+def test_matrix_with_saddle_point():
+    assert saddle_points([[1, 2, 3], [4, 5, 6], [7, 8, 9]]) == [(1, 1)]
+
+def test_matrix_with_multiple_saddle_points():
+    assert saddle_points([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]) == [(1, 1), (2, 2)]
+
+def test_matrix_with_irregular_shape():
+    with pytest.raises(ValueError):
+        saddle_points([[1, 2, 3], [4, 5, 6], [7, 8]])
+
+```
+
+Filepath: README.md
+
+```
+# Saddle Points
+
+Write a function that takes in a matrix of integers and returns a new matrix of the same dimensions containing the saddle points of the input matrix. A saddle point is an element that is both the largest in its row and the smallest in its column.
+
+For example, given the following matrix:
+
+```
+1  2  3
+4  5  6
+7  8  9
+```
+
+Your function should return the following matrix:
+
+```
+1  0  0
+0
+---

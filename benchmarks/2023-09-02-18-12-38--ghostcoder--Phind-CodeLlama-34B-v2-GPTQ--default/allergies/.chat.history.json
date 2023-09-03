@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "allergies.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven a person's allergy score, determine whether or not they're allergic to a given item, and their full list of allergies.\n\nAn allergy test produces a single numeric score which contains the information about all the allergies the person has (that they were tested for).\n\nThe list of items (and their value) that were tested are:\n\n- eggs (1)\n- peanuts (2)\n- shellfish (4)\n- strawberries (8)\n- tomatoes (16)\n- chocolate (32)\n- pollen (64)\n- cats (128)\n\nSo if Tom is allergic to peanuts and chocolate, he gets a score of 34.\n\nNow, given just that score of 34, your program should be able to say:\n\n- Whether Tom is allergic to any one of those allergens listed above.\n- All the allergens Tom is allergic to.\n\nNote: a given score may include allergens **not** listed above (i.e.  allergens that score 256, 512, 1024, etc.).\nYour program should ignore those components of the score.\nFor example, if the allergy score is 257, your program should only report the eggs (1) allergy.\n\n####\n\nUse the above instructions to modify the supplied files: allergies.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class Allergies:\n    def __init__(self, score):\n        self.score = score\n        self.allergens = {\n            1: 'eggs',\n            2: 'peanuts',\n            4: 'shellfish',\n            8: 'strawberries',\n            16: 'tomatoes',\n            32: 'chocolate',\n            64: 'pollen',\n            128: 'cats'}\n\n    def allergic_to(self, item):\n        mask = 2 ** (item - 1)\n        return bool(self.score & mask)\n\n    @property\n    def lst(self):\n        return [allergen for i in range(1, len(self.allergens)+1) if self.allergic_to(i)]\n",
+        "language": null,
+        "file_path": "allergies.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "allergies.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE.EEEEEEEEEE\n====\nERROR: test_allergic_only_to_cats (allergies_test.AllergiesTest)\n----\nTraceback (most recent call last):\n  File \"allergies/allergies_test.py\", line 122, in test_allergic_only_to_cats\n    self.assertIs(Allergies(128).allergic_to(\"cats\"), True)\n  File \"allergies/allergies.py\", line 15, in allergic_to\n    mask = 2 ** (item - 1)\nTypeError: unsupported operand type(s) for -: 'str' and 'int'\n\n====\nERROR: test_allergic_only_to_chocolate (allergies_test.AllergiesTest)\n----\nTraceback (most recent call last):\n  File \"allergies/allergies_test.py\", line 92, in test_allergic_only_to_chocolate\n    self.assertIs(Allergies(32).allergic_to(\"chocolate\"), True)\n  File \"allergies/allergies.py\", line 15, in allergic_to\n    mask = 2 ** (item - 1)\nTypeError: unsupported operand type(s) for -: 'str' and 'int'\n\n====\nERROR: test_allergic_only_to_eggs (allergies_test.AllergiesTest)\n----\nTraceback (most recent call last):\n  File \"allergies/allergies_test.py\", line 17, in test_allergic_only_to_eggs\n    self.assertIs(Allergies(1).allergic_to(\"eggs\"), True)\n  File \"allergies/allergies.py\", line 15, in allergic_to\n    mask = 2 ** (item - 1)\nTypeError: unsupported operand type(s) for -: 'str' and 'int'\n\n====\nERROR: test_allergic_only_to_peanuts (allergies_test.AllergiesTest)\n----\nTraceback (most recent call last):\n  File \"allergies/allergies_test.py\", line 32, in test_allergic_only_to_peanuts\n    self.assertIs(Allergies(2).allergic_to(\"peanuts\"), True)\n  File \"allergies/allergies.py\", line 15, in allergic_to\n    mask = 2 ** (item - 1)\nTypeError: unsupported operand type(s) for -: 'str' and 'int'\n\n====\nERROR: test_allergic_only_to_pollen (allergies_test.AllergiesTest)\n----\nTraceback (most recent call last):\n  File \"allergies/allergies_test.py\", line 107, in test_allergic_only_to_pollen\n    self.assertIs(Allergies(64).allergic_to(\"pollen\"), True)\n  File \"allergies/allergies.py\", line 15, in allergic_to\n    mask = 2 ** (item - 1)\nTypeError: unsupported operand type(s) for -: 'str' and 'int'\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in allergies.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class Allergies:\n    def __init__(self, score):\n        self.score = score\n        self.allergens = {\n            1: 'eggs',\n            2: 'peanuts',\n            4: 'shellfish',\n            8: 'strawberries',\n            16: 'tomatoes',\n            32: 'chocolate',\n            64: 'pollen',\n            128: 'cats'}\n\n    def allergic_to(self, item):\n        mask = 2 ** (item - 1)\n        return bool(self.score & mask)\n\n    @property\n    def lst(self):\n        return [allergen for i in range(1, len(self.allergens)+1) if self.allergic_to(i)]\n",
+        "language": null,
+        "file_path": "allergies.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

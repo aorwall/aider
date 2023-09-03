@@ -1,0 +1,111 @@
+method: on_llm_end [2023-09-01 13:09:29]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = database
+        if not self.database:
+            self.database = {}
+
+    def get(self, url, payload=None):
+        if url == "/users":
+            users = payload.get("users")
+            if users:
+                return {user: self.database.get(user, {}) for user in users}
+            return self.database
+
+        return None
+
+    def post(self, url, payload=None):
+        if url == "/add":
+            user = payload.get("user")
+            if user and user not in self.database:
+                self.database[user] = {}
+                return self.database[user]
+            return None
+
+        if url == "/iou":
+            lender = payload.get("lender")
+            borrower = payload.get("borrower")
+            amount = payload.get("amount")
+            if lender and borrower and amount:
+                lender_info = self.database.get(lender, {})
+                borrower_info = self.database.get(borrower, {})
+                lender_info["owes"] = lender_info.get("owes", {})
+                lender_info["owes"][borrower] = lender_info["owes"].get(borrower, 0) + amount
+                borrower_info["owed_by"] = borrower_info.get("owed_by", {})
+                borrower_info["owed_by"][lender] = borrower_info["owed_by"].get(lender, 0) + amount
+                self.database[lender] = lender_info
+                self.database[borrower] = borrower_info
+                return {"users": [lender_info, borrower_info]}
+            return None
+
+        return None
+[/PYTHON]
+
+Filepath: test_rest_api.py
+
+```python
+import unittest
+from rest_api import RestAPI
+
+class TestRestAPI(unittest.TestCase):
+    def setUp(self):
+        self.rest_api = RestAPI()
+
+    def test_get_users(self):
+        users = self.rest_api.get("/users")
+        self.assertEqual(users, {})
+
+        users = self.rest_api.get("/users", {"users": ["Adam", "Bob"]})
+        self.assertEqual(users, {})
+
+    def test_post_add(self):
+        user = self.rest_api.post("/add", {"user": "Adam"})
+        self.assertEqual(user, {})
+
+        user = self.rest_api.post("/add", {"user": "Adam"})
+        self.assertEqual(user, {})
+
+    def test_post_iou(self):
+        iou = self.rest_api.post("/iou", {"lender": "Adam", "borrower": "Bob", "amount": 5.25})
+        self.assertEqual(iou, {})
+
+        iou = self.rest_api.post("/iou", {"lender": "Adam", "borrower": "Bob", "amount": 5.25})
+        self.assertEqual(iou, {})
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+Filepath: rest_api.py
+
+```python
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = database
+        if not self.database:
+            self.database = {}
+
+    def get(self, url, payload=None):
+        if url == "/users":
+            users = payload.get("users")
+            if users:
+                return {user: self.database.get(user, {}) for user in users}
+            return self.database
+
+        return None
+
+    def post(self, url, payload=None):
+        if url == "/add":
+            user = payload.get("user")
+            if user and user not in self.database:
+                self.database[user] = {}
+                return self.database[user]
+            return None
+
+        if url == "/iou":
+            lender = payload.
+---

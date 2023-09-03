@@ -1,0 +1,172 @@
+method: on_llm_start [2023-09-02 18:54:12]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["ghostcoder", "llm", "exllama", "Exllama"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+
+### User Message
+Filepath: high_scores.py
+```pyton
+
+```
+
+# Instructions
+
+Manage a game player's High Score list.
+
+Your task is to build a high-score component of the classic Frogger game, one of the highest selling and most addictive games of all time, and a classic of the arcade era.
+Your task is to write methods that return the highest score from the list, the last added score and the three highest scores.
+# Instructions append
+
+In this exercise, you're going to use and manipulate lists. Python lists are very versatile, and you'll find yourself using them again and again in problems both simple and complex.
+
+- [**Data Structures (Python 3 Documentation Tutorial)**](https://docs.python.org/3/tutorial/datastructures.html)
+- [**Lists and Tuples in Python (Real Python)**](https://realpython.com/python-lists-tuples/)
+- [**Python Lists (Google for Education)**](https://developers.google.com/edu/python/lists)
+
+####
+
+Use the above instructions to modify the supplied files: high_scores.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+
+### Assistant
+Here's an updated version of `high_scores.py` with appropriate functionality as per your requirements:
+Filepath: high_scores.py
+```
+class HighScores:
+    def __init__(self, scores=None):
+        if scores is None:
+            self.scores = []
+        else:
+            self.scores = scores
+
+    def latest_score(self):
+        # Returns the last added score
+        return self.scores[-1] if self.scores else None
+
+    def personal_best(self):
+        # Returns the highest score from the list
+        return max(self.scores) if self.scores else None
+
+    def top_three_scores(self):
+        # Returns the three highest scores
+        sorted_scores = sorted(self.scores, reverse=True)[:3]
+        return sorted_scores if len(sorted_scores) == 3 else None
+
+    def add_score(self, score):
+        # Add a new score to the list
+        self.scores.append(score)
+
+```
+
+This implementation provides all required functionalities including keeping original code intact and adding new methods according to the problem statement.
+
+### User Message
+Filepath: high_scores.py
+```pyton
+class HighScores:
+    def __init__(self, scores=None):
+        if scores is None:
+            self.scores = []
+        else:
+            self.scores = scores
+
+    def latest_score(self):
+        # Returns the last added score
+        return self.scores[-1] if self.scores else None
+
+    def personal_best(self):
+        # Returns the highest score from the list
+        return max(self.scores) if self.scores else None
+
+    def top_three_scores(self):
+        # Returns the three highest scores
+        sorted_scores = sorted(self.scores, reverse=True)[:3]
+        return sorted_scores if len(sorted_scores) == 3 else None
+
+    def add_score(self, score):
+        # Add a new score to the list
+        self.scores.append(score)
+
+```
+
+EEE..EEEEE.E
+====
+ERROR: test_latest_score (high_scores_test.HighScoresTest)
+----
+Traceback (most recent call last):
+  File "high-scores/high_scores_test.py", line 21, in test_latest_score
+    self.assertEqual(HighScores(scores).latest(), expected)
+AttributeError: 'HighScores' object has no attribute 'latest'
+
+====
+ERROR: test_latest_score_after_personal_best (high_scores_test.HighScoresTest)
+----
+Traceback (most recent call last):
+  File "high-scores/high_scores_test.py", line 72, in test_latest_score_after_personal_best
+    self.assertEqual(highscores.latest(), expected)
+AttributeError: 'HighScores' object has no attribute 'latest'
+
+====
+ERROR: test_latest_score_after_personal_top_scores (high_scores_test.HighScoresTest)
+----
+Traceback (most recent call last):
+  File "high-scores/high_scores_test.py", line 57, in test_latest_score_after_personal_top_scores
+    highscores.personal_top_three()
+AttributeError: 'HighScores' object has no attribute 'personal_top_three'
+
+====
+ERROR: test_personal_top_highest_to_lowest (high_scores_test.HighScoresTest)
+----
+Traceback (most recent call last):
+  File "high-scores/high_scores_test.py", line 36, in test_personal_top_highest_to_lowest
+    self.assertEqual(HighScores(scores).personal_top_three(), expected)
+AttributeError: 'HighScores' object has no attribute 'personal_top_three'
+
+====
+ERROR: test_personal_top_three_from_a_list_of_scores (high_scores_test.HighScoresTest)
+----
+Traceback (most recent call last):
+  File "high-scores/high_scores_test.py", line 31, in test_personal_top_three_from_a_list_of_scores
+    self.assertEqual(HighScores(scores).personal_top_three(), expected)
+AttributeError: 'HighScores' object has no attribute 'personal_top_three'
+
+====
+ERROR: test_personal_top_when_there_are_less_than_3 (high_scores_test.HighScoresTest)
+----
+Traceback (most recent call last):
+  File "high-scores/high_scores_test.py", line 46, in test_personal_top_when_there_are_less_than_3
+    self.assertEqual(HighScores(scores).personal_top_three(), expected)
+AttributeError: 'HighScores' object has no attribute 'personal_top_three'
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in high_scores.py to resolve the errors.
+
+
+### Assistant
+
+

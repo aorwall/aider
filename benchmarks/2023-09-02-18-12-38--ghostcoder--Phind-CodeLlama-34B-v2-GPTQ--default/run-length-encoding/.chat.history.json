@@ -1,0 +1,95 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement run-length encoding and decoding.\n\nRun-length encoding (RLE) is a simple form of data compression, where runs (consecutive data elements) are replaced by just one data value and count.\n\nFor example we can represent the original 53 characters with only 13.\n\n```text\n\"WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB\"  ->  \"12WB12W3B24WB\"\n```\n\nRLE allows the original data to be perfectly reconstructed from the compressed data, which makes it a lossless data compression.\n\n```text\n\"AABCCCDEEEE\"  ->  \"2AB3CD4E\"  ->  \"AABCCCDEEEE\"\n```\n\nFor simplicity, you can assume that the unencoded string will only contain the letters A through Z (either lower or upper case) and whitespace.\nThis way data to be encoded will never contain any numbers and numbers inside data to be decoded always represent the count for the following character.\n\n####\n\nUse the above instructions to modify the supplied files: run_length_encoding.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here is an implementation of encode and decode functions using Python:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "def decode(string):\n    result = \"\"\n    number = \"\"\n    for char in string:\n        if char.isdigit():\n            number += char\n        else:\n            result += char * int(number) if number else char\n            number = \"\"\n    return result\n\n\ndef encode(string):\n    result = \"\"\n    current_char = None\n    counter = 0\n\n    for char in string:\n        if char != current_char:\n            if current_char is not None:\n                result += str(counter) + current_char\n            current_char = char\n            counter = 1\n        else:\n            counter += 1\n\n    if current_char is not None:\n        result += str(counter) + current_char\n\n    return result\n",
+        "language": null,
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": ".........FFF.\n====\nFAIL: test_encode_multiple_whitespace_mixed_in_string (run_length_encoding_test.RunLengthEncodingTest)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 30, in test_encode_multiple_whitespace_mixed_in_string\n    self.assertMultiLineEqual(encode(\"  hsqq qww  \"), \"2 hs2q q2w2 \")\nAssertionError: '2 1h1s2q1 1q2w2 ' != '2 hs2q q2w2 '\n- 2 1h1s2q1 1q2w2 \n?   - -   ^^^\n+ 2 hs2q q2w2 \n?       ^\n\n\n====\nFAIL: test_encode_single_characters_mixed_with_repeated_characters (run_length_encoding_test.RunLengthEncodingTest)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 24, in test_encode_single_characters_mixed_with_repeated_characters\n    self.assertMultiLineEqual(\nAssertionError: '12W1B12W3B24W1B' != '12WB12W3B24WB'\n- 12W1B12W3B24W1B\n?    -         -\n+ 12WB12W3B24WB\n\n\n====\nFAIL: test_encode_single_characters_only_are_encoded_without_count (run_length_encoding_test.RunLengthEncodingTest)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 18, in test_encode_single_characters_only_are_encoded_without_count\n    self.assertMultiLineEqual(encode(\"XYZ\"), \"XYZ\")\nAssertionError: '1X1Y1Z' != 'XYZ'\n- 1X1Y1Z\n+ XYZ\n\n\n----\n\n\nFAILED (failures=3)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in run_length_encoding.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here is an updated version of your encode function that should pass your tests:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "def decode(string):\n    result = \"\"\n    number = \"\"\n    for char in string:\n        if char.isdigit():\n            number += char\n        else:\n            result += char * int(number) if number else char\n            number = \"\"\n    return result\n\n\ndef encode(string):\n    result = \"\"\n    current_char = None\n    counter = 0\n\n    for char in string:\n        if char != current_char:\n            if current_char is not None:\n                result += str(counter) + current_char\n            current_char = char\n            counter = 1\n        else:\n            counter += 1\n\n    if current_char is not None:\n        result += str(counter) + current_char\n\n    return result.strip()\n",
+        "language": null,
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "This updated version includes a .strip() at the end of the returned result. This will remove any leading or trailing spaces which may have been added due to the encoding process.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

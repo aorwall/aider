@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import prompts
+from . import prompts
 import typer
 from imgcat import imgcat
 from rich.console import Console

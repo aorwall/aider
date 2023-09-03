@@ -1,0 +1,131 @@
+method: on_llm_end [2023-09-01 15:41:46]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+def classify(number):
+    """
+    A perfect number equals the sum of its positive divisors.
+
+    :param number: int a positive integer
+    :return: str the classification of the input integer
+    """
+    if not isinstance(number, int):
+        raise ValueError("Classification is only possible for positive integers.")
+    if number < 1:
+        raise ValueError("Classification is only possible for positive integers.")
+    divisors = []
+    for i in range(1, number + 1):
+        if number % i == 0:
+            divisors.append(i)
+    sum_of_divisors = sum(divisors)
+    if sum_of_divisors == number:
+        return "perfect"
+    elif sum_of_divisors > number:
+        return "abundant"
+    else:
+        return "deficient"
+[/PYTHON]
+
+[PYTHON]
+def get_divisors(n):
+    """
+    Returns the divisors of the given integer `n`.
+
+    :param n: int
+    :return: list[int]
+    """
+    if not isinstance(n, int):
+        raise ValueError("The input must be an integer.")
+    if n < 1:
+        raise ValueError("The input must be a positive integer.")
+    divisors = []
+    for i in range(1, n + 1):
+        if n % i == 0:
+            divisors.append(i)
+    return divisors
+[/PYTHON]
+
+[PYTHON]
+def get_aliquot_sum(n):
+    """
+    Returns the sum of the proper divisors of the given integer `n`.
+
+    :param n: int
+    :return: int
+    """
+    if not isinstance(n, int):
+        raise ValueError("The input must be an integer.")
+    if n < 1:
+        raise ValueError("The input must be a positive integer.")
+    return sum(get_divisors(n))
+[/PYTHON]
+
+[PYTHON]
+def is_perfect(n):
+    """
+    Returns True if the given integer `n` is perfect, False otherwise.
+
+    :param n: int
+    :return: bool
+    """
+    if not isinstance(n, int):
+        raise ValueError("The input must be an integer.")
+    if n < 1:
+        raise ValueError("The input must be a positive integer.")
+    return get_aliquot_sum(n) == n
+[/PYTHON]
+
+[PYTHON]
+def is_abundant(n):
+    """
+    Returns True if the given integer `n` is abundant, False otherwise.
+
+    :param n: int
+    :return: bool
+    """
+    if not isinstance(n, int):
+        raise ValueError("The input must be an integer.")
+    if n < 1:
+        raise ValueError("The input must be a positive integer.")
+    return get_aliquot_sum(n) > n
+[/PYTHON]
+
+[PYTHON]
+def is_deficient(n):
+    """
+    Returns True if the given integer `n` is deficient, False otherwise.
+
+    :param n: int
+    :return: bool
+    """
+    if not isinstance(n, int):
+        raise ValueError("The input must be an integer.")
+    if n < 1:
+        raise ValueError("The input must be a positive integer.")
+    return get_aliquot_sum(n) < n
+[/PYTHON]
+
+[PYTHON]
+def get_classification(n):
+    """
+    Returns the classification of the given integer `n`.
+
+    :param n: int
+    :return: str
+    """
+    if not isinstance(n, int):
+        raise ValueError("The input must be an integer.")
+    if n < 1:
+        raise ValueError("The input must be a positive integer.")
+    if is_perfect(n):
+        return "perfect"
+    elif is_abundant(n):
+        return "abundant"
+    else:
+        return "deficient"
+[/PYTHON]
+
+[PYTHON]
+def get_classification_using_divis
+---

@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "proverb.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nFor want of a horseshoe nail, a kingdom was lost, or so the saying goes.\n\nGiven a list of inputs, generate the relevant proverb.\nFor example, given the list `[\"nail\", \"shoe\", \"horse\", \"rider\", \"message\", \"battle\", \"kingdom\"]`, you will output the full text of this proverbial rhyme:\n\n```text\nFor want of a nail the shoe was lost.\nFor want of a shoe the horse was lost.\nFor want of a horse the rider was lost.\nFor want of a rider the message was lost.\nFor want of a message the battle was lost.\nFor want of a battle the kingdom was lost.\nAnd all for the want of a nail.\n```\n\nNote that the list of inputs may vary; your solution should be able to handle lists of arbitrary length and content.\nNo line of the output text should be a static, unchanging string; all should vary according to the input given.\n# Instructions append\n\nIn [concept:python/unpacking-and-multiple-assignment](https://github.com/exercism/python/tree/main/concepts/unpacking-and-multiple-assignment), you learned multiple techniques for working with `lists`/`tuples` of arbitrary length as well as function arguments of arbitrary length.\nThis exercise would be a great place to practice those techniques.\n\n## How this exercise is implemented for Python\n\nThe test cases for this track add an additional keyword argument called `qualifier`.\nYou should use this keyword arguments value to modify the final verse of your Proverb.\n\n####\n\nUse the above instructions to modify the supplied files: proverb.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def proverb(items):\n    if len(items) == 0:\n        return \"\"\n\n    verses = []\n    for i in range(len(items)-1):\n        verses.append(\"For want of a {} the {} was lost.\".format(items[i], items[i+1]))\n\n    qualifier_verse = \"And all for the want of a {}{}\".format(items[0], \".\")\n    if 'qualifier' in globals():\n        qualifier_verse += \" \" + str(qualifier)\n    verses.append(qualifier_verse)\n\n    return \"\\n\".join(verses)",
+        "language": null,
+        "file_path": "proverb.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "proverb.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "EEEEEEEE\n====\nERROR: test_an_optional_qualifier_can_be_added (proverb_test.ProverbTest)\n----\nTraceback (most recent call last):\n  File \"proverb/proverb_test.py\", line 80, in test_an_optional_qualifier_can_be_added\n    proverb(*input_data, qualifier=\"horseshoe\"),\nTypeError: proverb() got an unexpected keyword argument 'qualifier'\n\n====\nERROR: test_an_optional_qualifier_in_the_final_consequences (proverb_test.ProverbTest)\n----\nTraceback (most recent call last):\n  File \"proverb/proverb_test.py\", line 87, in test_an_optional_qualifier_in_the_final_consequences\n    proverb(*input_data, qualifier=\"horseshoe\"),\nTypeError: proverb() got an unexpected keyword argument 'qualifier'\n\n====\nERROR: test_four_pieces_modernized (proverb_test.ProverbTest)\n----\nTraceback (most recent call last):\n  File \"proverb/proverb_test.py\", line 66, in test_four_pieces_modernized\n    proverb(*input_data, qualifier=None),\nTypeError: proverb() got an unexpected keyword argument 'qualifier'\n\n====\nERROR: test_full_proverb (proverb_test.ProverbTest)\n----\nTraceback (most recent call last):\n  File \"proverb/proverb_test.py\", line 51, in test_full_proverb\n    proverb(*input_data, qualifier=None),\nTypeError: proverb() got an unexpected keyword argument 'qualifier'\n\n====\nERROR: test_one_piece (proverb_test.ProverbTest)\n----\nTraceback (most recent call last):\n  File \"proverb/proverb_test.py\", line 24, in test_one_piece\n    proverb(*input_data, qualifier=None), [\"And all for the want of a nail.\"]\nTypeError: proverb() got an unexpected keyword argument 'qualifier'\n\n====\nERROR: test_three_pieces (proverb_test.ProverbTest)\n----\nTraceback (most recent call last):\n  File \"proverb/proverb_test.py\", line 40, in test_three_pieces\n    proverb(*input_data, qualifier=None),\nTypeError: proverb() got an unexpected keyword argument 'qualifier'\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in proverb.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def proverb(items, *, qualifier=None):\n    if len(items) == 0:\n        return \"\"\n\n    verses = []\n    for i in range(len(items)-1):\n        verses.append(\"For want of a {} the {} was lost.\".format(items[i], items[i+1]))\n\n    qualifier_verse = \"And all for the want of a {}{}\".format(items[0], \".\")\n    if qualifier is not None:\n        qualifier_verse += \" \" + str(qualifier)\n    verses.append(qualifier_verse)\n\n    return \"\\n\".join(verses)",
+        "language": null,
+        "file_path": "proverb.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

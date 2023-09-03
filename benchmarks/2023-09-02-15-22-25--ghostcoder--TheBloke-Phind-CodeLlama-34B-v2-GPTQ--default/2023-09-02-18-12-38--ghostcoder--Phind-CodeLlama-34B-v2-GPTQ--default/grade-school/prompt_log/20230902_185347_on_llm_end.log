@@ -1,0 +1,42 @@
+method: on_llm_end [2023-09-02 18:53:47]
+llm_output: null
+prompt:
+Here is an updated version of the `grade_school.py` file which implements the required functionality:
+
+```python
+class School:
+    def __init__(self):
+        self._roster = {}
+
+    def add_student(self, name, grade):
+        if name in self._roster.get(grade, []):
+            return "Student already exists in this grade."
+        else:
+            if grade in self._roster:
+                self._roster[grade].append(name)
+            else:
+                self._roster[grade] = [name]
+            return "OK."
+
+    def roster(self):
+        return {grade: sorted(students) for grade, students in self._roster.items()}
+
+    def grade(self, grade_number):
+        if grade_number in self._roster:
+            return sorted(self._roster[grade_number])
+        else:
+            return []
+
+    def added(self):
+        return "\n".join([f"{name} in grade {grade}" for grade in sorted(self._roster) for name in sorted(self._roster[grade])])
+```
+This implementation uses a dictionary to store students by grade. The `add_student`, `roster`, `grade`, and `added` methods have been implemented according to the problem statement. 
+
+The `add_student` method checks whether a student with the same name is already present in the given grade. If so, it returns an error message. Otherwise, it adds the student to the specified grade or creates a new key-value pair in the dictionary if the grade does not exist yet.
+
+The `roster` method returns a copy of the entire school roster. It sorts the students' names alphabetically within each grade level using a dictionary comprehension.
+
+The `grade` method accepts a grade number as input and returns a list of students in that grade, sorted alphabetically.
+
+Finally, the `added` method combines all the grades and their respective students into one string, separating each student with a newline character. This is done by looping through the sorted grades and then the sorted students within each grade.
+---

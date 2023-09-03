@@ -1,0 +1,18 @@
+method: on_llm_end [2023-09-01 15:39:34]
+llm_output: null
+prompt:
+ The issue is that the `_compute_row` function is trying to access elements of the `row` list that do not exist. This is because the `row` list is initialized as an empty list, and then elements are added to it in the `for` loop. However, the `for` loop starts at index 0, so the first element that is added to the `row` list is at index 0, and the second element is added at index 1, and so on.
+
+To fix this issue, you can initialize the `row` list with the first element set to 1, and then add the remaining elements in the `for` loop. Here's the updated code:
+```pyton
+def _compute_row(row_index):
+    """
+    Returns a list of integers, where each integer represents the value at a position in a row of Pascal's Triangle.
+    """
+    row = [1]
+    for j in range(1, row_index + 1):
+        row.append(row[j - 1] + row[j])
+    return row
+```
+With this change, the tests should pass.
+---

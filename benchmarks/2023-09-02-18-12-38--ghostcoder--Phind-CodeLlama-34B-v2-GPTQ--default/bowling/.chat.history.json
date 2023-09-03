@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "bowling.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nScore a bowling game.\n\nBowling is a game where players roll a heavy ball to knock down pins arranged in a triangle.\nWrite code to keep track of the score of a game of bowling.\n\n## Scoring Bowling\n\nThe game consists of 10 frames.\nA frame is composed of one or two ball throws with 10 pins standing at frame initialization.\nThere are three cases for the tabulation of a frame.\n\n- An open frame is where a score of less than 10 is recorded for the frame.\n  In this case the score for the frame is the number of pins knocked down.\n\n- A spare is where all ten pins are knocked down by the second throw.\n  The total value of a spare is 10 plus the number of pins knocked down in their next throw.\n\n- A strike is where all ten pins are knocked down by the first throw.\n  The total value of a strike is 10 plus the number of pins knocked down in the next two throws.\n  If a strike is immediately followed by a second strike, then the value of the first strike cannot be determined until the ball is thrown one more time.\n\nHere is a three frame example:\n\n| Frame 1         | Frame 2       | Frame 3                |\n| :-------------: |:-------------:| :---------------------:|\n| X (strike)      | 5/ (spare)    | 9 0 (open frame)       |\n\nFrame 1 is (10 + 5 + 5) = 20\n\nFrame 2 is (5 + 5 + 9) = 19\n\nFrame 3 is (9 + 0) = 9\n\nThis means the current running total is 48.\n\nThe tenth frame in the game is a special case.\nIf someone throws a spare or a strike then they get one or two fill balls respectively.\nFill balls exist to calculate the total of the 10th frame.\nScoring a strike or spare on the fill ball does not give the player more fill balls.\nThe total value of the 10th frame is the total number of pins knocked down.\n\nFor a tenth frame of X1/ (strike and a spare), the total value is 20.\n\nFor a tenth frame of XXX (three strikes), the total value is 30.\n\n## Requirements\n\nWrite code to keep track of the score of a game of bowling.\nIt should support two operations:\n\n- `roll(pins : int)` is called each time the player rolls a ball.\n  The argument is the number of pins knocked down.\n- `score() : int` is called only at the very end of the game.\n  It returns the total score for that game.\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" an error when the scoring or playing rules are not followed. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# example when a bonus is attempted with an open frame\nraise IndexError(\"cannot throw bonus with an open tenth frame\")\n\n# example when fill balls are invalid\nraise ValueError(\"invalid fill balls\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: bowling.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class BowlingGame:\n    def __init__(self):\n        self.rolls = []\n        self.frames = [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]\n\n    def roll(self, pins):\n        if len(self.rolls) >= 21:\n            raise Exception('Cannot roll after game is over')\n\n        self.rolls.append(pins)\n\n    def score(self):\n        total_score = 0\n        roll_index = 0\n\n        for frame in range(10):\n            if roll_index == len(self.rolls):\n                break\n\n            if self.isStrike(frame):\n                total_score += self.strikeBonus(frame)\n                roll_index += 1\n            elif self.isSpare(frame):\n                total_score += self.spareBonus(frame)\n                roll_index += 2\n            else:\n                total_score += sum(self.rolls[roll_index : roll_index + 2])\n                roll_index += 2\n\n        if self.isStrike(9):\n            total_score += self.strikeBonus(9) + self.fillBalls()\n        elif self.isSpare(9):\n            total_score += self.spareBonus(9) + self.fillBalls()\n        else:\n            total_score += sum(self.rolls[-2:])\n\n        return total_score\n\n    def isStrike(self, frame):\n        return self.rolls[self.frames[frame][0]] == 10\n\n    def strikeBonus(self, frame):\n        return 10 + self.rolls[self.frames[frame][0] + 1] + self.rolls[self.frames[frame][0] + 2]\n\n    def isSpare(self, frame):\n        return sum(self.rolls[self.frames[frame]]) == 10\n\n    def spareBonus(self, frame):\n        return 10 + self.rolls[self.frames[frame][1]]\n\n    def fillBalls(self):\n        if len(self.rolls) >= 21:\n            raise Exception('Cannot have more than 21 rolls')\n\n        return self.rolls[-2:]\n",
+        "language": null,
+        "file_path": "bowling.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "bowling.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "FEEEEEE..F.....FEEEEEEFFEEEFEFF\n====\nERROR: test_a_spare_followed_by_zeros_is_worth_ten_points (bowling_test.BowlingTest)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 32, in test_a_spare_followed_by_zeros_is_worth_ten_points\n    self.assertEqual(game.score(), 10)\n  File \"bowling/bowling.py\", line 23, in score\n    elif self.isSpare(frame):\n  File \"bowling/bowling.py\", line 46, in isSpare\n    return sum(self.rolls[self.frames[frame]]) == 10\nTypeError: list indices must be integers or slices, not list\n\n====\nERROR: test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once (bowling_test.BowlingTest)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 47, in test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once\n    self.assertEqual(game.score(), 17)\n  File \"bowling/bowling.py\", line 23, in score\n    elif self.isSpare(frame):\n  File \"bowling/bowling.py\", line 46, in isSpare\n    return sum(self.rolls[self.frames[frame]]) == 10\nTypeError: list indices must be integers or slices, not list\n\n====\nERROR: test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll (bowling_test.BowlingTest)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 52, in test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll\n    self.assertEqual(game.score(), 10)\n  File \"bowling/bowling.py\", line 23, in score\n    elif self.isSpare(frame):\n  File \"bowling/bowling.py\", line 46, in isSpare\n    return sum(self.rolls[self.frames[frame]]) == 10\nTypeError: list indices must be integers or slices, not list\n\n====\nERROR: test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once (bowling_test.BowlingTest)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 71, in test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once\n    self.assertEqual(game.score(), 18)\n  File \"bowling/bowling.py\", line 23, in score\n    elif self.isSpare(frame):\n  File \"bowling/bowling.py\", line 46, in isSpare\n    return sum(self.rolls[self.frames[frame]]) == 10\nTypeError: list indices must be integers or slices, not list\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in bowling.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class BowlingGame:\n    def __init__(self):\n        self.rolls = []\n        self.frames = [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]\n\n    def roll(self, pins):\n        if len(self.rolls) >= 21:\n            raise Exception('Cannot roll after game is over')\n\n        self.rolls.append(pins)\n\n    def score(self):\n        total_score = 0\n        roll_index = 0\n\n        for frame in range(10):\n            if roll_index == len(self.rolls):\n                break\n\n            if self.isStrike(frame):\n                total_score += self.strikeBonus(frame)\n                roll_index += 1\n            elif self.isSpare(frame):\n                total_score += self.spareBonus(frame)\n                roll_index += 2\n            else:\n                total_score += sum(self.rolls[roll_index : roll_index + 2])\n                roll_index += 2\n\n        if self.isStrike(9):\n            total_score += self.strikeBonus(9) + self.fillBalls()\n        elif self.isSpare(9):\n            total_score += self.spareBonus(9) + self.fillBalls()\n        else:\n            total_score += sum(self.rolls[-2:])\n\n        return total_score\n\n    def isStrike(self, frame):\n        return self.rolls[self.frames[frame][0]] == 10\n\n    def strikeBonus(self, frame):\n        return 10 + self.rolls[self.frames[frame][0] + 1] + self.rolls[self.frames[frame][0] + 2]\n\n    def isSpare(self, frame):\n        return self.rolls[self.frames[frame][0]] + self.rolls[self.frames[frame][1]] == 10\n\n    def spareBonus(self, frame):\n        return 10 + self.rolls[self.frames[frame][1]]\n\n    def fillBalls(self):\n        if len(self.rolls) >= 21:\n            raise Exception('Cannot have more than 21 rolls')\n\n        return self.rolls[-2:]\n",
+        "language": null,
+        "file_path": "bowling.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

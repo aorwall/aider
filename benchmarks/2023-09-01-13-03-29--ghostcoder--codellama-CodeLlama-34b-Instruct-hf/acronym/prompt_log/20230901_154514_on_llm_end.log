@@ -1,0 +1,32 @@
+method: on_llm_end [2023-09-01 15:45:14]
+llm_output: null
+prompt:
+ The issue is that the code is not handling the underscore character correctly. The test is expecting the acronym to be "TRNT", but the code is returning "TR_T".
+
+To fix this, you can modify the code to replace underscores with spaces before extracting the first letter of each word:
+```pyton
+def abbreviate(words):
+    """
+    Convert a phrase to its acronym.
+
+    Args:
+        words (str): The phrase to convert.
+
+    Returns:
+        str: The acronym of the phrase.
+    """
+    # Remove punctuation
+    words = words.replace("-", " ").strip()
+
+    # Replace underscores with spaces
+    words = words.replace("_", " ")
+
+    # Extract the first letter of each word
+    acronym = ""
+    for word in words.split():
+        acronym += word[0]
+
+    return acronym.upper()
+```
+With this modification, the test should pass.
+---

@@ -1,0 +1,30 @@
+method: on_llm_end [2023-09-01 16:10:51]
+llm_output: null
+prompt:
+ The issue is that the `value` dictionary is not defined in the `lst` property. To fix this, you can define the `value` dictionary as a class attribute, like this:
+```pyton
+class Allergies:
+
+    value = {
+        "eggs": 1,
+        "peanuts": 2,
+        "shellfish": 4,
+        "strawberries": 8,
+        "tomatoes": 16,
+        "chocolate": 32,
+        "pollen": 64,
+        "cats": 128
+    }
+
+    def __init__(self, score):
+        self.score = score
+
+    def allergic_to(self, item):
+        return self.score & value[item]
+
+    @property
+    def lst(self):
+        return [k for k, v in value.items() if self.score & v]
+```
+This way, the `value` dictionary is available to the `lst` property, and the tests should pass.
+---

@@ -1,0 +1,311 @@
+method: on_llm_start [2023-09-02 18:17:16]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["ghostcoder", "llm", "exllama", "Exllama"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+
+### User Message
+Filepath: ocr_numbers.py
+```pyton
+
+```
+
+# Instructions
+
+Given a 3 x 4 grid of pipes, underscores, and spaces, determine which number is represented, or whether it is garbled.
+
+## Step One
+
+To begin with, convert a simple binary font to a string containing 0 or 1.
+
+The binary font uses pipes and underscores, four rows high and three columns wide.
+
+```text
+     _   #
+    | |  # zero.
+    |_|  #
+         # the fourth row is always blank
+```
+
+Is converted to "0"
+
+```text
+         #
+      |  # one.
+      |  #
+         # (blank fourth row)
+```
+
+Is converted to "1"
+
+If the input is the correct size, but not recognizable, your program should return '?'
+
+If the input is the incorrect size, your program should return an error.
+
+## Step Two
+
+Update your program to recognize multi-character binary strings, replacing garbled numbers with ?
+
+## Step Three
+
+Update your program to recognize all numbers 0 through 9, both individually and as part of a larger string.
+
+```text
+ _
+ _|
+|_
+
+```
+
+Is converted to "2"
+
+```text
+      _  _     _  _  _  _  _  _  #
+    | _| _||_||_ |_   ||_||_|| | # decimal numbers.
+    ||_  _|  | _||_|  ||_| _||_| #
+                                 # fourth line is always blank
+```
+
+Is converted to "1234567890"
+
+## Step Four
+
+Update your program to handle multiple numbers, one per line.
+When converting several lines, join the lines with commas.
+
+```text
+    _  _
+  | _| _|
+  ||_  _|
+
+    _  _
+|_||_ |_
+  | _||_|
+
+ _  _  _
+  ||_||_|
+  ||_| _|
+
+```
+
+Is converted to "123,456,789".
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to "throw" a `ValueError` when the `convert()` function receives a string that isn't a valid OCR number. The tests will only pass if you both `raise` the `exception` and include a message with it.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# when the rows aren't multiples of 4
+raise ValueError("Number of input lines is not a multiple of four")
+
+# when the columns aren't multiples of 3
+raise ValueError("Number of input columns is not a multiple of three")
+```
+
+####
+
+Use the above instructions to modify the supplied files: ocr_numbers.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+
+### Assistant
+Filepath: ocr_numbers.py
+```
+def convert(input_grid):
+    # Check for correct size
+    num_rows = len(input_grid)
+    num_cols = len(input_grid[0])
+
+    if (num_rows % 4 != 0) or (num_cols != 3 * (num_rows // 4)):
+        raise ValueError("Invalid size for OCR grid")
+
+    # Convert each digit in the grid
+    result = []
+    for i in range(0, num_rows, 4):
+        digit_str = ""
+        for j in range(0, num_cols, 3):
+            # Classify the digit using its pipes and underscores
+            top = input_grid[i][j+1] == " "
+            upper_right = input_grid[i][j+2] == "_"
+            middle = input_grid[i+1][j+1] == "|"
+            lower_left = input_grid[i+2][j+1] == " "
+            lower_right = input_grid[i+2][j+2] == " "
+            bottom = input_grid[i+3][j+1] == "|"
+
+            # Map this classification to a number
+            if top:
+                if upper_right:
+                    if middle:
+                        if lower_left:
+                            if bottom:
+                                digit_str += "1"
+                            else:
+                                digit_str += "?"
+                        elif lower_right:
+                            digit_str += "7"
+                        else:
+                            digit_str += "8"
+                    elif lower_left:
+                        digit_str += "2"
+                    else:
+                        digit_str += "6"
+                elif middle:
+                    digit_str += "0"
+                else:
+                    digit_str += "9"
+            else:
+                if upper_right:
+                    digit_str += "5"
+                else:
+                    digit_str += "4"
+
+        result.append(digit_str)
+
+    return ",".join(result)
+
+
+```
+
+
+### User Message
+Filepath: ocr_numbers.py
+```pyton
+def convert(input_grid):
+    # Check for correct size
+    num_rows = len(input_grid)
+    num_cols = len(input_grid[0])
+
+    if (num_rows % 4 != 0) or (num_cols != 3 * (num_rows // 4)):
+        raise ValueError("Invalid size for OCR grid")
+
+    # Convert each digit in the grid
+    result = []
+    for i in range(0, num_rows, 4):
+        digit_str = ""
+        for j in range(0, num_cols, 3):
+            # Classify the digit using its pipes and underscores
+            top = input_grid[i][j+1] == " "
+            upper_right = input_grid[i][j+2] == "_"
+            middle = input_grid[i+1][j+1] == "|"
+            lower_left = input_grid[i+2][j+1] == " "
+            lower_right = input_grid[i+2][j+2] == " "
+            bottom = input_grid[i+3][j+1] == "|"
+
+            # Map this classification to a number
+            if top:
+                if upper_right:
+                    if middle:
+                        if lower_left:
+                            if bottom:
+                                digit_str += "1"
+                            else:
+                                digit_str += "?"
+                        elif lower_right:
+                            digit_str += "7"
+                        else:
+                            digit_str += "8"
+                    elif lower_left:
+                        digit_str += "2"
+                    else:
+                        digit_str += "6"
+                elif middle:
+                    digit_str += "0"
+                else:
+                    digit_str += "9"
+            else:
+                if upper_right:
+                    digit_str += "5"
+                else:
+                    digit_str += "4"
+
+        result.append(digit_str)
+
+    return ",".join(result)
+
+
+```
+
+EFFFFFEFFFFFFFFEF
+====
+ERROR: test_garbled_numbers_in_a_string_are_replaced_with (ocr_numbers_test.OcrNumbersTest)
+----
+Traceback (most recent call last):
+  File "ocr-numbers/ocr_numbers_test.py", line 57, in test_garbled_numbers_in_a_string_are_replaced_with
+    convert(
+  File "ocr-numbers/ocr_numbers.py", line 7, in convert
+    raise ValueError("Invalid size for OCR grid")
+ValueError: Invalid size for OCR grid
+
+====
+ERROR: test_recognizes_110101100 (ocr_numbers_test.OcrNumbersTest)
+----
+Traceback (most recent call last):
+  File "ocr-numbers/ocr_numbers_test.py", line 44, in test_recognizes_110101100
+    convert(
+  File "ocr-numbers/ocr_numbers.py", line 7, in convert
+    raise ValueError("Invalid size for OCR grid")
+ValueError: Invalid size for OCR grid
+
+====
+ERROR: test_recognizes_string_of_decimal_numbers (ocr_numbers_test.OcrNumbersTest)
+----
+Traceback (most recent call last):
+  File "ocr-numbers/ocr_numbers_test.py", line 94, in test_recognizes_string_of_decimal_numbers
+    convert(
+  File "ocr-numbers/ocr_numbers.py", line 7, in convert
+    raise ValueError("Invalid size for OCR grid")
+ValueError: Invalid size for OCR grid
+
+====
+FAIL: test_input_with_a_number_of_columns_that_is_not_a_multiple_of_three_raises_an_error (ocr_numbers_test.OcrNumbersTest)
+----
+Traceback (most recent call last):
+  File "ocr-numbers/ocr_numbers_test.py", line 38, in test_input_with_a_number_of_columns_that_is_not_a_multiple_of_three_raises_an_error
+    self.assertEqual(
+AssertionError: 'Invalid size for OCR grid' != 'Number of input columns is not a multiple of three'
+- Invalid size for OCR grid
++ Number of input columns is not a multiple of three
+
+
+====
+FAIL: test_input_with_a_number_of_lines_that_is_not_a_multiple_of_four_raises_an_error (ocr_numbers_test.OcrNumbersTest)
+----
+Traceback (most recent call last):
+  File "ocr-numbers/ocr_numbers_test.py", line 28, in test_input_with_a_number_of_lines_that_is_not_a_multiple_of_four_raises_an_error
+    self.assertEqual(
+AssertionError: 'Invalid size for OCR grid' != 'Number of input lines is not a multiple of four'
+- Invalid size for OCR grid
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in ocr_numbers.py to resolve the errors.
+
+
+### Assistant
+
+

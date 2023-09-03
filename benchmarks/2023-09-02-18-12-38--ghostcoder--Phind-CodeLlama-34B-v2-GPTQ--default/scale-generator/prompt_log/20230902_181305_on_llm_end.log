@@ -1,0 +1,35 @@
+method: on_llm_end [2023-09-02 18:13:05]
+llm_output: null
+prompt:
+Here is an updated version of `scale_generator.py` that should meet your requirements:
+
+```python
+class Scale:
+    def __init__(self, tonic):
+        self.tonic = tonic.upper()
+
+    def chromatic(self):
+        chromatic_notes = ["A", "B♭", "B", "C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭"]
+        return [note for note in chromatic_notes if self._shift_chromatic_scale().index(note) >= chromatic_notes.index(self.tonic)]
+
+    def interval(self, intervals):
+        diatonic_scale = []
+        index = 0
+        for i in intervals:
+            if i == 'M':
+                index += 2
+            elif i == 'm':
+                index += 1
+            else:
+                raise ValueError("Invalid interval")
+            diatonic_scale.append(self._shift_chromatic_scale()[index % 12])
+        return diatonic_scale
+
+    def _shift_chromatic_scale(self):
+        all_notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+        tonic_index = all_notes.index(self.tonic)
+        return all_notes[tonic_index:] + all_notes[:tonic_index]
+```
+
+This implementation includes two methods within the `Scale` class: `chromatic()` and `interval()`. The `chromatic()` method generates a list of notes from the chromatic scale starting with the given tonic. The `interval()` method generates a custom diatonic scale based on the provided intervals. Both methods utilize the private `_shift_chromatic_scale()` method to shift the base chromatic scale so that it starts with the given tonic.
+---

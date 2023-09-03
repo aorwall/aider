@@ -1,0 +1,27 @@
+method: on_llm_end [2023-09-02 19:07:20]
+llm_output: null
+prompt:
+Here is an implementation of `hexa` function that converts hexadecimal numbers to their decimal equivalents. The function checks if the input is valid and then proceeds with the conversion. It raises an exception for invalid inputs.
+
+```python
+def hexa(hex_string):
+    # Define a dictionary for all possible hexadecimal digits
+    hex_dict = {str(i): i for i in range(10)}
+    hex_dict.update({"A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15})
+    
+    # Check if the input is valid
+    for char in hex_string:
+        if char.upper() not in hex_dict:
+            raise ValueError("Invalid hexadecimal string")
+    
+    # Convert the hexadecimal number to its decimal equivalent
+    decimal = 0
+    power = len(hex_string) - 1
+    for char in hex_string:
+        decimal += hex_dict[char.upper()] * (16 ** power)
+        power -= 1
+    
+    return decimal
+```
+This code defines a Python function named `hexa`. If you pass a valid hexadecimal string to this function, it returns its decimal equivalent. If the input is not valid, it raises a `ValueError` with a message saying "Invalid hexadecimal string".
+---

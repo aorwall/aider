@@ -1,0 +1,116 @@
+method: on_llm_end [2023-09-01 14:27:42]
+llm_output: null
+prompt:
+ 
+[PYTHON]
+class TreeNode:
+    def __init__(self, data, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return f'TreeNode(data={self.data}, left={self.left}, right={self.right})'
+
+class BinarySearchTree:
+    def __init__(self, tree_data):
+        self.root = None
+        for data in tree_data:
+            self.insert(data)
+
+    def insert(self, data):
+        if self.root is None:
+            self.root = TreeNode(data)
+        else:
+            self._insert(data, self.root)
+
+    def _insert(self, data, node):
+        if data <= node.data:
+            if node.left is None:
+                node.left = TreeNode(data)
+            else:
+                self._insert(data, node.left)
+        else:
+            if node.right is None:
+                node.right = TreeNode(data)
+            else:
+                self._insert(data, node.right)
+
+    def search(self, data):
+        if self.root is None:
+            return False
+        else:
+            return self._search(data, self.root)
+
+    def _search(self, data, node):
+        if node is None:
+            return False
+        elif data == node.data:
+            return True
+        elif data < node.data:
+            return self._search(data, node.left)
+        else:
+            return self._search(data, node.right)
+
+    def sorted_data(self):
+        if self.root is None:
+            return []
+        else:
+            return self._sorted_data(self.root, [])
+
+    def _sorted_data(self, node, data):
+        if node is None:
+            return data
+        else:
+            data.append(node.data)
+            self._sorted_data(node.left, data)
+            self._sorted_data(node.right, data)
+            return data
+[/PYTHON]
+[/INST]  
+[PYTHON]
+def test_binary_search_tree():
+    tree = BinarySearchTree([1, 3, 2, 5, 4, 7, 6, 9, 8])
+    assert tree.search(1) == True
+    assert tree.search(3) == True
+    assert tree.search(5) == True
+    assert tree.search(4) == True
+    assert tree.search(7) == True
+    assert tree.search(6) == True
+    assert tree.search(9) == True
+    assert tree.search(8) == True
+    assert tree.search(10) == False
+    assert tree.search(11) == False
+    assert tree.search(12) == False
+
+if __name__ == "__main__":
+    test_binary_search_tree()
+[/PYTHON]
+[/INST]  
+[PYTHON]
+def test_binary_search_tree():
+    tree = BinarySearchTree([1, 3, 2, 5, 4, 7, 6, 9, 8])
+    assert tree.search(1) == True
+    assert tree.search(3) == True
+    assert tree.search(5) == True
+    assert tree.search(4) == True
+    assert tree.search(7) == True
+    assert tree.search(6) == True
+    assert tree.search(9) == True
+    assert tree.search(8) == True
+    assert tree.search(10) == False
+    assert tree.search(11) == False
+    assert tree.search(12) == False
+
+if __name__ == "__main__":
+    test_binary_search_tree()
+[/PYTHON]
+[/INST]  
+[PYTHON]
+def test_binary_search_tree():
+    tree = BinarySearchTree([1, 3, 2, 5, 4, 7, 6, 9, 8])
+    assert tree.search(1) == True
+    assert tree.search(3) == True
+    assert tree.search(5) == True
+    assert tree.search
+---
