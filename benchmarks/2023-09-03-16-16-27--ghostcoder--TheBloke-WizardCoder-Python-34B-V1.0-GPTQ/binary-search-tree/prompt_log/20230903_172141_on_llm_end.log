@@ -1,0 +1,74 @@
+method: on_llm_end [2023-09-03 17:21:41]
+llm_output: null
+prompt:
+Here's an implementation for the `BinarySearchTree` class with the required methods:
+
+```python
+class TreeNode:
+    def __init__(self, data, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return f'TreeNode(data={self.data}, left={self.left}, right={self.right})'
+
+
+class BinarySearchTree:
+    def __init__(self, tree_data):
+        self.root = None
+        for num in tree_data:
+            self.add(num)
+
+    
+    def add(self, data):
+        """Adds a new element to the BST"""
+        if not self.root:
+            self.root = TreeNode(data)
+        else:
+            curr = self.root
+            while True:
+                if data < curr.data:
+                    if not curr.left:
+                        curr.left = TreeNode(data)
+                        break
+                    else:
+                        curr = curr.left
+                elif data > curr.data:
+                    if not curr.right:
+                        curr.right = TreeNode(data)
+                        break
+                    else:
+                        curr = curr.right
+
+    
+    def _sorted_data(self, node, result):
+        """Helper method to get the sorted data recursively"""
+        if node:
+            self._sorted_data(node.left, result)
+            result.append(node.data)
+            self._sorted_data(node.right, result)
+
+    
+    @property
+    def data(self):
+        """Returns the root node of the BST"""
+        return self.root
+
+    
+    def sorted_data(self):
+        """Returns the sorted list of data in the BST"""
+        result = []
+        self._sorted_data(self.root, result)
+        return result
+```
+
+Explanation:
+- The `__init__()` method takes a list of integers as input and initializes the BST using those values.
+- The `add()` method adds a new value to the BST by traversing through the tree until finding the correct position based on whether the value is smaller or larger than the current node's data. If there is no left or right child, it creates a new node and sets it accordingly.
+- `_sorted_data()` is a helper method used by `sorted_data()`. It appends the data of each node to a list in order by recursively traversing the left and right subtrees.
+- `data` property returns the root node of the BST.
+- `sorted_data()` method uses the helper method to traverse the entire tree and append the data of each node to a list, which is returned after sorting.
+
+Note: This implementation assumes that duplicates are allowed in the BST. If you want to disallow duplicates, you should check for equality before adding a new node. 
+---

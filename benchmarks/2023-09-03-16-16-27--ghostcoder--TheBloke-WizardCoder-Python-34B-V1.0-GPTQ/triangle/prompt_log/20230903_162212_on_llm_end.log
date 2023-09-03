@@ -1,0 +1,34 @@
+method: on_llm_end [2023-09-03 16:22:12]
+llm_output: null
+prompt:
+Great job! The updated implementation for `isosceles` and `scalene` looks good. Here's an example of how you can write the test cases for these functions using pytest:
+
+```python
+import pytest
+from triangle import equilateral, isosceles, scalene
+
+class TestTriangles:
+    def test_equilateral(self):
+        assert equilateral([3, 3, 3]) == True
+        assert equilateral([3, 4, 3]) == False
+        assert equilateral([3, 3, 4]) == False
+        
+    def test_isosceles(self):
+        assert isosceles([3, 4, 4]) == True
+        assert isosceles([3, 4, 5]) == False
+        assert isosceles([3, 3, 4]) == True
+        assert isosceles([3, 3, 3]) == False
+        assert isosceles([0.5, 0.4, 0.5]) == True
+        
+    def test_scalene(self):
+        assert scalene([3, 4, 5]) == True
+        assert scalene([3, 4, 4]) == False
+        assert scalene([3, 3, 4]) == False
+        assert scalene([3, 3, 3]) == False
+        assert scalene([0.5, 0.6, 0.7]) == True
+```
+
+You can run this with `pytest -v` to see the results of your tests. If any failures occur, they will be printed out along with the traceback information that caused them.
+
+Note that we don't need to check for invalid input like negative numbers or zero values since those were already handled by the first condition in each function (`len(set(sides)`). This ensures that the inputs are always positive and distinct. 
+---

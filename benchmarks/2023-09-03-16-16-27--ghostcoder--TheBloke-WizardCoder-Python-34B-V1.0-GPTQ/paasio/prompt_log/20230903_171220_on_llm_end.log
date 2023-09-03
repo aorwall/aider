@@ -1,0 +1,182 @@
+method: on_llm_end [2023-09-03 17:12:20]
+llm_output: null
+prompt:
+Here is an implementation of `MeteredFile` and `MeteredSocket`:
+
+```python
+import os
+from functools import wraps
+
+
+class MeteredFile(object):
+    """A file wrapper that counts read and write operations as well as bytes transferred."""
+
+    def __init__(self, fd, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None):
+        self._file = open(fd, mode=mode, buffering=buffering, encoding=encoding, errors=errors, newline=newline, closefd=closefd, opener=opener)
+        self._read_bytes = 0
+        self._read_count = 0
+        self._write_bytes = 0
+        self._write_count = 0
+
+    def __getattr__(self, attr):
+        return getattr(self._file, attr)
+
+    
+    def _update_read_stats(self, length):
+        if length > 0:
+            self._read_bytes += length
+            self._read_count += 1
+
+    def _update_write_stats(self, length):
+        if length > 0:
+            self._write_bytes += length
+            self._write_count += 1
+
+    
+    def read(self, size=-1):
+        chunk = self._file.read(size)
+        self._update_read_stats(len(chunk))
+        return chunk
+
+    @property
+    def read_bytes(self):
+        return self._read_bytes
+
+
+    @property
+    def read_ops(self):
+        return self._read_count
+
+
+    def write(self, b):
+        written = self._file.write(b)
+        self._update_write_stats(written)
+        return written
+
+
+    @property
+    def write_bytes(self):
+        return self._write_bytes
+
+
+    @property
+    def write_ops(self):
+        return self._write_count
+
+
+    def __enter__(self):
+        return self
+
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._file.__exit__(exc_type, exc_val, exc_tb)
+
+
+    def __iter__(self):
+        return iter(self._file)
+
+
+    def __next__(self):
+        chunk = next(self._file)
+        self._update_read_stats(len(chunk))
+        return chunk
+
+
+
+class MeteredSocket(object):
+    """A socket wrapper that counts received and sent bytes."""
+
+    def __init__(self, sock):
+        self._sock = sock
+        self._recv_bytes = 0
+        self._send_bytes = 0
+        self._recv_count = 0
+        self._send_count = 0
+
+    def __getattr__(self, attr):
+        return getattr(self._sock, attr)
+
+
+    def _update_recv_stats(self, length):
+        if length > 0:
+            self._recv_bytes += length
+            self._recv_count += 1
+
+    def _update_send_stats(self, length):
+        if length > 0:
+            self._send_bytes += length
+            self._send_count += 1
+
+    def recv(self, buffersize, flags=0):
+        chunk = self._sock.recv(buffersize, flags)
+        self._update_recv_stats(len(chunk))
+        return chunk
+
+    @property
+    def recv_bytes(self):
+        return self._recv_bytes
+
+
+    @property
+    def recv_ops(self):
+        return self._recv_count
+
+
+    def send(self, data, flags=0):
+        sent = self._sock.send(data, flags)
+        self._update_send_stats(sent)
+        return sent
+
+
+    @property
+    def send_bytes(self):
+        return self._send_bytes
+
+
+    @property
+    def send_ops(self):
+        return self._send_count
+
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            self._sock.__exit__(exc_type, exc_val, exc_tb)
+        except AttributeError:
+            # If the underlying socket doesn't support context manager protocol (Python <3.2), just ignore it.
+            pass
+
+    def settimeout(self, timeout):
+        self._sock.settimeout(timeout)
+
+    def connect(self, address):
+        self._sock.connect(address)
+
+    def bind(self, address):
+        self._sock.bind(address)
+
+    def listen(self, backlog):
+        self._sock.listen(backlog)
+
+    def accept(self):
+        conn, addr = self._sock.accept()
+        return MeteredSocket(conn), addr
+
+    def sendall(self, data, flags=0):
+        self._sock.sendall(data, flags)
+        self._update_send_stats(len(data))
+
+    def makefile(self, mode='r', buffering=None, encoding=None, newline=None, *args, **kwargs):
+        return MeteredFile(self._sock.makefile(*args, mode=mode, buffering=buffering, encoding=encoding, newline=newline, **kwargs))
+
+    def shutdown(self, how):
+        self._sock.shutdown(how)
+
+    def close(self):
+        self._sock.close()
+```
+
+This implementation
+---

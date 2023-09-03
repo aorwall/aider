@@ -1,0 +1,43 @@
+method: on_llm_end [2023-09-03 18:36:52]
+llm_output: null
+prompt:
+Here's the modified implementation for the given problem statement:
+
+```python
+class Node:
+    def __init__(self, value=None, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+def tree_from_traversals(preorder, inorder):
+    """Construct a binary tree from its preorder and inorder traversals"""
+    # Raise exceptions if inputs are invalid
+    if len(set(preorder)) != len(preorder) or len(set(inorder)) != len(inorder):
+        raise ValueError("Traversals must contain unique items")
+    elif len(preorder) != len(inorder):
+        raise ValueError("Traversals must have the same length")
+    
+    if not preorder or not inorder:
+        return None
+    else:
+        root_val = preorder[0]
+        root = Node(root_val)
+        index = inorder.index(root_val)
+        left_inorder = inorder[:index]
+        right_inorder = inorder[index+1:]
+        left_preorder = preorder[1:len(left_inorder)+1]
+        right_preorder = preorder[len(left_inorder)+1:]
+        root.left = tree_from_traversals(left_preorder, left_inorder)
+        root.right = tree_from_traversals(right_preorder, right_inorder)
+        return root
+```
+
+Explanation:
+
+The function takes two lists - `preorder` and `inorder`. It initializes a new node object with the first element of `preorder`, which is supposed to be the root of the tree.
+Then, it finds the position of the root in `inorder` list using the `index()` method. Using this position, we divide the `inorder` list into two parts - left subtree and right subtree. We then recursively call the function on these subtrees by passing their respective preorder and inorder traversals until all nodes are constructed.
+
+
+We also check for some edge cases like empty input lists or non-unique elements in the traversals and raise appropriate errors accordingly. 
+---

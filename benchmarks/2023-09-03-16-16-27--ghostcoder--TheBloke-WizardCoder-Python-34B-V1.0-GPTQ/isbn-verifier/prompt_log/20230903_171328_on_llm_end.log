@@ -1,0 +1,24 @@
+method: on_llm_end [2023-09-03 17:13:28]
+llm_output: null
+prompt:
+Here's one possible implementation of the `is_valid()` function using regular expressions to extract digits from the input string and handle the case where the last character is "X" as a special case:
+
+
+```python
+import re
+
+def is_valid(isbn):
+    # Remove all non-numeric characters and convert remaining characters to integers
+    digits = [int(c) if c != "X" else 10 for c in re.sub("[^0-9X]", "", isbn)]
+    
+    # Calculate the sum of each digit multiplied by its position weight
+    total = sum([digits[i] * (10 - i) for i in range(len(digits))])
+    
+    return total % 11 == 0
+```
+
+This code uses the `re.sub()` method to remove all non-numeric characters from the input string, including whitespace and dashes. It also converts any "X" characters to the integer value 10.
+Then it calculates the sum of each digit multiplied by its position weight (starting at 10), which is equivalent to multiplying the first digit by 10, second digit by 9, third digit by 8, etc., and checks whether the result is divisible by 11.
+
+Note that we assume here that the input string has already been normalized so that there are no extraneous characters or incorrect formatting issues such as too many or too few digits. The unit tests cover various cases of valid and invalid inputs, but you could add more test cases if desired. 
+---

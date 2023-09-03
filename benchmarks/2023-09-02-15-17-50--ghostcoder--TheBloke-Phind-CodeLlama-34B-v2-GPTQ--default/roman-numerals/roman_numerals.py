@@ -1,3 +1,0 @@
-def roman(number):
-    pass
-

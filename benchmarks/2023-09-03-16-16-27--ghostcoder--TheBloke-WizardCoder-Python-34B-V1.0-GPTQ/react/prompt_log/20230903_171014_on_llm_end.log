@@ -1,0 +1,75 @@
+method: on_llm_end [2023-09-03 17:10:14]
+llm_output: null
+prompt:
+Here's a possible solution for `InputCell` and `ComputeCell`:
+
+```python
+import weakref
+
+class InputCell:
+    def __init__(self, initial_value=None):
+        self._value = initial_value
+        self._callbacks = []
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_val):
+        if self._value != new_val:
+            self._value = new_val
+            for cb in self._callbacks:
+                cb()
+
+    def add_callback(self, callback):
+        self._callbacks.append(weakref.WeakMethod(callback))
+
+    def remove_callback(self, callback):
+        try:
+            self._callbacks.remove(weakref.WeakMethod(callback))
+        except ValueError:
+            pass
+
+
+class ComputeCell:
+    def __init__(self, inputs, func):
+        self._inputs = inputs
+        self._func = func
+        self._value = None
+        self._callbacks = []
+        
+        # Add callbacks to all input cells so that we can recalculate when they change.
+        for cell in self._inputs:
+            cell.add_callback(lambda: self.recalc())
+
+        self.recalc()  # calculate our initial value
+
+    def recalc(self):
+        values = [c.value for c in self._inputs]
+        self._value = self._func(*values)
+        for cb in self._callbacks:
+            cb()
+
+    def add_callback(self, callback):
+        self._callbacks.append(weakref.WeakMethod(callback))
+
+    def remove_callback(self, callback):
+        try:
+            self._callbacks.remove(weakref.WeakMethod(callback))
+        except ValueError:
+            pass
+
+    @property
+    def value(self):
+        return self._value
+```
+
+In this implementation, each `InputCell` has a `_callbacks` attribute which is a list of methods to be called whenever its value changes. Whenever an `InputCell`'s value is set using the property `value`, it iterates over its callbacks and calls them. We use `weakref.WeakMethod` instead of regular references to avoid creating reference cycles between cells and their callbacks.
+
+Each `ComputeCell` also keeps track of its dependencies (`_inputs`) and a function (`_func`). It adds itself as a callback to each dependency, and updates its own value by calling the function with the current values of those dependencies. The `recalc()` method does this calculation and then calls any registered callbacks on itself.
+
+Note that I added a default argument `initial_value=None` to `InputCell.__init__()`, since otherwise there would be no way to create an empty `InputCell`. Also note that I changed the name of the `compute_function` parameter to `func` to match Python naming conventions.
+
+I hope this helps! Let me know if you have any questions or need further clarification. 
+---

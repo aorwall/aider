@@ -1,0 +1,35 @@
+method: on_llm_end [2023-09-03 17:46:40]
+llm_output: null
+prompt:
+There are two syntax errors in the code:
+
+1. Missing closing parenthesis for `datetime.date` function call on line 36.
+2. Indentation issue on lines 38 and 39.
+
+Here's the corrected version of the code:
+
+```python
+import calendar
+from datetime import date
+
+def meetup(year, month, week, day_of_week):
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    try:
+        weekday_number = days.index(day_of_week.title()) + 1 # get index of day of week (0 based) and add 1 since Monday is 1
+    except ValueError:
+        raise MeetupDayException()
+
+    if week < 1 or week > 5:
+        raise MeetupDayException("Week must be between 1 and 5")
+
+    num_days = calendar.monthrange(year, month)[1]
+    if week == 5:
+        return datetime.date(year, month, num_days - ((num_days % 7) + 2))
+    elif week == 1:
+        return datetime.date(year, month, weekday_number)
+    else:
+        return datetime.date(year, month, weekday_number + (week-1)*7 + (weekday_number <= 4))
+```
+
+I added the missing closing parenthesis for `datetime.date()` function call on line 36 and fixed indentation issues by aligning it with previous lines. 
+---

@@ -1,0 +1,58 @@
+method: on_llm_end [2023-09-03 17:04:51]
+llm_output: null
+prompt:
+Here's one possible implementation of the `roman` function that converts an integer to its equivalent Roman numeral representation:
+
+
+```python
+def roman(num):
+    if num < 1 or num > 39999:
+        raise ValueError("Number must be between 1 and 39999")
+    
+    # Define symbols for each digit place and their values
+    val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    syb = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+    
+    # Build the Roman numeral string by iterating through the digits and subtracting their values until we reach 0
+    res = ""
+    for v, s in zip(val, syb):
+        while num >= v:
+            res += s
+            num -= v
+    
+    return res
+```
+
+We start by checking that the input number is within the valid range (between 1 and 39999), then define two lists: `val` contains the decimal values of each symbol, and `syb` contains the corresponding symbols.
+
+Next, we iterate over both lists simultaneously using `zip`, comparing each pair of values and adding the appropriate symbol to our output string (`res`) until the remaining number becomes less than the current value. We keep track of the subtraction by decrementing `num`. Finally, we return the resulting string.
+
+
+Note that we could also use a dictionary instead of two separate lists, like so:
+
+
+```python
+symbols = {
+    1000: 'M',
+    900: 'CM',
+    500: 'D',
+    400: 'CD',
+    100: 'C',
+    90: 'XC',
+    50: 'L',
+    40: 'XL',
+    10: 'X',
+    9: 'IX',
+    5: 'V',
+    4: 'IV',
+    1: 'I'
+}
+
+for v, s in symbols.items():
+    while num >= v:
+        res += s
+        num -= v
+```
+
+But since the list approach works just fine, there's no need to complicate things further. 
+---

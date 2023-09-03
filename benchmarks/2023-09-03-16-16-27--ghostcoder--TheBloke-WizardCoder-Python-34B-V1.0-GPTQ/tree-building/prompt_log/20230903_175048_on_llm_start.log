@@ -1,0 +1,140 @@
+method: on_llm_start [2023-09-03 17:50:48]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+### Instruction:
+Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```
+def factorial(n):
+    pass
+```
+
+### Response:
+Explanation:
+In the factorial function, we initialize a variable result with the value 1, and then use a for-loop to multiply result by each integer from 2 up to n. The final value of result is returned as the factorial of n.
+Filepath: factorial.py
+```
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+
+### Instruction:
+# Instructions
+
+Refactor a tree building algorithm.
+
+Some web-forums have a tree layout, so posts are presented as a tree.
+However the posts are typically stored in a database as an unsorted set of records.
+Thus when presenting the posts to the user the tree structure has to be reconstructed.
+
+Your job will be to refactor a working but slow and ugly piece of code that implements the tree building logic for highly abstracted records.
+The records only contain an ID number and a parent ID number.
+The ID number is always between 0 (inclusive) and the length of the record list (exclusive).
+All records have a parent ID lower than their own ID, except for the root record, which has a parent ID that's equal to its own ID.
+
+An example tree:
+
+```text
+root (ID: 0, parent ID: 0)
+|-- child1 (ID: 1, parent ID: 0)
+|    |-- grandchild1 (ID: 2, parent ID: 1)
+|    +-- grandchild2 (ID: 4, parent ID: 1)
++-- child2 (ID: 3, parent ID: 0)
+|    +-- grandchild3 (ID: 6, parent ID: 3)
++-- child3 (ID: 5, parent ID: 0)
+```
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you refactor how/where the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) is used to "throw" a `ValueError` for invalid tree input. The tests will only pass if the code both `raise`s the appropriate `exception` and includes an appropriate message with it.
+
+####
+
+Use the above instructions to modify the supplied files: tree_building.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: tree_building.py
+```python
+class Record:
+    def __init__(self, record_id, parent_id):
+        self.record_id = record_id
+        self.parent_id = parent_id
+
+
+class Node:
+    def __init__(self, node_id):
+        self.node_id = node_id
+        self.children = []
+
+
+def BuildTree(records):
+    root = None
+    records.sort(key=lambda x: x.record_id)
+    ordered_id = [i.record_id for i in records]
+    if records:
+        if ordered_id[-1] != len(ordered_id) - 1:
+            raise ValueError('broken tree')
+        if ordered_id[0] != 0:
+            raise ValueError('invalid')
+    trees = []
+    parent = {}
+    for i in range(len(ordered_id)):
+        for j in records:
+            if ordered_id[i] == j.record_id:
+                if j.record_id == 0:
+                    if j.parent_id != 0:
+                        raise ValueError('error!')
+                if j.record_id < j.parent_id:
+                    raise ValueError('something went wrong!')
+                if j.record_id == j.parent_id:
+                    if j.record_id != 0:
+                        raise ValueError('error!')
+                trees.append(Node(ordered_id[i]))
+    for i in range(len(ordered_id)):
+        for j in trees:
+            if i == j.node_id:
+                parent = j
+        for j in records:
+            if j.parent_id == i:
+                for k in trees:
+                    if k.node_id == 0:
+                        continue
+                    if j.record_id == k.node_id:
+                        child = k
+                        parent.children.append(child)
+    if len(trees) > 0:
+        root = trees[0]
+    return root
+
+```
+
+
+### Response:
+
+

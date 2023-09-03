@@ -1,0 +1,29 @@
+method: on_llm_end [2023-09-03 17:29:12]
+llm_output: null
+prompt:
+Here's a possible implementation for `largest_product` that should fix the issues with the provided tests:
+
+```python
+def largest_product(digits, n):
+    if not digits or len(digits) < n:
+        return None
+    
+    max_product = -float('inf')
+    for i in range(len(digits)-n+1):
+        product = int(digits[i]) * int(digits[i+1 : i+n].lstrip('0'))
+        if product > max_product:
+            max_product = product
+    
+    return max_product
+```
+
+Explanation:
+
+- The function first checks whether there are enough digits in the input string to form a series of length `n`. If not, it returns `None`.
+- It initializes `max_product` as negative infinity so that any valid product will be greater than it.
+- Then it iterates over all possible starting positions of the series and calculates its value by multiplying the current digit (`int(digits[i]`) with the remaining digits stripped from leading zeros (`int(digits[i+1 : i+n].lstrip('0')`). This is done because we don't want to include trailing zeroes when calculating the product.
+- For each iteration, it updates `max_product` if the calculated product is greater than the previous maximum.
+- Finally, it returns the maximum product found.
+
+Note that this implementation assumes that the input only contains digits. If non-digit characters may appear in the input, you can add some validation before calling `int()` on them. 
+---

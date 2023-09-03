@@ -1,0 +1,32 @@
+method: on_llm_end [2023-09-03 17:58:41]
+llm_output: null
+prompt:
+Here's the modified implementation for the `Queen` class:
+
+```python
+class Queen:
+    def __init__(self, row, column):
+        self.row = row
+        self.col = column
+        
+        # Check if row and col are non-negative integers
+        if not (isinstance(row, int) and isinstance(column, int)):
+            raise ValueError("Row and Column must be integers.")
+        elif row < 0 or column < 0:
+            raise ValueError("Row and Column cannot be negative.")
+        elif not (1 <= row <= 8 and 1 <= column <= 8):
+            raise ValueError("Row and Column must be between 1 and 8 inclusive.")
+
+    
+    def can_attack(self, another_queen):
+        if self.row == another_queen.row and self.col == another_queen.col:
+            raise ValueError("Invalid queen position: both queens in the same square")
+        return (self.row == another_queen.row or self.col == another_queen.col or abs(self.row - another_queen.row) == abs(self.col - another_queen.col))
+```
+
+In the `__init__` method, we check whether the input parameters are integers and within the range of 1 to 8. If either condition fails, we raise a `ValueError`. We then store them as instance variables.
+
+The `can_attack` method checks if two queens are on the same square by comparing their positions directly. If so, we raise a `ValueError`, otherwise we calculate if they can attack each other using the given conditions.
+
+Note that we assume that the chessboard has dimensions 8x8. If you want to make it generic, you could add a size parameter to the class and update the conditions accordingly. 
+---

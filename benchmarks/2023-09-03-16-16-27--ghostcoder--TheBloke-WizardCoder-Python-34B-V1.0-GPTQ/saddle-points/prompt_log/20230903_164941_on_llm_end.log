@@ -1,0 +1,49 @@
+method: on_llm_end [2023-09-03 16:49:41]
+llm_output: null
+prompt:
+Here's a possible implementation for `saddle_points` function that should fix the issues mentioned in the error message:
+
+```python
+from typing import List
+
+
+def saddle_points(matrix: List[List[int]]) -> List[dict]:
+    if not matrix or len(set([len(x) for x in matrix]) - {len(matrix)} != set():
+        raise ValueError("Invalid input")
+    
+    def find_max_cols(m):
+        max_val = float('-inf')
+        result = []
+        for col in range(len(m[0]):
+            current_col = [row[col] for row in m]
+            if all(current_col[i+1:] <= current_col[i] for i in range(len(current_col)-1)):
+                max_val = max(max_val, current_col[-1])
+            else:
+                continue
+        return max_val
+    
+    def find_min_rows(m):
+        min_val = float('inf')
+        result = []
+        for row in m:
+            if all(row[i+1:] >= row[i] for i in range(len(row)-1)):
+                min_val = min(min_val, row[0])
+            else:
+                continue
+        return min_val
+    
+    saddles = []
+    for r, row in enumerate(matrix):
+        max_of_cols = find_max_cols(matrix)
+        min_of_rows = find_min_rows(matrix)
+        if any(v == max_of_cols and v == min_of_rows for v in row):
+            saddles += [{ "row": r + 1, "column": c + 1 } for c, v in enumerate(row) if v == max_of_cols]
+    
+    return saddles
+```
+
+This implementation first checks whether the input matrix has valid dimensions by verifying that each row has the same length as the number of columns. If it doesn't, it raises an exception.
+Then, it finds the maximum value in each column using the `find_max_cols` helper function and the minimum value in each row using the `find_min_rows` helper function. Finally, it loops through the rows of the matrix and adds the coordinates of the saddle points to the list `saddles`. The coordinates are added only if both the maximum value in the column and the minimum value in the row match the corresponding values found with these functions.
+
+Note that this implementation assumes that the matrix contains integers. If you need to handle other types of data, you may want to modify the comparison operators accordingly (`<`, `<=` instead of `>`, etc.). Also note that there can be multiple saddle points in a single row or column, so we use a list comprehension to generate all their coordinates. 
+---

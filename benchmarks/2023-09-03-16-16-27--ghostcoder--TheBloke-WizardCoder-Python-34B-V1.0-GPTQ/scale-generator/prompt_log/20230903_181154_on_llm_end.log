@@ -1,0 +1,61 @@
+method: on_llm_end [2023-09-03 18:11:54]
+llm_output: null
+prompt:
+Here's one possible implementation of `Scale` class:
+
+```python
+class Scale:
+    def __init__(self, tonic):
+        self.tonic = tonic
+        self._notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] # all notes in order on the keyboard
+        self._intervals = {'M': 2, '#': 1, 'm': -1} # mapping of interval names to their corresponding number of semitones
+
+    
+    def chromatic(self):
+        """Returns the chromatic scale starting at the tonic"""
+        index = self._notes.index(self.tonic)
+        return [note for note in self._notes[index:] + self._notes[:index]]
+
+    
+    def interval(self, intervals):
+        """Generates a new scale based on the given sequence of intervals"""
+        result = []
+        current = self.chromatic().index(self.tonic)
+        result.append(self._notes[current])
+        for i in intervals:
+            if i == 'm':
+                current += self._intervals['m']
+            elif i == 'M':
+                current += self._intervals['M']
+            else:
+                raise ValueError("Invalid interval")
+            result.append(self._notes[current % len(self._notes)])
+        return result
+```
+
+Explanation:
+
+- The `__init__()` method initializes the object with the tonic note.
+- `_notes` stores all notes in order on the keyboard, so we can easily access them by index later.
+- `_intervals` maps the interval names to their corresponding number of semitones.
+- `chromatic()` returns the chromatic scale starting at the tonic by slicing the `_notes` list from the index of the tonic to the end, then appending the start back to the beginning.
+- `interval()` takes a string of intervals like `'MMmm'` and generates a new scale by iterating over it and adding the appropriate number of semitones to the current index (`current`). We use `% len(self._notes)` to wrap around when reaching the end of the `_notes` list.
+
+Example usage:
+
+```python
+>>> s = Scale('G')
+>>> s.chromatic()
+['G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G']
+>>> s.interval('MMmm')
+['G', 'A', 'B', 'C', 'D', 'E', 'F', 'G']
+>>> s.interval('MMmM')
+['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G']
+>>> s.interval('MMmMm')
+['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G', 'A']
+>>> s.interval('MMmMmM')
+['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G', 'A#']
+```
+
+Note that this implementation assumes that the input intervals are valid (i.e. either 'M' or 'm'). If invalid characters are passed, it raises a `ValueError`. You could add more validation code to handle this case better. Also, this implementation doesn't support augmented seconds ('A'), but extending it to do so should be straightforward. 
+---

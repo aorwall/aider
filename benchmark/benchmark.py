@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from . import prompts
+import prompts
 import typer
 from imgcat import imgcat
 from rich.console import Console
@@ -799,6 +799,7 @@ class GhostCoderAgent(CodeAgent):
         from ghostcoder.actions import WriteCodeAction
         from ghostcoder.llm import LLMWrapper, LlamaLLMWrapper, ChatLLMWrapper
         from ghostcoder.llm.phind import PhindLLMWrapper
+        from ghostcoder.llm.wizardcoder import WizardCoderLLMWrapper
 
         import logging
         logging.basicConfig(level=logging.INFO)
@@ -815,46 +816,19 @@ class GhostCoderAgent(CodeAgent):
                     temperature=0.0,
                     callbacks=[_callback]
                 ))
-            elif provider == "exllama":
-                from ghostcoder.llm.exllama import Exllama
-                _llm = PhindLLMWrapper(Exllama(
-                    model_directory="/root/Phind-CodeLlama-34B-v2-GPTQ",
-                    temperature=0.01,
-                    top_k = 1,
-                    top_p = 0.01,
-                    max_new_tokens = 1024,
-                    max_seq_len = 8192,
-                    max_input_len = 6144,
-                    compress_pos_emb = 4,
-                    callbacks=[_callback]
-                ))
-            elif provider == "llamacpp":
-                from langchain import LlamaCpp
-                _llm = PhindLLMWrapper(LlamaCpp(
-                    model_path="/root/llama.cpp/models/Phind-CodeLlama-34B-v2-GGUF/phind-codellama-34b-v2.Q5_K_M.gguf",
-                    temperature=0.0,
-                    max_tokens=1000,
-                    n_ctx=6000,
-                    top_p=1,
-                    n_gpu_layers=51,
-                    n_batch=512,
-                    callbacks=[_callback],
-                    verbose=True,
-                ))
-            elif provider == "huggingface-endpoint":
-                from langchain.llms import HuggingFaceEndpoint
-                huggingface_hub = HuggingFaceEndpoint(
-                    endpoint_url="https://ylr6gy8wxzuvn8wh.us-east-1.aws.endpoints.huggingface.cloud",
-                    callbacks=[_callback],
-                    task="text-generation",
-                    model_kwargs={"temperature": 0.01, "max_new_tokens": 1024}
-                )
-                _llm = LlamaLLMWrapper(huggingface_hub)
+            elif provider == "textgen":
+                from langchain.llms import TextGen
+                _llm = WizardCoderLLMWrapper(llm=TextGen(
+                    model_url="http://67.221.61.58:40013",
+                    max_new_tokens=1500,
+                    temperature=0.1,
+                    top_p=0.65,
+                    top_k=40,
+                    callbacks=[_callback]))
             elif provider == "huggingface":
                 import torch
                 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
                 from langchain.llms import HuggingFacePipeline
-                from auto_gptq import AutoGPTQForCausalLM, exllama_set_max_input_length
 
                 model = AutoModelForCausalLM.from_pretrained(model_name,
                                                              torch_dtype=torch.float16,
@@ -894,6 +868,7 @@ class GhostCoderAgent(CodeAgent):
             sys_prompt_id=edit_format,
             role_prompt="Act as a an automated AI with superior programming skills.",
             auto_mode=True,
+            few_shot_prompt=True
         )
         self.chat_history_fname = testdir / ".chat.history.json"
         self.fnames = fnames
@@ -905,8 +880,8 @@ class GhostCoderAgent(CodeAgent):
         from ghostcoder.schema import FileItem, TextItem, Message
 
         items = []
-        items.extend([FileItem(file_path=str(fname.name), language="python") for fname in self.fnames])
         items.append(TextItem(text=with_message))
+        items.extend([FileItem(file_path=str(fname.name), language="python") for fname in self.fnames])
 
         human_msg = Message(sender="Human", items=items)
         ai_messages = self.action.execute(message=human_msg, message_history=self.message_history)

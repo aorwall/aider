@@ -1,0 +1,95 @@
+method: on_llm_end [2023-09-03 17:24:14]
+llm_output: null
+prompt:
+Solution:
+
+We can create our own implementation of a set using a dictionary where keys represent the elements of the set and values are set to True.
+This way, we ensure that there are no duplicates since dictionaries cannot have duplicate keys. We can also easily check whether an element exists in the set using the `in` keyword and iterate over the keys of the dictionary to get all the elements in the set.
+
+Here's how the modified `custom_set.py` file looks like:
+
+```python
+class CustomSet:
+    def __init__(self, elements=None):
+        self._elements = {}
+        if elements is None:
+            self._elements = {}
+        else:
+            for elem in elements:
+                self.add(elem)
+
+    
+    def isempty(self):
+        """Check if the set is empty"""
+        return len(self._elements) == 0
+    
+    def __contains__(self, element):
+        """Check if an element belongs to the set"""
+        return element in self._elements
+    
+    def issubset(self, other):
+        """Check if every element in this set is present in another set"""
+        for elem in self._elements:
+            if elem not in other:
+                return False
+        return True
+    
+    def isdisjoint(self, other):
+        """Check if two sets have no common elements"""
+        for elem in self._elements:
+            if elem in other:
+                return False
+        return True
+    
+    def __eq__(self, other):
+        """Check if two sets are equal"""
+        if len(self._elements) != len(other._elements):
+            return False
+        for elem in self._elements:
+            if elem not in other:
+                return False
+        return True
+    
+    def add(self, element):
+        """Add an element to the set"""
+        self._elements[element] = True
+    
+    def intersection(self, other):
+        """Return a new set containing only the common elements between two sets"""
+        res = CustomSet()
+        for elem in self._elements:
+            if elem in other:
+                res.add(elem)
+        return res
+    
+    def __sub__(self, other):
+        """Subtract one set from another"""
+        res = CustomSet()
+        for elem in self._elements:
+            if elem not in other:
+                res.add(elem)
+        return res
+    
+    def __add__(self, other):
+        """Union of two sets"""
+        res = CustomSet()
+        for elem in self._elements:
+            res.add(elem)
+        for oth_elem in other._elements:
+            res.add(oth_elem)
+        return res
+```
+
+The `__iter__()` method was added so that we can loop through the elements of the set using a for loop.
+
+```python
+class CustomSet:
+    # ... previous methods ...
+    
+    def __iter__(self):
+        """Iterate over the elements of the set"""
+        return iter(list(self._elements))
+```
+
+To test the implementation, we can run the provided unittests in `test_custom_set.py`. All tests should pass successfully. 
+---

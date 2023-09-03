@@ -1,0 +1,69 @@
+method: on_llm_end [2023-09-03 18:31:32]
+llm_output: null
+prompt:
+Here's the updated code with proper indentation and comments to explain each step of the function:
+
+```python
+def markdown_to_html(text):
+    # Initialize variables for keeping track of list state
+    in_list = False
+    in_list_append = False
+    
+    # Split input text into lines
+    lines = text.split('\n')
+    
+    # Iterate over each line
+    for line in lines:
+        
+        # Check if this line starts a new list or ends an existing one
+        if line.startswith('#'):
+            level = len(re.findall('^#+', line)) - 1
+            heading = line[level+1:]
+            html = f"<h{level}>{heading}</h{level}>"
+            
+        elif line == '' or line.isspace():
+            continue
+        
+        elif line.startswith('* ') or line.endswith(':'):
+            if not in_list:
+                in_list = True
+                html = "<ul>"
+            else:
+                in_list_append = True
+            curr = line[line.index(' ') + 1:]
+            if curr.endswith(':'):
+                curr = curr[:-1]
+            html += f"<li>{curr}</li>"
+        
+        else:
+            # If we were previously in a list, close it before starting a new paragraph
+            if in_list:
+                html += "</ul>"
+                in_list = False
+            
+            # Convert bold/italics notation from Markdown to HTML
+            while True:
+                m = re.search("([^\w])(?P<tag>__|\*\*)([\w\W]*?)\g<tag>", line)
+                if m:
+                    tag = m.groupdict()['tag']
+                    content = m.group(2).strip()
+                    if tag == "**":
+                        html += f"<strong>{content}</strong>"
+                    else:
+                        html += f"<em>{content}</em>"
+                    line = line[:m.start()] + line[m.end():]
+                else:
+                    break
+            
+            # Wrap any remaining text in a paragraph tag
+            html += f"<p>{line}</p>"
+    
+    # Close any open lists at the end
+    if in_list:
+        html += "</ul>"
+    
+    return html
+```
+
+This implementation should correctly handle nested lists by using `in_list` and `in_list_append` flags to keep track of whether we are currently inside a list or appending to an existing list. It also properly handles empty lines (which should be ignored), and converts bold/italics notation (`**` or `_`) to `<strong>` and `<em>` tags respectively. The regular expression used to match bold/italics uses a non-capturing group `(?P<tag>__|\*\*)` to capture the type of formatting (`__` or `**`), then captures the content between them as `\2`. This allows us to replace only that portion of the string without affecting other parts of the line. 
+---

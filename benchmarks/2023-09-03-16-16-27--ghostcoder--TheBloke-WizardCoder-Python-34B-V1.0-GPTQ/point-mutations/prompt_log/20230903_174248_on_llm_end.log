@@ -1,0 +1,59 @@
+method: on_llm_end [2023-09-03 17:42:48]
+llm_output: null
+prompt:
+Here's an implementation of the `hamming_distance` function using Python's built-in string operations:
+
+```python
+def hamming_distance(dna_strand_1, dna_strand_2):
+    if len(dna_strand_1) != len(dna_strand_2):
+        raise ValueError("Strands must have same length")
+    
+    count = sum([1 for c1, c2 in zip(dna_strand_1, dna_strand_2) if c1 != c2])
+    return count
+```
+
+We can iterate through both strings simultaneously using the `zip()` function and compare each character pair. If they are different, we increment our counter variable.
+
+To test this function, we can create some sample inputs and expected outputs:
+
+```python
+assert hamming_distance('GAGCCTACTAACGGGAT', 'CATCGTAATGACGGCCT') == 7
+assert hamming_distance('GAGCCTACTAACGGGAT', 'GAGCCTACTAACGGGAT') == 0
+assert hamming_distance('GAGCCTACTAACGGGAT', '') == None # Raise error because lengths differ
+assert hamming_distance('GAGCCTACTAACGGGAT', 'CAAGCTACTAACGGGT') == 3
+```
+
+And here's how we can handle the case where the input strings have different lengths:
+
+```python
+def hamming_distance(dna_strand_1, dna_strand_2):
+    if len(dna_strand_1) != len(dna_strand_2):
+        raise ValueError("Strands must have same length")
+    
+    count = 0
+    for c1, c2 in zip(dna_strand_1, dna_strand_2):
+        if c1 != c2:
+            count += 1
+    
+    return count
+```
+
+In this version, we initialize a counter variable to zero before iterating through the characters in the strings. We then check whether each pair of characters is identical, and if not,
+we add 1 to the counter. Finally, we return the total count of mismatched pairs. Note that we do not need to raise an exception since the loop will terminate early if the strings
+are of unequal length. However, it might be useful to include a message explaining why the calculation cannot proceed. Here's what the updated test cases would look like:
+
+
+```python
+try:
+    assert hamming_distance('GAGCCTACTAACGGGAT', 'CATCGT') == None
+except ValueError as e:
+    print(f"Expected error raised: {e}")
+else:
+    print("No error was raised.")
+
+assert hamming_distance('GAGCCTACTAACGGGAT', 'GAGCCTACTAACGGGAT') == 0
+assert hamming_distance('GAGCCTACTAACGGGAT', 'CAAGCTACTAACGGGT') == 3
+```
+
+We wrap the first test in a try-except block so that we can catch the `ValueError` that should be raised when passing invalid input. Otherwise, we expect the function to return `None`, but we also want to make sure that no other exceptions occur. 
+---

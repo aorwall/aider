@@ -1,0 +1,70 @@
+method: on_llm_end [2023-09-03 17:19:22]
+llm_output: null
+prompt:
+The code provided has two syntax errors:
+
+1. Missing closing parenthesis on line 8:
+   ```python
+   at.add_result('lose' if result == 'win' else ('draw' if result == 'draw' else 'win') #missing closing parenthesis here
+   ```
+2. Indentation error on line 14:
+   ```python
+       else:
+           self.points -= 0
+           other_team.points += 3
+   ```
+   The `else:` block should have one more indent than the preceding `if` statement.
+
+Here's the corrected version of the code:
+
+```python
+class Team:
+    def __init__(self, name):
+        self.name = name
+        self.games_played = 0
+        self.wins = 0
+        self.draws = 0
+        self.losses = 0
+        self.points = 0
+
+    def add_result(self, other_team, result):
+        if result == "win":
+            self.wins += 1
+            self.points += 3
+            other_team.losses += 1
+        elif result == "draw":
+            self.draws += 1
+            self.points += 1
+            other_team.draws += 1
+        else:
+            self.losses += 1
+            other_team.wins += 1
+
+    @property
+    def record(self):
+        return f"{self.name} | {self.games_played} | {self.wins} | {self.draws} | {self.losses}"
+
+def tally(rows):
+    teams = {}
+    for row in rows:
+        home_team, away_team, result = row.split(";")
+        if home_team not in teams:
+            teams[home_team] = Team(home_team)
+        if away_team not in teams:
+            teams[away_team] = Team(away_team)
+
+        ht = teams[home_team]
+        at = teams[away_team]
+        ht.add_result(at, result)
+        at.add_result('win' if result == 'lose' else ('draw' if result == 'draw' else 'lose'))
+        ht.games_played += 1
+        at.games_played += 1
+
+    sorted_teams = sorted(teams.values(), key=lambda x: (-x.points, x.name))
+    return [team.record for team in sorted_teams]
+
+print(tally(['a;b;win', 'c;d;win', 'b;c;win', 'd;a;win']))
+```
+
+I also changed the logic inside `add_result()` method so that the winning team gains 3 points instead of the losing team gaining 0 points. 
+---

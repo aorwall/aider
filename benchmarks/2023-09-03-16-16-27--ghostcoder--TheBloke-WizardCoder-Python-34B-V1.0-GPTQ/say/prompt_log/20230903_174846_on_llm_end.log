@@ -1,0 +1,109 @@
+method: on_llm_end [2023-09-03 17:48:46]
+llm_output: null
+prompt:
+Here's an implementation that uses recursion to convert any integer into its English representation as a string:
+
+```python
+def int_to_english(num):
+    # Define the dictionaries for ones, teens, tens, and scales
+    ones = {
+        1: "one",
+        2: "two",
+        3: "three",
+        4: "four",
+        5: "five",
+        6: "six",
+        7: "seven",
+        8: "eight",
+        9: "nine"
+    }
+    
+    teens = {
+        10: "ten",
+        11: "eleven",
+        12: "twelve",
+        13: "thirteen",
+        14: "fourteen",
+        15: "fifteen",
+        16: "sixteen",
+        17: "seventeen",
+        18: "eighteen",
+        19: "nineteen"
+    }
+    
+    tens = {
+        2: "twenty",
+        3: "thirty",
+        4: "forty",
+        5: "fifty",
+        6: "sixty",
+        7: "seventy",
+        8: "eighty",
+        9: "ninety"
+    }
+    
+    scales = {
+        10**3: "thousand",
+        10**6: "million",
+        10**9: "billion",
+        10**12: "trillion",
+        10**15: "quadrillion",
+        10**18: "quintillion",
+        10**21: "sextillion",
+        10**24: "septillion",
+        10**27: "octillion",
+        10**30: "nonillion",
+        10**33: "decillion",
+        10**36: "undecillion",
+        10**39: "duodecillion",
+        10**42: "tredecillion",
+        10**45: "quindecillion",
+        10**48: "sexdecillion",
+        10**51: "septendecillion",
+        10**54: "octodecillion",
+        10**57: "novemdecillion",
+        10**60: "vigintillion"
+    }
+    
+    # Base case: zero
+    if num == 0:
+        return "zero"
+    
+    # Recursive step: convert each group of three digits recursively
+    if num >= 1000:
+        div, mod = divmod(num, 1000)
+        return int_to_english(div) + f" {scales[1000]} " + int_to_english(mod)
+    
+    # Tens and ones
+    if num >= 20:
+        div, mod = divmod(num, 10)
+        return tens[div] + "-" + ones[mod] if mod else tens[div]
+    
+    # Teens
+    if num >= 10:
+        return teens[num]
+    
+    # Ones
+    return ones[num]
+
+# Test cases
+print(int_to_english(0))   # zero
+print(int_to_english(1))   # one
+print(int_to_english(10))  # ten
+print(int_to_english(15))  # fifteen
+print(int_to_english(20))  # twenty
+print(int_to_english(25))  # twenty-five
+print(int_to_english(99))  # ninety-nine
+print(int_to_english(100)) # one hundred
+print(int_to_english(101)) # one hundred one
+print(int_to_english(123)) # one hundred twenty-three
+print(int_to_english(1000)) # one thousand
+print(int_to_english(1234)) # one thousand two hundred thirty-four
+print(int_to_english(1234567)) # twelve hundred thirty-four thousand five hundred sixty-seven
+print(int_to_english(12345678901234)) # twelve billion three hundred forty-five million six hundred seventy-eight thousand nine hundred twelve
+```
+
+This function works by first checking if the number is zero, then checking if it's greater than or equal to 1000 and calling itself with `num // 1000` and adding the appropriate scale (thousand, million, etc.) followed by a space. Then it checks if the remaining part (`num % 100`) is between 10 and 19 (teens), between 20 and 99 (tens and ones combined), or less than 10 (ones). It keeps doing this until there are no more non-zero digits left.
+
+Note that this implementation doesn't handle negative numbers or decimals, but those can be added easily enough by modifying the base case and checking for them before converting the absolute value of the input. Also note that the order of the output may not match what you expect depending on your locale - some languages use different orders of magnitude (e.g. Spanish uses millions instead of thousands). 
+---

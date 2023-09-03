@@ -1,0 +1,51 @@
+method: on_llm_end [2023-09-03 17:41:38]
+llm_output: null
+prompt:
+Solution:
+We can convert a trinary number to decimal by iterating over the digits of the input string starting from the rightmost digit and multiplying each digit by the appropriate power of 3.
+
+
+For example, let's take the trinary number `102012`. We start at the rightmost digit (`2`) and compute its contribution to the total sum:
+
+`2 * 3^0 = 2`
+
+Then move one digit to the left and compute its contribution:
+
+`1 * 3^1 = 3`
+
+Next, we have two more digits to process:
+
+`0 * 3^2 = 0`
+`2 * 3^3 = 54`
+
+Finally, we add all these values together to get the decimal representation of the trinary number:
+
+`2 + 3 + 0 = 57`
+
+
+Here's how this looks in code:
+
+```python
+def trinary(string):
+    if not set(string).issubset({'0', '1', '2'}):
+        return 0  # Invalid characters found, return 0
+    
+    decimal_value = 0
+    for index, digit in enumerate(reversed(string)):
+        decimal_value += int(digit) * 3**index
+    
+    return decimal_value
+```
+
+Note that we check whether the input contains only valid digits before converting it to decimal. If there are any non-trinary digits, we return 0 instead of raising an error.
+
+
+Let's test our implementation:
+
+```python
+assert trinary('102012') == 56
+assert trinary('122210') == 81
+assert trinary('12345') == 0  # Invalid character '4'
+assert trinary('abc') == 0  # All characters are invalid
+``` 
+---
