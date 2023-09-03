@@ -1,0 +1,60 @@
+method: on_llm_end [2023-09-03 17:16:27]
+llm_output: null
+prompt:
+Here's an implementation for `tournament.py`:
+
+```python
+class Team:
+    def __init__(self, name):
+        self.name = name
+        self.points = 0
+        self.games_played = 0
+        self.wins = 0
+        self.draws = 0
+        self.losses = 0
+
+    def add_result(self, other_team, result):
+        if result == 'win':
+            self.points += 3
+            self.wins += 1
+            other_team.losses += 1
+        elif result == 'draw':
+            self.points += 1
+            self.draws += 1
+            other_team.draws += 1
+        else:
+            self.losses += 1
+            other_team.points += 3
+
+    @property
+    def record(self):
+        return f"{self.name} | {self.games_played} | {self.wins} | {self.draws} | {self.losses}"
+
+
+
+def tally(rows):
+    teams = {}
+    for row in rows:
+        home_team, away_team, result = row.split(';')
+        if home_team not in teams:
+            teams[home_team] = Team(home_team)
+        if away_team not in teams:
+            teams[away_team] = Team(away_team)
+        
+        ht = teams[home_team]
+        at = teams[away_team]
+        ht.add_result(at, result)
+        at.add_result(ht, 'lose' if result == 'win' else ('draw' if result == 'draw' else 'win') )
+        ht.games_played += 1
+        at.games_played += 1
+
+    sorted_teams = sorted(teams.values(), key=lambda x: (-x.points, x.name)
+    return [team.record for team in sorted_teams]
+```
+
+We define a `Team` class with properties such as `name`, `points`, `wins`, `draws`, and `losses`. We also have a method `add_result()` which takes another `Team` object and updates its own stats based on the outcome of a game.
+
+Then we create a dictionary `teams` where keys are team names and values are instances of `Team` class. For each row in the input list, we split it into three parts - home team, away team, and result. If either team doesn't exist in our dictionary, we create one and add it. Then we update both teams' records accordingly using the `add_result()` method. Finally, we sort the teams by their points and return their records in the required format.
+
+Note that we
+---

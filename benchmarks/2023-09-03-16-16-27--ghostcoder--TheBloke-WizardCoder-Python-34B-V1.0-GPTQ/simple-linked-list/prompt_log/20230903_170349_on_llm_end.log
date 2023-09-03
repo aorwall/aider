@@ -1,0 +1,106 @@
+method: on_llm_end [2023-09-03 17:03:49]
+llm_output: null
+prompt:
+Here is an implementation of `Node` and `LinkedList`:
+
+```python
+class Node:
+    def __init__(self, value):
+        self._value = value
+        self._next = None
+
+    @property
+    def value(self):
+        return self._value
+
+    
+    @property
+    def next(self):
+        return self._next
+
+
+    @next.setter
+    def next(self, node):
+        if not isinstance(node, (type(None), Node):
+            raise TypeError("Next must be a Node object")
+        self._next = node
+
+
+
+class LinkedList:
+    def __init__(self, values=None):
+        self._head = None
+        if values is not None:
+            for val in values:
+                self.push(val)
+
+    
+    def __len__(self):
+        length = 0
+        current = self._head
+        while current is not None:
+            length += 1
+            current = current.next
+        return length
+
+
+    def head(self):
+        if self._head is None:
+            raise EmptyListException("Cannot get head of empty list")
+        return self._head.value
+
+
+    def push(self, value):
+        new_node = Node(value)
+        new_node.next = self._head
+        self._head = new_node
+
+    
+    def pop(self):
+        if self._head is None:
+            raise EmptyListException("Cannot pop from empty list")
+        popped_value = self._head.value
+        self._head = self._head.next
+        return popped_value
+
+    
+    def reversed(self):
+        prev = None
+        current = self._head
+        while current is not None:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self._head = prev
+
+
+class EmptyListException(Exception):
+    pass
+```
+
+In this implementation, we have defined two classes - `Node` and `LinkedList`. The `Node` class represents each individual element in the linked list with its value and reference to the next node.
+
+The `LinkedList` class has four methods - `__init__`, `__len__`, `head`, `push`, and `pop`. We also define an exception class `EmptyListException` which can be raised when trying to access an empty list.
+
+
+We initialize `_head` as `None` in both classes since there are no elements initially. In the constructor of `LinkedList`, we check whether `values` argument is provided. If it is, then we iterate over all the values and create nodes for them and link them together using their `next` attribute. Otherwise, we leave it as `None`.
+
+
+The `__len__` method returns the number of nodes in the linked list by iterating through the list starting from the head until we reach the end (`current` becomes `None`).
+
+
+The `head` method raises an error if the list is empty and otherwise returns the value of the first node.
+
+
+The `push` method creates a new node with the given value and sets its `next` attribute to the current head of the list. Then, it updates the head to point to the newly created node.
+
+
+The `pop` method removes the first node from the list and returns its value. It raises an error if the list is already empty.
+
+
+Finally, the `reversed` method iterates through the entire list and changes the `next` pointers of each node so that they point to the previous node instead of the next one. This effectively reverses the order of the list. Note that we update the head pointer at the end to point to the last node after reversing.
+
+
+Let me know if you need further clarification on anything! 
+---

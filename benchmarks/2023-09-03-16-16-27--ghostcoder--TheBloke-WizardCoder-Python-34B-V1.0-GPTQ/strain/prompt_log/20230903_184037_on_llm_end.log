@@ -1,0 +1,53 @@
+method: on_llm_end [2023-09-03 18:40:37]
+llm_output: null
+prompt:
+Here's an implementation of the `keep` and `discard` operations using list comprehensions:
+
+```python
+def keep(sequence, predicate):
+    return [x for x in sequence if predicate(x)]
+
+
+def discard(sequence, predicate):
+    return [x for x in sequence if not predicate(x)]
+```
+
+We can define our own `is_even` function to test whether a number is even or odd:
+
+```python
+def is_even(num):
+    return num % 2 == 0
+```
+
+Now let's test it out:
+
+```python
+>>> keep([1, 2, 3, 4, 5], is_even)
+[2, 4]
+>>> discard([1, 2, 3, 4, 5], is_even)
+[1, 3, 5]
+```
+
+This works because the `keep` function filters out non-even numbers (i.e., keeps only even ones) and the `discard` function does the opposite.
+
+You could also write these functions using loops, but list comprehension is more concise and Pythonic. Here's how you would do it with loops:
+
+```python
+def keep(sequence, predicate):
+    kept = []
+    for x in sequence:
+        if predicate(x):
+            kept.append(x)
+    return kept
+
+
+def discard(sequence, predicate):
+    discarded = []
+    for x in sequence:
+        if not predicate(x):
+            discarded.append(x)
+    return discarded
+```
+
+These implementations are equivalent to the previous ones, but less elegant. 
+---

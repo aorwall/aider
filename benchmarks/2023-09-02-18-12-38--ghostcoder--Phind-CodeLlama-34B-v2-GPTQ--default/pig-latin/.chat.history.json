@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "pig_latin.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a program that translates from English to Pig Latin.\n\nPig Latin is a made-up children's language that's intended to be confusing.\nIt obeys a few simple rules (below), but when it's spoken quickly it's really difficult for non-children (and non-native speakers) to understand.\n\n- **Rule 1**: If a word begins with a vowel sound, add an \"ay\" sound to the end of the word.\n  Please note that \"xr\" and \"yt\" at the beginning of a word make vowel sounds (e.g. \"xray\" -> \"xrayay\", \"yttria\" -> \"yttriaay\").\n- **Rule 2**: If a word begins with a consonant sound, move it to the end of the word and then add an \"ay\" sound to the end of the word.\n  Consonant sounds can be made up of multiple consonants, such as the \"ch\" in \"chair\" or \"st\" in \"stand\" (e.g. \"chair\" -> \"airchay\").\n- **Rule 3**: If a word starts with a consonant sound followed by \"qu\", move it to the end of the word, and then add an \"ay\" sound to the end of the word (e.g. \"square\" -> \"aresquay\").\n- **Rule 4**: If a word contains a \"y\" after a consonant cluster or as the second letter in a two letter word it makes a vowel sound (e.g. \"rhythm\" -> \"ythmrhay\", \"my\" -> \"ymay\").\n\nThere are a few more rules for edge cases, and there are regional variants too.\nCheck the tests for all the details.\n\nRead more about [Pig Latin on Wikipedia][pig-latin].\n\n[pig-latin]: https://en.wikipedia.org/wiki/Pig_latin\n\n####\n\nUse the above instructions to modify the supplied files: pig_latin.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def translate(text):\n    words = text.split()\n    translated_words = []\n\n    for word in words:\n        if len(word) > 1 and word[0] == 'xr':\n            translated_words.append(f'{word[1:]}{word[0]}ay')\n\n        elif len(word) > 1 and word[0] == 'yt':\n            translated_words.append(f'{word[1:]}{word[0]}ay')\n\n        elif len(word) > 2 and word[:2] == 'qu':\n            translated_words.append(f'{word[2:]}{word[:2]}ay')\n\n        elif len(word) > 1 and word[1] == 'y':\n            translated_words.append(f'{word[2:]}{word[:2]}ay')\n\n        elif word[0] in ['a', 'e', 'i', 'o', 'u']:\n            translated_words.append(f'{word}ay')\n\n        else:\n            translated_words.append(f'{word[1:]}{word[0]}ay')\n\n    return ' '.join(translated_words)\n",
+        "language": null,
+        "file_path": "pig_latin.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "pig_latin.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "...F.......FFFF..FFF.F\n====\nFAIL: test_word_beginning_with_ch (pig_latin_test.PigLatinTest)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 44, in test_word_beginning_with_ch\n    self.assertEqual(translate(\"chair\"), \"airchay\")\nAssertionError: 'haircay' != 'airchay'\n- haircay\n? -\n+ airchay\n?     +\n\n\n====\nFAIL: test_word_beginning_with_qu_and_a_preceding_consonant (pig_latin_test.PigLatinTest)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 50, in test_word_beginning_with_qu_and_a_preceding_consonant\n    self.assertEqual(translate(\"square\"), \"aresquay\")\nAssertionError: 'quaresay' != 'aresquay'\n- quaresay\n? --\n+ aresquay\n?     ++\n\n\n====\nFAIL: test_word_beginning_with_sch (pig_latin_test.PigLatinTest)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 59, in test_word_beginning_with_sch\n    self.assertEqual(translate(\"school\"), \"oolschay\")\nAssertionError: 'choolsay' != 'oolschay'\n- choolsay\n? --\n+ oolschay\n?     ++\n\n\n====\nFAIL: test_word_beginning_with_th (pig_latin_test.PigLatinTest)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 53, in test_word_beginning_with_th\n    self.assertEqual(translate(\"therapy\"), \"erapythay\")\nAssertionError: 'herapytay' != 'erapythay'\n- herapytay\n? -\n+ erapythay\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in pig_latin.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def translate(text):\n    words = text.split()\n    translated_words = []\n\n    for word in words:\n        if len(word) > 1 and word[0] == 'xr':\n            translated_words.append(f'{word[1:]}{word[0]}ay')\n\n        elif len(word) > 1 and word[0] == 'yt':\n            translated_words.append(f'{word[1:]}{word[0]}ay')\n\n        elif len(word) > 2 and word[:2] == 'qu':\n            translated_words.append(f'{word[2:]}{word[:2]}ay')\n\n        elif len(word) > 1 and word[1] == 'y':\n            translated_words.append(f'{word[2:]}{word[:2]}ay')\n\n        elif word[0] in ['a', 'e', 'i', 'o', 'u']:\n            translated_words.append(f'{word}ay')\n\n        else:\n            translated_words.append(f'{word[len(word)-1:]}{word[:-1]}ay')\n\n    return ' '.join(translated_words)\n",
+        "language": null,
+        "file_path": "pig_latin.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

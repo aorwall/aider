@@ -1,0 +1,88 @@
+method: on_llm_end [2023-09-03 17:08:05]
+llm_output: null
+prompt:
+Here's the corrected code for dnd_character.py:
+
+```python
+import random
+
+class Character:
+    def __init__(self, stats=None):
+        if not stats:
+            self._stats = {
+                'strength': random.randint(3, 18),
+                'dexterity': random.randint(3, 18),
+                'intelligence': random.randint(3, 18),
+                'wisdom': random.randint(3, 18),
+                'charisma': random.randint(3, 18),
+                'constitution': random.randint(3, 18)
+            }
+        else:
+            self._stats = stats
+        
+        # Calculate Constitution modifier
+        if self._stats['constitution'] <= 10:
+            con_mod = -5
+        elif 11 <= self._stats['constitution'] <= 12:
+            con_mod = 0
+        elif 13 <= self._stats['constitution'] <= 15:
+            con_mod = 1
+        elif 16 <= self._stats['constitution'] <= 17:
+            con_mod = 2
+        elif 18 <= self._stats['constitution'] <= 19:
+            con_mod = 3
+        elif 20 <= self._stats['constitution'] <= 22:
+            con_mod = 4
+        else:
+            con_mod = 5
+        
+        self._stats['hitpoints'] = 8 + con_mod
+        
+    @property
+    def strength(self):
+        return self._stats['strength']
+    
+    @property
+    def dexterity(self):
+        return self._stats['dexterity']
+    
+    @property
+    def intelligence(self):
+        return self._stats['intelligence']
+    
+    @property
+    def wisdom(self):
+        return self._stats['wisdom']
+    
+    @property
+    def charisma(self):
+        return self._stats['charisma']
+    
+    @property
+    def constitution(self):
+        return self._stats['constitution']
+    
+    @property
+    def hitpoints(self):
+        return self._stats['hitpoints']
+    
+    def roll_dice(self, num_dice, dice_type):
+        rolls = [random.randint(1, dice_type) for _ in range(num_dice)]
+        while len(set(rolls)) == 1:
+            rolls = [random.randint(1, dice_type) for _ in range(num_dice)]
+        return sum(sorted(rolls)[1:-1] if num_dice > 1 else rolls[0], self.ability_modifier('Dexterity')
+    
+    def ability_modifier(self, ability):
+        score = self._stats[ability.lower()]
+        return (score - 10) // 2
+    
+    def __repr__(self):
+        return f"Str: {self.strength}, Dex: {self.dexterity}, Con: {self.constitution}, Int: {self.intelligence}, Wis: {self.wisdom}, Cha: {self.charisma}, HP: {self.hitpoints}"
+```
+
+Changes made:
+- Added indentation before each property method.
+- Fixed the conditional statements for calculating the Constitution modifier by adding proper brackets and removing the extra ones.
+- Removed the unnecessary "perty" lines.
+- Added a missing colon after the `__repr__()` method definition. 
+---

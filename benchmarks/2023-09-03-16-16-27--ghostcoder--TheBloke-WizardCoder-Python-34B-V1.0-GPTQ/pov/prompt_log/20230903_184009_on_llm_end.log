@@ -1,0 +1,33 @@
+method: on_llm_end [2023-09-03 18:40:09]
+llm_output: null
+prompt:
+Here's an implementation of `get_depth` function using DFS (Depth-First Search) algorithm:
+
+```python
+def get_depth(tree: 'Tree', node_label: str) -> int:
+    """Gets the depth of a node with given label in the tree.
+    Returns -1 if node not found."""
+    visited = set()
+    queue = [(tree, 0)]
+    while queue:
+        current_node, level = queue.pop(0)
+        if current_node.label == node_label:
+            return level
+        visited.add(current_node)
+        for child in current_node.children:
+            if child not in visited:
+                queue.append((child, level + 1))
+    return -1
+```
+
+This function takes a `Tree` object and a string representing the label of the node whose depth we want to find. It uses a queue to perform DFS traversal of the tree and keeps track of the depth of each node encountered so far. When it finds the node with the matching label, it returns its depth. If no match is found after visiting all nodes, it returns `-1`. The time complexity of this function is O(n) where n is the number of nodes in the tree. 
+
+To use this function, you can call it like this:
+
+```python
+my_tree = Tree('A', [Tree('B'), Tree('C', [Tree('D'), Tree('E')]), Tree('F')])
+print(get_depth(my_tree, 'D')) # Output: 2
+```
+
+Note that this function assumes that there are no cycles in the graph represented by the tree. If there are cycles, it will enter into infinite loop. To handle cycles, you need to modify the code to keep track of visited edges instead of just visited nodes. Also note that this function only works for trees without multiple instances of same labels. If your tree has multiple nodes with the same label, it may give incorrect results. 
+---

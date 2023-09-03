@@ -1,0 +1,34 @@
+method: on_llm_end [2023-09-03 17:52:17]
+llm_output: null
+prompt:
+Here's an implementation for the `Luhn` class that checks if a given credit card number is valid using the Luhn algorithm:
+
+```python
+class Luhn:
+    def __init__(self, card_num):
+        self.card_num = ''.join([c for c in str(card_num) if c.isdigit()]) # remove spaces and non-numeric characters
+
+    
+    def valid(self):
+        if len(self.card_num) <= 1:
+            return False
+        total = 0
+        for i, num in enumerate(reversed(self.card_num):
+            if (i % 2 == 1):
+                doubled = int(num) * 2
+                if doubled > 9:
+                    doubled -= 9
+            else:
+                doubled = int(num)
+            total += doubled
+        return total % 10 == 0
+```
+
+Explanation:
+
+- The `__init__()` method takes a string argument representing the credit card number and removes any non-numeric characters.
+- The `valid()` method iterates through each digit of the credit card number, starting from the last one. If it's at an odd index (starting from 0), we double its value and subtract 9 if necessary. Then we add the resulting digit to the running total.
+- Finally, we check if the total is divisible by 10. If yes, the credit card number is considered valid.
+
+Note that we assume here that the input credit card numbers only contain numeric characters and spaces. We also strip out spaces before processing them. You can further improve the code to handle edge cases like negative numbers or strings with leading zeros. 
+---

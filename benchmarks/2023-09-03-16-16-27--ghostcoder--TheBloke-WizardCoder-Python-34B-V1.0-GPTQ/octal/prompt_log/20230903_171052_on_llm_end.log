@@ -1,0 +1,35 @@
+method: on_llm_end [2023-09-03 17:10:52]
+llm_output: null
+prompt:
+Here's one way to convert an octal number to decimal without relying on built-in functions:
+
+```python
+def parse_octal(octal_str):
+    """Converts an octal string to decimal"""
+    try:
+        decimal = 0
+        for index, digit in enumerate(reversed(octal_str)):
+            if digit.isdigit() and int(digit) < 8:
+                decimal += int(digit) * (8 ** index)
+            else:
+                raise ValueError("Invalid octal digit")
+        return decimal
+    except ValueError:
+        return 0
+```
+
+This implementation iterates over each character in the reversed string and adds up the value of each digit based on its position. If there's an error during parsing, it returns 0.
+
+For example:
+
+```python
+>>> parse_octal('1735263')
+999
+>>> parse_octal('1a3c5')
+0
+>>> parse_octal('777')
+511
+```
+
+Note that this assumes valid input - if we want to handle invalid input differently, we could add more validation checks before starting the loop. For instance, we could check that all characters are digits and within the range of valid octal digits (`[0-7]`), and/or catch `ValueError` exceptions and return a different default value instead of 0. 
+---

@@ -1,0 +1,48 @@
+method: on_llm_end [2023-09-03 18:17:38]
+llm_output: null
+prompt:
+Here's the modified version of the given file:
+
+```python
+class PascalTriangle:
+    def __init__(self, row_count):
+        self.row_count = row_count
+        
+    @property
+    def triangle(self):
+        return [[1]] + self._generate_pascal_triangle()
+    
+    def _generate_pascal_triangle(self):
+        prev_row = [1]
+        for i in range(1, self.row_count):
+            current_row = []
+            for j in range(i+1):
+                if j == 0 or j == i:
+                    current_row.append(1)
+                else:
+                    current_row.append(prev_row[j-1] + prev_row[j])
+            yield current_row
+            prev_row = current_row
+
+def rows(row_count):
+    """Returns the first n rows of Pascal's Triangle"""
+    if row_count < 0:
+        raise ValueError("Number of rows cannot be negative.")
+    elif row_count == 0:
+        return []
+    else:
+        pt = PascalTriangle(row_count)
+        return list(pt.triangle)
+```
+
+Explanation:
+
+We have created a new class `PascalTriangle` which takes in the number of rows required as input.
+Inside the `__init__` method we initialize the instance variable `row_count`. We then define a property `triangle` which generates the triangle using `_generate_pascal_triangle()`. This method uses a generator to generate each row of the triangle recursively.
+
+
+In the `_generate_pascal_triangle()` method, we start with a single element `[1]` and append it to the result list. Then, we iterate over all the remaining rows up to `n`, generating them using the formula `(previous row at index j) + (previous row at index j-1)`. The first and last elements are always 1, so we add those manually before appending the rest of the row.
+
+
+In the `rows()` function, we check whether the input is valid or not. If it's less than zero, we raise a `ValueError` with a meaningful message. Otherwise, we create an object of `PascalTriangle` and return its `triangle` property converted into a list. 
+---

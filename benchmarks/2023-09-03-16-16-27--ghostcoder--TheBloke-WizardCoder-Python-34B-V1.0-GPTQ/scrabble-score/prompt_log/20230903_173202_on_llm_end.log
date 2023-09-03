@@ -1,0 +1,108 @@
+method: on_llm_end [2023-09-03 17:32:02]
+llm_output: null
+prompt:
+Solution:
+
+We can create a dictionary containing the values of each letter and their corresponding scores.
+Then iterate through the letters in the input word and add their scores to get the total score.
+If there are any multipliers (double/triple letter), we can check if the current letter is one of them and update the score accordingly.
+
+
+Here's how it looks like: 
+
+```python
+LETTERSCORE = {
+    'a': 1,
+    'b': 3,
+    'c': 3,
+    'd': 2,
+    'e': 1,
+    'f': 4,
+    'g': 2,
+    'h': 4,
+    'i': 1,
+    'j': 8,
+    'k': 5,
+    'l': 1,
+    'm': 3,
+    'n': 1,
+    'o': 1,
+    'p': 3,
+    'q': 10,
+    'r': 1,
+    's': 1,
+    't': 1,
+    'u': 1,
+    'v': 4,
+    'w': 4,
+    'x': 8,
+    'y': 4,
+    'z': 10
+}
+
+def score(word):
+    # Initialize variables
+    total_score = 0
+    prev_letter = ''
+    num_consecutive = 1
+    
+    # Iterate over the letters in the word
+    for letter in word:
+        # Check if this letter has a multiplier applied
+        if letter == prev_letter:
+            num_consecutive += 1
+        else:
+            # Add previous letter's score based on its count
+            if prev_letter != '':
+                total_score += LETTERSCORE[prev_letter] * num_consecutive
+            num_consecutive = 1
+            
+        # Update the previous letter and its count
+        prev_letter = letter
+        
+    # Add last letter's score
+    total_score += LETTERSCORE[prev_letter] * num_consecutive
+    
+    return total_score
+```
+
+To handle extensions, we can add two more parameters to the function - `multiplier` and `is_triple_word`. If `multiplier` is passed as an argument, we can multiply the total score by that amount before returning it. Similarly, if `is_triple_word` is True, we can multiply the total score by 3.
+
+
+```python
+def score(word, multiplier=1, is_triple_word=False):
+    # Initialize variables
+    total_score = 0
+    prev_letter = ''
+    num_consecutive = 1
+    
+    # Iterate over the letters in the word
+    for letter in word:
+        # Check if this letter has a multiplier applied
+        if letter == prev_letter:
+            num_consecutive += 1
+        else:
+            # Add previous letter's score based on its count
+            if prev_letter != '':
+                total_score += LETTERSCORE[prev_letter] * num_consecutive
+            num_consecutive = 1
+            
+        # Update the previous letter and its count
+        prev_letter = letter
+        
+    # Add last letter's score
+    total_score += LETTERSCORE[prev_letter] * num_consecutive
+    
+    # Apply multiplier if applicable
+    if multiplier > 1:
+        total_score *= multiplier
+        
+    # Apply triple word bonus if applicable
+    if is_triple_word:
+        total_score *= 3
+        
+    return total_score
+```
+
+This implementation handles both single and multiple occurrences of the same letter, as well as the possibility of having consecutive identical letters. It also takes into account the multiplier and triple word bonuses. 
+---

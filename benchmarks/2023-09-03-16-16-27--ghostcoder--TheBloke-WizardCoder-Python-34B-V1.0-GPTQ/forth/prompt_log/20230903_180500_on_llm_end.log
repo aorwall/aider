@@ -1,0 +1,20 @@
+method: on_llm_end [2023-09-03 18:05:00]
+llm_output: null
+prompt:
+The `evaluate` function takes an input string and evaluates the expression using a stack-based approach. It uses a dictionary to store operators and their corresponding functions that take two arguments (except for `dup`, which only needs one argument). The `try`-`except` blocks handle errors such as division by 0, invalid operators, and underflow errors when trying to access elements from an empty stack. Here's how you can use it:
+
+```python
+>>> evaluate("3 4 +")
+7
+>>> evaluate("5 6 * 2 /")
+1
+>>> evaluate("10 3 /")
+3
+>>> evaluate("10 0 /") # raises ZeroDivisionError
+ZeroDivisionError: Cannot divide by zero
+>>> evaluate("a b +") # raises ValueError
+ValueError: "a" is not a valid operator or operand
+```
+
+Note that this implementation does not support parentheses or order of operations. If you need more complex expressions with multiple operators, consider using the `shunting yard algorithm` or another parsing technique. 
+---

@@ -1,0 +1,45 @@
+method: on_llm_end [2023-09-03 17:59:50]
+llm_output: null
+prompt:
+Here is the corrected implementation of `rotate` function that handles upper and lower case letters separately:
+
+```python
+def rotate(text, key):
+    # Create two dictionaries, one for lowercase and one for uppercase characters
+    rotation_dict_upper = {}
+    rotation_dict_lower = {}
+    
+    # Fill both dictionaries with mappings from original to rotated characters
+    for i in range(26):
+        rotation_dict_upper[chr(i)] = chr((i - key + 26) % 26)
+        rotation_dict_lower[chr(i + ord('a'))] = chr((i + key) % 26 + ord('a'))
+    
+    # Combine the two dictionaries into one
+    rotation_dict = {**rotation_dict_upper, **rotation_dict_lower}
+    
+    # Rotate each character in the text using the combined dictionary
+    rotated_text = ''
+    for char in text:
+        if char.isalpha():
+            rotated_text += rotation_dict[char]
+        else:
+            rotated_text += char
+    
+    # Capitalize the first letter of each word if it was capitalized before encryption
+    words = text.split()
+    result = []
+    for i, word in enumerate(words):
+        if len(word) > 0 and word[0].isupper():
+            result.append(rotated_text[:len(word)-1].capitalize())
+        else:
+            result.append(rotated_text[:len(word)])
+        rotated_text = rotated_text[len(word):]
+    
+    return ' '.join(result).replace(' ', '')
+```
+
+This implementation uses Python's built-in string methods to split the input text into individual words and then join them back together after encrypting each word individually.
+It also adds support for handling punctuation marks correctly by not encrypting them at all.
+
+Note that this implementation assumes that the input text contains no numbers or special symbols other than spaces. If you need to handle those as well, you can add additional conditions inside the loop to check for them and skip over them when appending to `rotated_text`. 
+---

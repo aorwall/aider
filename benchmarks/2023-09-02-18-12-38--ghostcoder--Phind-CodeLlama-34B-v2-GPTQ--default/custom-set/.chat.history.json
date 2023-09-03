@@ -1,0 +1,46 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "custom_set.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate a custom set type.\n\nSometimes it is necessary to define a custom data structure of some type, like a set.\nIn this exercise you will define your own set.\nHow it works internally doesn't matter, as long as it behaves like a set of unique elements.\n\n####\n\nUse the above instructions to modify the supplied files: custom_set.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here's an implementation for `CustomSet` using Python's built-in `set` data structure:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "class CustomSet:\n    def __init__(self, elements=None):\n        if elements is None:\n            self.elements = set()\n        else:\n            self.elements = set(elements)\n\n    def isempty(self):\n        return len(self.elements) == 0\n\n    def __contains__(self, element):\n        return element in self.elements\n\n    def issubset(self, other):\n        if isinstance(other, self.__class__):\n            return self.elements.issubset(other.elements)\n        else:\n            return self.elements.issubset(other)\n\n    def isdisjoint(self, other):\n        if isinstance(other, self.__class__):\n            return self.elements.isdisjoint(other.elements)\n        else:\n            return self.elements.isdisjoint(other)\n\n    def __eq__(self, other):\n        if isinstance(other, self.__class__):\n            return self.elements == other.elements\n        else:\n            return False\n\n    def add(self, element):\n        self.elements.add(element)\n\n    def intersection(self, other):\n        if isinstance(other, self.__class__):\n            return CustomSet(self.elements.intersection(other.elements))\n        else:\n            return CustomSet(self.elements.intersection(other))\n\n    def __sub__(self, other):\n        if isinstance(other, self.__class__):\n            return CustomSet(self.elements - other.elements)\n        else:\n            return CustomSet(self.elements - other)\n\n    def __add__(self, other):\n        if isinstance(other, self.__class__):\n            return CustomSet(self.elements | other.elements)\n        else:\n            return CustomSet(self.elements | set(other))\n",
+        "language": null,
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

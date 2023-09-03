@@ -1,0 +1,30 @@
+method: on_llm_end [2023-09-03 17:14:17]
+llm_output: null
+prompt:
+Here's one possible implementation using the `random` module:
+
+```python
+import random
+
+def private_key(p):
+    """Return a randomly chosen integer between 2 and p - 1"""
+    return random.randint(2, p - 1)
+
+
+def public_key(p, g, private):
+    """Calculate the public key given a private key and base g"""
+    return pow(g, private, p)
+
+
+def secret(p, public, private):
+    """Calculate the shared secret key given both parties' private keys"""
+    return pow(public, private, p)
+```
+
+Note that we can simplify the calculation of the shared secret by taking advantage of the fact that
+the order of operands doesn't matter when doing exponentiation (`a^b == b^a`). Therefore,
+we can calculate either `public^private` or `private^public`, since `(a^b)^c = a^(bc)` (where c=g).
+We choose to do `public^private` here.
+
+To make sure that the output is always an integer, we need to specify the third argument to `pow()` as `p`. This ensures that the result is taken modulo `p`. If we didn't do this, the result could be a float, which might cause unexpected behavior downstream. 
+---

@@ -1,0 +1,49 @@
+method: on_llm_end [2023-09-03 16:23:59]
+llm_output: null
+prompt:
+Here's an implementation of the `HighScores` class that keeps track of the current high scores and provides methods to retrieve the top scores:
+
+```python
+class HighScores:
+    def __init__(self, scores):
+        self.scores = sorted(scores)
+
+    
+    def get_highest(self):
+        """Returns the highest score."""
+        if len(self.scores) > 0:
+            return self.scores[-1]
+        else:
+            raise ValueError("No scores available.")
+
+    
+    def get_last(self):
+        """Returns the last added score."""
+        if len(self.scores) > 0:
+            return self.scores[0]
+        else:
+            raise ValueError("No scores available.")
+
+    
+    def get_top_three(self):
+        """Returns the three highest scores."""
+        if len(self.scores) >= 3:
+            return self.scores[:3][::-1]
+        elif len(self.scores) == 2:
+            return self.scores[::-1]
+        elif len(self.scores) == 1:
+            return self.scores
+        else:
+            raise ValueError("Not enough scores available.")
+```
+
+The `__init__()` method takes a list of initial scores and sorts it in descending order.
+
+The `get_highest()` method returns the highest score at index -1, which corresponds to the first element since the list is sorted in descending order.
+
+The `get_last()` method returns the last added score at index 0, which corresponds to the first element after sorting.
+
+The `get_top_three()` method returns the first three elements of the sorted list in reverse order, so that the highest scores come first. If there are less than three scores, it returns all of them.
+
+Note that I used exception handling to avoid errors when trying to access empty lists or lists with fewer than three elements. You can customize these messages to fit your needs. 
+---

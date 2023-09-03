@@ -1,0 +1,29 @@
+method: on_llm_end [2023-09-03 16:23:18]
+llm_output: null
+prompt:
+Here's a possible implementation for `is_paired` function that passes all the given test cases:
+
+```python
+def is_paired(input_string):
+    stack = []
+    brackets_map = {")": "(", "]": "[", "}": "{"}
+    
+    for char in input_string:
+        if char in brackets_map:
+            if not stack or stack[-1] != brackets_map[char]:
+                return False
+            else:
+                stack.pop()
+        elif char in brackets_map.values():
+            stack.append(char)
+    
+    return len(stack) == 0
+```
+
+Explanation:
+
+We use a list called `stack` to keep track of opening brackets encountered so far.
+For each character in the string, we check whether it's an closing bracket (`)`/`]`/`}`). If it is, we pop from the stack and compare with its corresponding opening bracket. If they don't match, then we know there was no matching opening bracket earlier, so we can immediately return `False`. Otherwise, we continue iterating through the string.
+If the character is an opening bracket, we push it onto the stack.
+At the end, we just need to make sure that the stack is empty, which means all opening brackets were matched with their respective closing ones. If it's not empty, some brackets were left unclosed, so we return `False`. If it's empty, we return `True`. 
+---

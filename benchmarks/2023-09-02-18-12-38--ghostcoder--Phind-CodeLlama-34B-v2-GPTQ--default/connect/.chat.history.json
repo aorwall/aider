@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "connect.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCompute the result for a game of Hex / Polygon.\n\nThe abstract boardgame known as [Hex][hex] / Polygon / CON-TAC-TIX is quite simple in rules, though complex in practice.\nTwo players place stones on a parallelogram with hexagonal fields.\nThe player to connect his/her stones to the opposite side first wins.\nThe four sides of the parallelogram are divided between the two players (i.e. one player gets assigned a side and the side directly opposite it and the other player gets assigned the two other sides).\n\nYour goal is to build a program that given a simple representation of a board computes the winner (or lack thereof).\nNote that all games need not be \"fair\".\n(For example, players may have mismatched piece counts or the game's board might have a different width and height.)\n\nThe boards look like this:\n\n```text\n. O . X .\n . X X O .\n  O O O X .\n   . X O X O\n    X O O O X\n```\n\n\"Player `O`\" plays from top to bottom, \"Player `X`\" plays from left to right.\nIn the above example `O` has made a connection from left to right but nobody has won since `O` didn't connect top and bottom.\n\n[hex]: https://en.wikipedia.org/wiki/Hex_%28board_game%29\n\n####\n\nUse the above instructions to modify the supplied files: connect.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "\nclass ConnectGame:\n    def __init__(self, board):\n        self.board = board\n        self.rows = len(board)\n        self.cols = len(board[0])\n\n    def get_winner(self):\n        for row in range(self.rows):\n            if self._check_row(row):\n                return 'O'\n        for col in range(self.cols):\n            if self._check_col(col):\n                return 'O'\n        return None\n\n    def _check_row(self, row):\n        countx, counto = 0, 0\n        for col in range(self.cols):\n            if self.board[row][col] == 'X':\n                countx += 1\n                counto = 0\n            elif self.board[row][col] == 'O':\n                counto += 1\n                countx = 0\n            else:\n                countx, counto = 0, 0\n            if countx >= 3 or counto >= 3:\n                return True\n        return False\n\n    def _check_col(self, col):\n        countx, counto = 0, 0\n        for row in range(self.rows):\n            if self.board[row][col] == 'X':\n                countx += 1\n                counto = 0\n            elif self.board[row][col] == 'O':\n                counto += 1\n                countx = 0\n            else:\n                countx, counto = 0, 0\n            if countx >= 3 or counto >= 3:\n                return True\n        return False\n",
+        "language": null,
+        "file_path": "connect.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "connect.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "FFFFFFFFFF\n====\nFAIL: test_an_empty_board_has_no_winner (connect_test.ConnectTest)\n----\nTraceback (most recent call last):\n  File \"connect/connect_test.py\", line 22, in test_an_empty_board_has_no_winner\n    self.assertEqual(winner, \"\")\nAssertionError: None != ''\n\n====\nFAIL: test_illegal_diagonal_does_not_make_a_winner (connect_test.ConnectTest)\n----\nTraceback (most recent call last):\n  File \"connect/connect_test.py\", line 53, in test_illegal_diagonal_does_not_make_a_winner\n    self.assertEqual(winner, \"\")\nAssertionError: None != ''\n\n====\nFAIL: test_nobody_wins_crossing_adjacent_angles (connect_test.ConnectTest)\n----\nTraceback (most recent call last):\n  File \"connect/connect_test.py\", line 64, in test_nobody_wins_crossing_adjacent_angles\n    self.assertEqual(winner, \"\")\nAssertionError: None != ''\n\n====\nFAIL: test_o_can_win_on_a_1x1_board (connect_test.ConnectTest)\n----\nTraceback (most recent call last):\n  File \"connect/connect_test.py\", line 32, in test_o_can_win_on_a_1x1_board\n    self.assertEqual(winner, \"O\")\nAssertionError: None != 'O'\n\n====\nFAIL: test_o_wins_crossing_from_top_to_bottom (connect_test.ConnectTest)\n----\nTraceback (most recent call last):\n  File \"connect/connect_test.py\", line 86, in test_o_wins_crossing_from_top_to_bottom\n    self.assertEqual(winner, \"O\")\nAssertionError: None != 'O'\n\n====\nFAIL: test_only_edges_does_not_make_a_winner (connect_test.ConnectTest)\n----\nTraceback (most recent call last):\n  File \"connect/connect_test.py\", line 42, in test_only_edges_does_not_make_a_winner\n    self.assertEqual(winner, \"\")\nAssertionError: None != ''\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in connect.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "\nclass ConnectGame:\n    def __init__(self, board):\n        self.board = board\n        self.rows = len(board)\n        self.cols = len(board[0])\n\n    def get_winner(self):\n        for row in range(self.rows):\n            if self._check_row(row):\n                return 'O'\n        for col in range(self.cols):\n            if self._check_col(col):\n                return 'X'\n        return \"\"\n\n    def _check_row(self, row):\n        countx, counto = 0, 0\n        for col in range(self.cols):\n            if self.board[row][col] == 'X':\n                countx += 1\n                counto = 0\n            elif self.board[row][col] == 'O':\n                counto += 1\n                countx = 0\n            else:\n                countx, counto = 0, 0\n            if countx >= 3 or counto >= 3:\n                return True\n        return False\n\n    def _check_col(self, col):\n        countx, counto = 0, 0\n        for row in range(self.rows):\n            if self.board[row][col] == 'X':\n                countx += 1\n                counto = 0\n            elif self.board[row][col] == 'O':\n                counto += 1\n                countx = 0\n            else:\n                countx, counto = 0, 0\n            if countx >= 3 or counto >= 3:\n                return True\n        return False\n",
+        "language": null,
+        "file_path": "connect.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

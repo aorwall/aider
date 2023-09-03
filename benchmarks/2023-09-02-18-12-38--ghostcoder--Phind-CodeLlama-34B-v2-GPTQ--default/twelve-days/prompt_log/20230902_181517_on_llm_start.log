@@ -1,0 +1,187 @@
+method: on_llm_start [2023-09-02 18:15:17]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["ghostcoder", "llm", "exllama", "Exllama"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+
+### User Message
+Filepath: twelve_days.py
+```pyton
+
+```
+
+# Instructions
+
+Your task in this exercise is to write code that returns the lyrics of the song: "The Twelve Days of Christmas."
+
+"The Twelve Days of Christmas" is a common English Christmas carol.
+Each subsequent verse of the song builds on the previous verse.
+
+The lyrics your code returns should _exactly_ match the full song text shown below.
+
+## Lyrics
+
+```text
+On the first day of Christmas my true love gave to me: a Partridge in a Pear Tree.
+
+On the second day of Christmas my true love gave to me: two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the third day of Christmas my true love gave to me: three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the fourth day of Christmas my true love gave to me: four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the fifth day of Christmas my true love gave to me: five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the sixth day of Christmas my true love gave to me: six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the seventh day of Christmas my true love gave to me: seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the eighth day of Christmas my true love gave to me: eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the ninth day of Christmas my true love gave to me: nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the tenth day of Christmas my true love gave to me: ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the eleventh day of Christmas my true love gave to me: eleven Pipers Piping, ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the twelfth day of Christmas my true love gave to me: twelve Drummers Drumming, eleven Pipers Piping, ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+```
+# Instructions append
+
+## Test-driven development
+
+ Be sure to check the comments at the top of the tests file.
+ They will be helpful in understanding the expected output of your function.
+
+This challenge _could_ be solved with a minimum of code and a lot of hardcoded text which is duplicated between the verses.
+However, this song is a type of [cumulative song][cumulative song], where each new verse builds on the verse that comes before it.
+For more of a programming challenge, consider assembling each verse from its parts.
+For example, for each verse, the day changes and the gift changes, and the rest of the verse is pretty much the same.
+What might be a good strategy for avoiding repetition?
+
+[cumulative song]: https://en.wikipedia.org/wiki/Cumulative_song
+
+####
+
+Use the above instructions to modify the supplied files: twelve_days.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+
+### Assistant
+Filepath: twelve_days.py
+```
+def recite(start_verse=1, end_verse=12):
+    days = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"]
+    gifts = {0: "", 1: "a Partridge in a Pear Tree.", 2: "two Turtle Doves, ", 3: "three French Hens, ",
+             4: "four Calling Birds, ", 5: "five Gold Rings, ", 6: "six Geese-a-Laying, ",
+             7: "seven Swans-a-Swimming, ", 8: "eight Maids-a-Milking, ", 9: "nine Ladies Dancing, ",
+             10: "ten Lords-a-Leaping, ", 11: "eleven Pipers Piping, ", 12: "twelve Drummers Drumming"}
+
+    verses = []
+    for day in range(start_verse - 1, end_verse):
+        verse = f"On the {days[day]} day of Christmas my true love gave to me: " \
+                + ''.join([gifts[i] if i <= day+1 else "" for i in range(1, len(gifts))])
+        verses.append(verse)
+
+    return verses
+```
+
+
+### User Message
+Filepath: twelve_days.py
+```pyton
+def recite(start_verse=1, end_verse=12):
+    days = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth"]
+    gifts = {0: "", 1: "a Partridge in a Pear Tree.", 2: "two Turtle Doves, ", 3: "three French Hens, ",
+             4: "four Calling Birds, ", 5: "five Gold Rings, ", 6: "six Geese-a-Laying, ",
+             7: "seven Swans-a-Swimming, ", 8: "eight Maids-a-Milking, ", 9: "nine Ladies Dancing, ",
+             10: "ten Lords-a-Leaping, ", 11: "eleven Pipers Piping, ", 12: "twelve Drummers Drumming"}
+
+    verses = []
+    for day in range(start_verse - 1, end_verse):
+        verse = f"On the {days[day]} day of Christmas my true love gave to me: " \
+                + ''.join([gifts[i] if i <= day+1 else "" for i in range(1, len(gifts))])
+        verses.append(verse)
+
+    return verses
+```
+
+FFF.FF...FFFFFF
+====
+FAIL: test_eighth_day_eight_maids_a_milking (twelve_days_test.TwelveDaysTest)
+----
+Traceback (most recent call last):
+  File "twelve-days/twelve_days_test.py", line 99, in test_eighth_day_eight_maids_a_milking
+    self.assertEqual(recite(8, 8), expected)
+AssertionError: Lists differ: ['On [48 chars] me: a Partridge in a Pear Tree.two Turtle Dov[124 chars]g, '] != ['On [48 chars] me: eight Maids-a-Milking, seven Swans-a-Swim[128 chars]ee.']
+
+First differing element 0:
+'On t[47 chars] me: a Partridge in a Pear Tree.two Turtle Dov[123 chars]ng, '
+'On t[47 chars] me: eight Maids-a-Milking, seven Swans-a-Swim[127 chars]ree.'
+
+- ['On the eighth day of Christmas my true love gave to me: a Partridge in a '
+?                                                           ^^^^^ ----------
+
++ ['On the eighth day of Christmas my true love gave to me: eight '
+?                                                           ^^^^
+
+-  'Pear Tree.two Turtle Doves, three French Hens, four Calling Birds, five Gold '
+-  'Rings, six Geese-a-Laying, seven Swans-a-Swimming, eight Maids-a-Milking, ']
++  'Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold '
++  'Rings, four Calling Birds, three French Hens, two Turtle Doves, and a '
++  'Partridge in a Pear Tree.']
+
+====
+FAIL: test_eleventh_day_eleven_pipers_piping (twelve_days_test.TwelveDaysTest)
+----
+Traceback (most recent call last):
+  File "twelve-days/twelve_days_test.py", line 147, in test_eleventh_day_eleven_pipers_piping
+    self.assertEqual(recite(11, 11), expected)
+AssertionError: Lists differ: ['On [50 chars] me: a Partridge in a Pear Tree.two Turtle Dov[188 chars]g, '] != ['On [50 chars] me: eleven Pipers Piping, ten Lords-a-Leaping[192 chars]ee.']
+
+First differing element 0:
+'On t[49 chars] me: a Partridge in a Pear Tree.two Turtle Dov[187 chars]ng, '
+'On t[49 chars] me: eleven Pipers Piping, ten Lords-a-Leaping[191 chars]ree.'
+
+Diff is 791 characters long. Set self.maxDiff to None to see it.
+
+====
+FAIL: test_fifth_day_five_gold_rings (twelve_days_test.TwelveDaysTest)
+----
+Traceback (most recent call last):
+  File "twelve-days/twelve_days_test.py", line 60, in test_fifth_day_five_gold_rings
+    self.assertEqual(recite(5, 5), expected)
+AssertionError: Lists differ: ['On [47 chars] me: a Partridge in a Pear Tree.two Turtle Dov[57 chars]s, '] != ['On [47 chars] me: five Gold Rings, four Calling Birds, thre[61 chars]ee.']
+
+First differing element 0:
+'On t[46 chars] me: a Partridge in a Pear Tree.two Turtle Dov[56 chars]gs, '
+'On t[46 chars] me: five Gold Rings, four Calling Birds, thre[60 chars]ree.'
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in twelve_days.py to resolve the errors.
+
+
+### Assistant
+
+

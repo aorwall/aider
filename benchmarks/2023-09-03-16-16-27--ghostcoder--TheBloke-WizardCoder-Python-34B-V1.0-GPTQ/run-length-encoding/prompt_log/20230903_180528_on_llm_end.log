@@ -1,0 +1,64 @@
+method: on_llm_end [2023-09-03 18:05:28]
+llm_output: null
+prompt:
+Here's an implementation of RLE encoding and decoding functions using Python:
+
+```python
+def encode(string):
+    """Encode a string using run-length encoding."""
+    if len(string) == 0:
+        return ""
+    
+    # Initialize variables
+    prev_char = None
+    count = 1
+    result = []
+    
+    # Iterate over the input string
+    for char in string:
+        # If current character is same as previous character, increment counter
+        if char == prev_char:
+            count += 1
+        else:
+            # Append the previous character and its count to the result list
+            if prev_char != None:
+                result.append("{}{}".format(count, prev_char))
+            # Set new previous character and reset count to 1
+            prev_char = char
+            count = 1
+    
+    # Append last character and its count to the result list
+    result.append("{}{}".format(count, prev_char))
+    
+    return ''.join(result)
+
+
+
+def decode(string):
+    """Decode a string previously encoded with run-length encoding."""
+    if len(string) == 0:
+        return ""
+    
+    # Initialize variables
+    index = 0
+    result = []
+    
+    while index < len(string):
+        # Extract count and character from the next two positions in the string
+        count = int(string[index])
+        char = string[index+1]
+        
+        # Repeat the character count number of times and append to result
+        for _ in range(count):
+            result.append(char)
+        
+        # Move to the next pair of characters in the string
+        index += 2
+    
+    return ''.join(result)
+```
+
+The `encode` function iterates over the input string and keeps track of the current character and its count. Whenever there's a change in the character, it appends the previous character and its count to the result list and resets them.
+
+The `decode` function extracts the count and character from every pair of characters in the input string and repeats the character count number of times before moving on to the next pair. It returns the resulting string after joining all the repeated characters together. 
+---

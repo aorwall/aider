@@ -1,0 +1,51 @@
+method: on_llm_end [2023-09-03 16:21:49]
+llm_output: null
+prompt:
+Solution:
+
+We can determine whether a triangle is equilateral, isosceles or scalene based on its sides.
+
+If all three sides are equal, it is an equilateral triangle.
+If only two sides are equal, it is an isosceles triangle.
+Otherwise, it is a scalene triangle.
+
+
+To check if all sides are equal, we compare them using set(). If there is only one element in the set, it means that all sides are equal, hence equilateral. Otherwise, we check if there are two elements in the set, which means either two sides are equal, making it isosceles. Finally, if there are three unique elements, it is a scalene triangle.
+
+
+Here's the implementation: 
+
+```python
+def equilateral(sides):
+    """Check if a triangle is equilateral."""
+    # Check if all sides are equal
+    return len(set(sides)) == 1
+
+
+def isosceles(sides):
+    """Check if a triangle is is isosceles."""
+    # Check if there are less than 3 unique sides (not valid)
+    if len(set(sides)) < 3:
+        return False
+    # Check if there are more than 2 unique sides (scalene)
+    elif len(set(sides)) > 2:
+        return False
+    else:
+        # There are 2 unique sides (isosceles)
+        return True
+
+def scalene(sides):
+    """Check if a triangle is scalene."""
+    # Check if there are less than 3 unique sides (not valid)
+    if len(set(sides)) < 3:
+        return False
+    # Check if there are more than 2 unique sides (scalene)
+    elif len(set(sides)) > 2:
+        return True
+    else:
+        # There are 2 unique sides (isosceles)
+        return False
+```
+
+Note that we first check for invalid cases where the number of sides is less than 3 or greater than 3 before checking for isosceles or scalene triangles. This ensures that we do not count non-triangles as either of these types of triangles. We also need to check for isosceles before scalene because otherwise, some isosceles triangles would be counted as scalene due to their second condition being met. 
+---

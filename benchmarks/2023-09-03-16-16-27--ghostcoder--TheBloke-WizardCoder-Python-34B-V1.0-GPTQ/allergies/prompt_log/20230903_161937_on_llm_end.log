@@ -1,0 +1,62 @@
+method: on_llm_end [2023-09-03 16:19:37]
+llm_output: null
+prompt:
+Here's an implementation of `Allergies` class with the required methods:
+
+```python
+class Allergies:
+
+    ALLERGENS = {
+        1: 'eggs',
+        2: 'peanuts',
+        4: 'shellfish',
+        8: 'strawberries',
+        16: 'tomatoes',
+        32: 'chocolate',
+        64: 'pollen',
+        128: 'cats'
+    }
+
+    def __init__(self, score):
+        self.score = score
+
+    def allergic_to(self, item):
+        """Checks if the person is allergic to a specific item."""
+        allergen_value = self.ALLERGENS[item]
+        return bool(allergen_value & self.score)
+
+    @property
+    def lst(self):
+        """Returns a list of all the allergies the person has."""
+        return [allergen for key, allergen in self.ALLERGENS.items() if key & self.score == key]
+```
+
+Explanation:
+
+We define a dictionary `ALLERGENS` that maps the allergen values to their names.
+In `__init__`, we store the input score as an instance variable `self.score`.
+In `allergic_to`, we retrieve the corresponding allergen value using the input item and check if it's set in the binary representation of `self.score`. If it is, then the person is allergic to that item.
+In `lst`, we iterate over the keys and values of `ALLERGENS` and append the name of the allergen to a list if its value is set in the binary representation of `self.score`. We can do this because each allergen has a unique power of two value, so checking if it's present in the binary form of `self.score` ensures that we only add allergens that the person is actually allergic to.
+
+Example usage:
+
+```python
+>>> a = Allergies(34)
+>>> a.allergic_to('peanuts')
+True
+>>> a.allergic_to('shellfish')
+False
+>>> a.lst
+['peanuts', 'chocolate']
+```
+
+This implementation ignores allergens not listed in `ALLERGENS`, since the problem statement asks us to do so. For example,
+
+```python
+>>> b = Allergies(257)
+>>> b.lst
+[]
+```
+
+since there is no allergen with value 256. 
+---

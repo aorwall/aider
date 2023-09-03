@@ -1,0 +1,34 @@
+method: on_llm_end [2023-09-03 18:14:18]
+llm_output: null
+prompt:
+Here's one way you could solve the problem:
+
+First, create a set containing all the unique letters of the English alphabet.
+Then, iterate through each character in the input sentence, converting it to lowercase and adding it to another set. If the length of the second set equals 26 after iterating through all characters, the sentence is a pangram.
+
+
+```python
+import string
+
+alphabet = set(string.ascii_lowercase)
+
+def is_pangram(sentence):
+    seen_letters = set()
+    for char in sentence.lower():
+        if char.isalpha() and char not in seen_letters:
+            seen_letters.add(char)
+    
+    return len(seen_letters) == len(alphabet)
+```
+
+We import the `string` module to access its constant `ascii_lowercase`, which represents all the lowercase letters of the English alphabet. We convert the input sentence to lowercase before iterating through it because we want to ignore case when counting letters.
+
+
+Next, we loop through each character in the sentence. If the character is an alphabetic character (`char.isalpha()`), we add it to our `seen_letters` set. Since sets only store unique elements, we won't count repeated occurrences of a letter twice.
+
+
+Finally, we check whether the number of unique letters we saw matches the total number of letters in the alphabet. If it does, we know we have found a pangram!
+
+
+Note that this solution assumes that the input sentence has no punctuation or other non-alphabetic characters. If there might be such characters, you may need to preprocess the input first to remove them before checking for a pangram. 
+---

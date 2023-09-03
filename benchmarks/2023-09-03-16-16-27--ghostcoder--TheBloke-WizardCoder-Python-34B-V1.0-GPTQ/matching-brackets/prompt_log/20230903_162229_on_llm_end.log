@@ -1,0 +1,29 @@
+method: on_llm_end [2023-09-03 16:22:29]
+llm_output: null
+prompt:
+Here's one possible implementation using a stack data structure:
+
+```python
+def is_paired(input_string):
+    # Create a dictionary to map opening to closing brackets
+    brackets_dict = {'(': ')', '[': ']', '{': '}'}
+    
+    # Initialize empty stack and iterate over input string
+    stack = []
+    for char in input_string:
+        if char in brackets_dict:
+            stack.append(char)
+        elif char in brackets_dict.values():
+            if len(stack) == 0 or char != brackets_dict[stack[-1]:
+                return False
+            else:
+                stack.pop()
+    
+    # If all brackets were paired, stack should now be empty
+    return len(stack) == 0
+```
+
+This works by iterating over each character in the input string. If the current character is an opening bracket (i.e., `(` or `[` or `{`), push it onto the stack. If it's a closing bracket (`)` or `]` or `}`), pop the last element off the stack and check whether it matches the expected closing bracket.
+If it doesn't match, or if the stack is empty when encountering a closing bracket without a corresponding opening bracket, return False. Otherwise, continue until the end of the string.
+At the end, if the stack is still nonempty, some opening brackets were never closed, so return False. Otherwise, all brackets are paired and properly nested, so return True. 
+---

@@ -1,0 +1,55 @@
+method: on_llm_end [2023-09-03 16:27:16]
+llm_output: null
+prompt:
+Here's the modified implementation of the `BowlingGame` class:
+
+```python
+class BowlingGame:
+    def __init__(self):
+        self.frames = []
+        self.current_frame = -1
+        
+    def roll(self, pins):
+        # check if there are no frames yet or last frame was strike or spare
+        if len(self.frames) < 9 or sum(self.frames[-1]) == 10:
+            self.frames.append([])
+            self.current_frame += 1
+        elif len(self.frames[self.current_frame]) >= 2:
+            raise ValueError("Cannot add more than two throws per frame.")
+        else:
+            self.frames[self.current_frame].append(pins)
+
+        if pins > 10:
+            raise ValueError("Invalid input! Maximum number of pins that can be thrown is 10.")
+        elif pins <= 0:
+            raise ValueError("Invalid input! Number of pins cannot be negative or zero.")
+        elif len(self.frames[self.current_frame]) == 1 and pins + sum(self.frames[self.current_frame]) > 10:
+            raise ValueError("Invalid input! Cannot exceed 10 pins in a frame.")
+        elif len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) > 10:
+            raise ValueError("Invalid input! Cannot exceed 10 pins in a frame.")
+        elif self.current_frame == 8 and len(self.frames[self.current_frame]) == 1 and pins + sum(self.frames[self.current_frame]) == 10:
+            raise ValueError("Invalid input! Bonus throw after a strike in the ninth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 1 and pins + sum(self.frames[self.current_frame]) > 10:
+            raise ValueError("Invalid input! Cannot exceed 10 pins in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) > 10:
+            raise ValueError("Invalid input! Cannot exceed 10 pins in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) == 10 and self.frames[self.current_frame][0] != 10:
+            raise ValueError("Invalid input! Third throw must be a strike or spare in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) == 10 and self.frames[self.current_frame][0] == 10 and pins == 0:
+            raise ValueError("Invalid input! No fill balls allowed in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) == 10 and self.frames[self.current_frame][0] == 10 and pins > 0:
+            raise ValueError("Invalid input! Fill balls allowed only in case of spare in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) == 10 and self.frames[self.current_frame][0] < 10 and pins == 10:
+            raise ValueError("Invalid input! All ten pins have already been taken care of.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) == 10 and self.frames[self.current_frame][0] < 10 and pins < 10:
+            raise ValueError("Invalid input! Fill balls allowed only in case of spare in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) < 10 and self.frames[self.current_frame][0] == 10:
+            raise ValueError("Invalid input! Strike in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) < 10 and self.frames[self.current_frame][0] < 10 and pins == 10:
+            raise ValueError("Invalid input! Strike in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) < 10 and self.frames[self.current_frame][0] < 10 and pins < 10:
+            raise ValueError("Invalid input! Strike in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) < 10 and self.frames[self.current_frame][0] > 10:
+            raise ValueError("Invalid input! Strike in the tenth frame.")
+        elif self.current_frame == 9 and len(self.frames[self.current_frame]) == 2 and sum(self.frames[self.current_frame] + [pins]) < 10 and self.frames[self.
+---

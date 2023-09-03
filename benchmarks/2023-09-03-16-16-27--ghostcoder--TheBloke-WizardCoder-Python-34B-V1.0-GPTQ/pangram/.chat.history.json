@@ -1,0 +1,51 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou work for a company that sells fonts through their website.\nThey'd like to show a different sentence each time someone views a font on their website.\nTo give a comprehensive sense of the font, the random sentences should use **all** the letters in the English alphabet.\n\nThey're running a competition to get suggestions for sentences that they can use.\nYou're in charge of checking the submissions to see if they are valid.\n\n~~~~exercism/note\nPangram comes from Greek, \u03c0\u03b1\u03bd \u03b3\u03c1\u03ac\u03bc\u03bc\u03b1, pan gramma, which means \"every letter\".\n\nThe best known English pangram is:\n\n> The quick brown fox jumps over the lazy dog.\n~~~~\n# Instructions\n\nYour task is to figure out if a sentence is a pangram.\n\nA pangram is a sentence using every letter of the alphabet at least once.\nIt is case insensitive, so it doesn't matter if a letter is lower-case (e.g. `k`) or upper-case (e.g. `K`).\n\nFor this exercise, a sentence is a pangram if it contains each of the 26 letters in the English alphabet.\n\n####\n\nUse the above instructions to modify the supplied files: pangram.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "pangram.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here's one way you could solve the problem:\n\nFirst, create a set containing all the unique letters of the English alphabet.\nThen, iterate through each character in the input sentence, converting it to lowercase and adding it to another set. If the length of the second set equals 26 after iterating through all characters, the sentence is a pangram.",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "import string\n\nalphabet = set(string.ascii_lowercase)\n\ndef is_pangram(sentence):\n    seen_letters = set()\n    for char in sentence.lower():\n        if char.isalpha() and char not in seen_letters:\n            seen_letters.add(char)\n\n    return len(seen_letters) == len(alphabet)\n",
+        "language": null,
+        "file_path": "pangram.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "We import the `string` module to access its constant `ascii_lowercase`, which represents all the lowercase letters of the English alphabet. We convert the input sentence to lowercase before iterating through it because we want to ignore case when counting letters.\n\n\nNext, we loop through each character in the sentence. If the character is an alphabetic character (`char.isalpha()`), we add it to our `seen_letters` set. Since sets only store unique elements, we won't count repeated occurrences of a letter twice.\n\n\nFinally, we check whether the number of unique letters we saw matches the total number of letters in the alphabet. If it does, we know we have found a pangram!\n\n\nNote that this solution assumes that the input sentence has no punctuation or other non-alphabetic characters. If there might be such characters, you may need to preprocess the input first to remove them before checking for a pangram.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

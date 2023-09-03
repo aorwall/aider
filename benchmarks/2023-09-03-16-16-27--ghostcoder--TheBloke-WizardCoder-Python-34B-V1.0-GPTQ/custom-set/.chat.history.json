@@ -1,0 +1,65 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate a custom set type.\n\nSometimes it is necessary to define a custom data structure of some type, like a set.\nIn this exercise you will define your own set.\nHow it works internally doesn't matter, as long as it behaves like a set of unique elements.\n\n####\n\nUse the above instructions to modify the supplied files: custom_set.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Solution:\n\nWe can create our own implementation of a set using a dictionary where keys represent the elements of the set and values are set to True.\nThis way, we ensure that there are no duplicates since dictionaries cannot have duplicate keys. We can also easily check whether an element exists in the set using the `in` keyword and iterate over the keys of the dictionary to get all the elements in the set.\n\nHere's how the modified `custom_set.py` file looks like:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "class CustomSet:\n    def __init__(self, elements=None):\n        self._elements = {}\n        if elements is None:\n            self._elements = {}\n        else:\n            for elem in elements:\n                self.add(elem)\n\n\n    def isempty(self):\n        \"\"\"Check if the set is empty\"\"\"\n        return len(self._elements) == 0\n\n    def __contains__(self, element):\n        \"\"\"Check if an element belongs to the set\"\"\"\n        return element in self._elements\n\n    def issubset(self, other):\n        \"\"\"Check if every element in this set is present in another set\"\"\"\n        for elem in self._elements:\n            if elem not in other:\n                return False\n        return True\n\n    def isdisjoint(self, other):\n        \"\"\"Check if two sets have no common elements\"\"\"\n        for elem in self._elements:\n            if elem in other:\n                return False\n        return True\n\n    def __eq__(self, other):\n        \"\"\"Check if two sets are equal\"\"\"\n        if len(self._elements) != len(other._elements):\n            return False\n        for elem in self._elements:\n            if elem not in other:\n                return False\n        return True\n\n    def add(self, element):\n        \"\"\"Add an element to the set\"\"\"\n        self._elements[element] = True\n\n    def intersection(self, other):\n        \"\"\"Return a new set containing only the common elements between two sets\"\"\"\n        res = CustomSet()\n        for elem in self._elements:\n            if elem in other:\n                res.add(elem)\n        return res\n\n    def __sub__(self, other):\n        \"\"\"Subtract one set from another\"\"\"\n        res = CustomSet()\n        for elem in self._elements:\n            if elem not in other:\n                res.add(elem)\n        return res\n\n    def __add__(self, other):\n        \"\"\"Union of two sets\"\"\"\n        res = CustomSet()\n        for elem in self._elements:\n            res.add(elem)\n        for oth_elem in other._elements:\n            res.add(oth_elem)\n        return res\n",
+        "language": null,
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "The `__iter__()` method was added so that we can loop through the elements of the set using a for loop.",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "class CustomSet:\n    def __init__(self, elements=None):\n        self._elements = {}\n        if elements is None:\n            self._elements = {}\n        else:\n            for elem in elements:\n                self.add(elem)\n\n\n    def isempty(self):\n        \"\"\"Check if the set is empty\"\"\"\n        return len(self._elements) == 0\n\n    def __contains__(self, element):\n        \"\"\"Check if an element belongs to the set\"\"\"\n        return element in self._elements\n\n    def issubset(self, other):\n        \"\"\"Check if every element in this set is present in another set\"\"\"\n        for elem in self._elements:\n            if elem not in other:\n                return False\n        return True\n\n    def isdisjoint(self, other):\n        \"\"\"Check if two sets have no common elements\"\"\"\n        for elem in self._elements:\n            if elem in other:\n                return False\n        return True\n\n    def __eq__(self, other):\n        \"\"\"Check if two sets are equal\"\"\"\n        if len(self._elements) != len(other._elements):\n            return False\n        for elem in self._elements:\n            if elem not in other:\n                return False\n        return True\n\n    def add(self, element):\n        \"\"\"Add an element to the set\"\"\"\n        self._elements[element] = True\n\n    def intersection(self, other):\n        \"\"\"Return a new set containing only the common elements between two sets\"\"\"\n        res = CustomSet()\n        for elem in self._elements:\n            if elem in other:\n                res.add(elem)\n        return res\n\n    def __sub__(self, other):\n        \"\"\"Subtract one set from another\"\"\"\n        res = CustomSet()\n        for elem in self._elements:\n            if elem not in other:\n                res.add(elem)\n        return res\n\n    def __add__(self, other):\n        \"\"\"Union of two sets\"\"\"\n        res = CustomSet()\n        for elem in self._elements:\n            res.add(elem)\n        for oth_elem in other._elements:\n            res.add(oth_elem)\n        return res\n\n    def __iter__(self):\n        \"\"\"Iterate over the elements of the set\"\"\"\n        return iter(list(self._elements))\n",
+        "language": null,
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "To test the implementation, we can run the provided unittests in `test_custom_set.py`. All tests should pass successfully.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]
