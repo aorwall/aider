@@ -905,7 +905,7 @@ class GhostCoderAgent(CodeAgent):
         from ghostcoder.schema import FileItem, TextItem, Message
 
         items = []
-        items.extend([FileItem(file_path=str(fname.name), language="pyton") for fname in self.fnames])
+        items.extend([FileItem(file_path=str(fname.name), language="python") for fname in self.fnames])
         items.append(TextItem(text=with_message))
 
         human_msg = Message(sender="Human", items=items)
