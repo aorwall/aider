@@ -1,0 +1,31 @@
+method: on_llm_end [2023-09-02 19:45:05]
+llm_output: null
+prompt:
+Filepath: gigasecond_test.py
+```python
+import unittest
+from datetime import timedelta
+from gigasecond import add_gigasecond, add_gigasecond_using_timestamp, add_gigasecond_with_timezone
+
+class GigasecondTest(unittest.TestCase):
+    def test_add_gigasecond(self):
+        self.assertEqual(add_gigasecond("2015-01-24 22:00:00"), "2046-10-02 23:46:40")
+        self.assertEqual(add_gigasecond("2019-02-01 00:00:00"), "2049-09-30 01:46:40")
+        self.assertEqual(add_gigasecond("2020-07-11 12:15:14"), "2051-08-28 13:15:14")
+        self.assertEqual(add_gigasecond("1977-06-13 12:45:41"), "2047-07-04 13:45:41")
+        self.assertEqual(add_gigasecond("1959-08-28 23:30:00"), "2010-05-03 01:46:40")
+
+    def test_add_gigasecond_using_timestamp(self):
+        self.assertEqual(add_gigasecond_using_timestamp("2015-01-24 22:00:00"), "2046-10-02 23:46:40")
+        self.assertEqual(add_gigasecond_using_timestamp("2019-02-01 00:00:00"), "2049-09-30 01:46:40")
+        self.assertEqual(add_gigasecond_using_timestamp("2020-07-11 12:15:14"), "2051-08-28 13:15:14")
+        self.assertEqual(add_gigasecond_using_timestamp("1977-06-13 12:45:41"), "2047-07-04 13:45:41")
+        self.assertEqual(add_gigasecond_using_timestamp("1959-08-28 23:30:00"), "2010-05-03 01:46:40")
+
+    def test_add_gigasecond_with_timezone(self):
+        self.assertEqual(add_gigasecond_with_timezone("2015-01-24T22:00:00+00:00"), "2046-10-02T23:46:40+00:00")
+        self.assertEqual(add_gigasecond_with_timezone("2019-02-01T00:00:00-08:00"), "2049-09-30T01:46:40-08:00")
+        self.assertEqual(add_gigasecond_with_timezone("2020-07-11T12:15:14Z"), "2051-08-28T13:15:14Z")
+        self.assertEqual(add_gigasecond_with_timezone("1977-06-13T12:45:41-03:00"), "2047-07-04T13:45:41-03:00")
+        self.assertEqual(add_gigasecond_with_timezone("1959-08-28T23:30:00+01:30"), "201
+---

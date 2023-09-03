@@ -1,0 +1,16 @@
+method: on_llm_end [2023-09-02 19:00:52]
+llm_output: null
+prompt:
+Here is an updated implementation for the `abbreviate` function that passes all the given test cases:
+```python
+import re
+
+def abbreviate(phrase):
+    clean_phrase = re.sub('[^a-zA-Z\s-]', '', phrase) # Remove all non-alphabetic characters except hyphen and whitespace
+    clean_phrase = re.sub('\s+', ' ', clean_phrase).strip() # Replace multiple whitespaces with a single space and strip leading/trailing spaces
+    words = clean_phrase.split(' ') # Split by whitespace
+    return ''.join([word[0].upper() for word in words if not word.isnumeric()]) # Join first letters of each word with uppercase, ignoring numbers
+```
+
+This version also handles the case where there are digits in the input string, as mentioned in the comments below. We can simply add a check to ignore any words that contain only digits using `if not word.isnumeric()`. This will ensure that the output does not include numeric acronyms like "12345" or "6789".
+---

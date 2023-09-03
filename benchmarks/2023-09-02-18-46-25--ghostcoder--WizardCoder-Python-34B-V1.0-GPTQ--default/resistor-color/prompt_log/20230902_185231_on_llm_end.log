@@ -1,0 +1,68 @@
+method: on_llm_end [2023-09-02 18:52:31]
+llm_output: null
+prompt:
+Filepath: resistor_color.py
+```python
+def color_code(color):
+    """Return the numeric value of a given color code.
+    
+    Args:
+        color (str): The color code to lookup.
+    
+    Returns:
+        int: The corresponding numeric value for the color code.
+    """
+    color_codes = {
+        "black": 0,
+        "brown": 1,
+        "red": 2,
+        "orange": 3,
+        "yellow": 4,
+        "green": 5,
+        "blue": 6,
+        "violet": 7,
+        "grey": 8,
+        "white": 9
+    }
+    return color_codes[color]
+
+
+def colors():
+    """Return all possible color codes."""
+    return list(color_codes.keys())
+```
+
+To fix the error, we need to define `color_codes` as a global variable so that it can be accessed by both functions. We can do this by defining it outside of any function and then referencing it inside each function. Here's the updated code:
+
+```python
+color_codes = {
+    "black": 0,
+    "brown": 1,
+    "red": 2,
+    "orange": 3,
+    "yellow": 4,
+    "green": 5,
+    "blue": 6,
+    "violet": 7,
+    "grey": 8,
+    "white": 9
+}
+
+def color_code(color):
+    """Return the numeric value of a given color code.
+    
+    Args:
+        color (str): The color code to lookup.
+    
+    Returns:
+        int: The corresponding numeric value for the color code.
+    """
+    return color_codes[color]
+
+def colors():
+    """Return all possible color codes."""
+    return list(color_codes.keys())
+```
+
+Now the tests should pass successfully.
+---

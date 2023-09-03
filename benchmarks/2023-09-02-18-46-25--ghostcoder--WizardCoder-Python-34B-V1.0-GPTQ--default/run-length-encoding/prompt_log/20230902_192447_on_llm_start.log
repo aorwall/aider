@@ -1,0 +1,195 @@
+method: on_llm_start [2023-09-02 19:24:47]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["ghostcoder", "llm", "exllama", "Exllama"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+### Instruction:
+Filepath: run_length_encoding.py
+```pyton
+
+```
+
+# Instructions
+
+Implement run-length encoding and decoding.
+
+Run-length encoding (RLE) is a simple form of data compression, where runs (consecutive data elements) are replaced by just one data value and count.
+
+For example we can represent the original 53 characters with only 13.
+
+```text
+"WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"  ->  "12WB12W3B24WB"
+```
+
+RLE allows the original data to be perfectly reconstructed from the compressed data, which makes it a lossless data compression.
+
+```text
+"AABCCCDEEEE"  ->  "2AB3CD4E"  ->  "AABCCCDEEEE"
+```
+
+For simplicity, you can assume that the unencoded string will only contain the letters A through Z (either lower or upper case) and whitespace.
+This way data to be encoded will never contain any numbers and numbers inside data to be decoded always represent the count for the following character.
+
+####
+
+Use the above instructions to modify the supplied files: run_length_encoding.py
+Keep and implement the existing function or class stubs, they will be called from unit tests.
+Do not implement or change any unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+### Response:
+Filepath: run_length_encoding.py
+```
+def decode(string):
+    """Decode a RLE compressed string."""
+    result = ""
+    index = 0
+    while index < len(string):
+        if string[index].isdigit():
+            count = int(string[index])
+            char = string[index + 1]
+            result += char * count
+            index += 2
+        else:
+            result += string[index]
+            index += 1
+    return result
+
+
+def encode(string):
+    """Encode a string using RLE."""
+    result = ""
+    prev_char = None
+    count = 1
+    for char in string:
+        if char == prev_char:
+            count += 1
+        else:
+            if prev_char is not None:
+                result += str(count) + prev_char
+            prev_char = char
+            count = 1
+    if prev_char is not None:
+        result += str(count) + prev_char
+    return result
+
+```
+
+Explanation:
+The `decode` function takes an input string that has been encoded with RLE and returns the original uncompressed string.
+It iterates through each character of the input string, checking whether it is a digit (representing the count) or not. If it's a digit, it extracts the count and adds the corresponding number of characters to the output string. Otherwise, it appends the character directly to the output string.
+
+The `encode` function takes an input string and compresses it using RLE. It keeps track of the current character and its count, adding them to the output string when a new character is encountered. The final count and character are added at the end to ensure the last sequence is included in the output as well.
+### Instruction:
+Filepath: run_length_encoding.py
+```pyton
+def decode(string):
+    """Decode a RLE compressed string."""
+    result = ""
+    index = 0
+    while index < len(string):
+        if string[index].isdigit():
+            count = int(string[index])
+            char = string[index + 1]
+            result += char * count
+            index += 2
+        else:
+            result += string[index]
+            index += 1
+    return result
+
+
+def encode(string):
+    """Encode a string using RLE."""
+    result = ""
+    prev_char = None
+    count = 1
+    for char in string:
+        if char == prev_char:
+            count += 1
+        else:
+            if prev_char is not None:
+                result += str(count) + prev_char
+            prev_char = char
+            count = 1
+    if prev_char is not None:
+        result += str(count) + prev_char
+    return result
+
+```
+
+....F....FFF.
+====
+FAIL: test_decode_single_characters_with_repeated_characters (run_length_encoding_test.RunLengthEncodingTest)
+----
+Traceback (most recent call last):
+  File "run-length-encoding/run_length_encoding_test.py", line 45, in test_decode_single_characters_with_repeated_characters
+    self.assertMultiLineEqual(
+AssertionError: '2WB2WBBB44WB' != 'WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB'
+- 2WB2WBBB44WB
++ WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB
+
+
+====
+FAIL: test_encode_multiple_whitespace_mixed_in_string (run_length_encoding_test.RunLengthEncodingTest)
+----
+Traceback (most recent call last):
+  File "run-length-encoding/run_length_encoding_test.py", line 30, in test_encode_multiple_whitespace_mixed_in_string
+    self.assertMultiLineEqual(encode("  hsqq qww  "), "2 hs2q q2w2 ")
+AssertionError: '2 1h1s2q1 1q2w2 ' != '2 hs2q q2w2 '
+- 2 1h1s2q1 1q2w2 
+?   - -   ^^^
++ 2 hs2q q2w2 
+?       ^
+
+
+====
+FAIL: test_encode_single_characters_mixed_with_repeated_characters (run_length_encoding_test.RunLengthEncodingTest)
+----
+Traceback (most recent call last):
+  File "run-length-encoding/run_length_encoding_test.py", line 24, in test_encode_single_characters_mixed_with_repeated_characters
+    self.assertMultiLineEqual(
+AssertionError: '12W1B12W3B24W1B' != '12WB12W3B24WB'
+- 12W1B12W3B24W1B
+?    -         -
++ 12WB12W3B24WB
+
+
+====
+FAIL: test_encode_single_characters_only_are_encoded_without_count (run_length_encoding_test.RunLengthEncodingTest)
+----
+Traceback (most recent call last):
+  File "run-length-encoding/run_length_encoding_test.py", line 18, in test_encode_single_characters_only_are_encoded_without_count
+    self.assertMultiLineEqual(encode("XYZ"), "XYZ")
+AssertionError: '1X1Y1Z' != 'XYZ'
+- 1X1Y1Z
++ XYZ
+
+
+----
+
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in run_length_encoding.py to resolve the errors.
+
+
+### Response:
+
+

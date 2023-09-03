@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "react.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a basic reactive system.\n\nReactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.\n\nImplement a basic reactive system with cells with settable values (\"input\" cells) and cells with values computed in terms of other cells (\"compute\" cells).\nImplement updates so that when an input value is changed, values propagate to reach a new stable system state.\n\nIn addition, compute cells should allow for registering change notification callbacks.\nCall a cell\u2019s callbacks when the cell\u2019s value in a new stable state has changed from the previous stable state.\n\n####\n\nUse the above instructions to modify the supplied files: react.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class InputCell:\n    def __init__(self, initial_value=None):\n        self._value = initial_value\n        self._callbacks = []\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_val):\n        if self._value != new_val:\n            self._value = new_val\n            for cb in self._callbacks:\n                cb()\n\n    def add_callback(self, callback):\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        self._callbacks.remove(callback)\n\n\nclass ComputeCell:\n    def __init__(self, inputs, compute_function):\n        self._inputs = inputs\n        self._compute_function = compute_function\n        self._value = None\n        self._callbacks = []\n        self._stale = True\n\n        for input_cell in self._inputs:\n            input_cell.add_callback(self._mark_as_stale)\n\n    def _mark_as_stable(self):\n        self._stale = False\n\n    def _mark_as_stale(self):\n        self._stale = True\n\n    @property\n    def value(self):\n        if self._stale:\n            values = [input_cell.value for input_cell in self._inputs]\n            self._value = self._compute_function(*values)\n            self._stale = False\n            for callback in self._callbacks:\n                callback()\n        return self._value\n\n    def add_callback(self, callback):\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        self._callbacks.remove(callback)\n    ",
+        "language": null,
+        "file_path": "react.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "pyton",
+        "file_path": "react.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": ".EEEE.EEEEEE.E\n====\nERROR: test_callback_cells_only_fire_on_change (react_test.ReactTest)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 105, in test_callback_cells_only_fire_on_change\n    self.assertEqual(cb1_observer[-1], 222)\nIndexError: list index out of range\n\n====\nERROR: test_callbacks_can_be_added_and_removed (react_test.ReactTest)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 164, in test_callbacks_can_be_added_and_removed\n    self.assertEqual(cb1_observer[-1], 32)\nIndexError: list index out of range\n\n====\nERROR: test_callbacks_can_fire_from_multiple_cells (react_test.ReactTest)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 144, in test_callbacks_can_fire_from_multiple_cells\n    self.assertEqual(cb1_observer[-1], 11)\nIndexError: list index out of range\n\n====\nERROR: test_callbacks_do_not_report_already_reported_values (react_test.ReactTest)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 119, in test_callbacks_do_not_report_already_reported_values\n    self.assertEqual(cb1_observer[-1], 3)\nIndexError: list index out of range\n\n====\nERROR: test_callbacks_should_only_be_called_once_even_if_multiple_dependencies_change (react_test.ReactTest)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 229, in test_callbacks_should_only_be_called_once_even_if_multiple_dependencies_change\n    self.assertEqual(cb1_observer[-1], 10)\nIndexError: list index out of range\n\n====\nERROR: test_compute_cells_calculate_initial_value (react_test.ReactTest)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 32, in test_compute_cells_calculate_initial_value\n    self.assertEqual(output.value, 2)\n  File \"react/react.py\", line 45, in value\n    self._value = self._compute_function(*values)\n  File \"react/react_test.py\", line 30, in <lambda>\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in react.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class InputCell:\n    def __init__(self, initial_value=None):\n        self._value = initial_value\n        self._callbacks = []\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_val):\n        if self._value != new_val:\n            old_val = self._value\n            self._value = new_val\n            for cb in self._callbacks:\n                cb()\n\n    def add_callback(self, callback):\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        self._callbacks.remove(callback)\n\n\nclass ComputeCell:\n    def __init__(self, inputs, compute_function):\n        self._inputs = inputs\n        self._compute_function = compute_function\n        self._value = None\n        self._callbacks = []\n        self._stale = True\n\n        for input_cell in self._inputs:\n            input_cell.add_callback(self._mark_as_stale)\n\n    def _mark_as_stable(self):\n        self._stale = False\n\n    def _mark_as_stale(self):\n        self._stale = True\n\n    @property\n    def value(self):\n        if self._stale:\n            values = [input_cell.value for input_cell in self._inputs]\n            self._value = self._compute_function(*values)\n            self._stale = False\n            for callback in self._callbacks:\n                callback()\n        return self._value\n\n    def add_callback(self, callback):\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        self._callbacks.remove(callback)\n    ",
+        "language": null,
+        "file_path": "react.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]
