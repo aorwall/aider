@@ -1,0 +1,292 @@
+method: on_llm_start [2023-09-04 16:05:21]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+### User Message
+Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+
+### Assistant
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+
+### User Message
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+
+### Assistant
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+
+### User Message
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+
+### Assistant
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+
+
+### User Message
+# Instructions
+
+Given any two lists `A` and `B`, determine if:
+
+- List `A` is equal to list `B`; or
+- List `A` contains list `B` (`A` is a superlist of `B`); or
+- List `A` is contained by list `B` (`A` is a sublist of `B`); or
+- None of the above is true, thus lists `A` and `B` are unequal
+
+Specifically, list `A` is equal to list `B` if both lists have the same values in the same order.
+List `A` is a superlist of `B` if `A` contains a sub-sequence of values equal to `B`.
+List `A` is a sublist of `B` if `B` contains a sub-sequence of values equal to `A`.
+
+Examples:
+
+- If `A = []` and `B = []` (both lists are empty), then `A` and `B` are equal
+- If `A = [1, 2, 3]` and `B = []`, then `A` is a superlist of `B`
+- If `A = []` and `B = [1, 2, 3]`, then `A` is a sublist of `B`
+- If `A = [1, 2, 3]` and `B = [1, 2, 3, 4, 5]`, then `A` is a sublist of `B`
+- If `A = [3, 4, 5]` and `B = [1, 2, 3, 4, 5]`, then `A` is a sublist of `B`
+- If `A = [3, 4]` and `B = [1, 2, 3, 4, 5]`, then `A` is a sublist of `B`
+- If `A = [1, 2, 3]` and `B = [1, 2, 3]`, then `A` and `B` are equal
+- If `A = [1, 2, 3, 4, 5]` and `B = [2, 3, 4]`, then `A` is a superlist of `B`
+- If `A = [1, 2, 4]` and `B = [1, 2, 3, 4, 5]`, then `A` and `B` are unequal
+- If `A = [1, 2, 3]` and `B = [1, 3, 2]`, then `A` and `B` are unequal
+
+####
+
+Use the above instructions to modify the supplied files: sublist.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: sublist.py
+```python
+
+```
+
+
+### Assistant
+Filepath: sublist.py
+```python
+"""
+This exercise stub and the test suite contain several enumerated constants.
+
+Enumerated constants can be done with a NAME assigned to an arbitrary,
+but unique value. An integer is traditionally used because it’s memory
+efficient.
+It is a common practice to export both constants and functions that work with
+those constants (ex. the constants in the os, subprocess and re modules).
+
+You can learn more here: https://en.wikipedia.org/wiki/Enumerated_type
+"""
+
+# Possible sublist categories.
+# Change the values as you see fit.
+SUBLIST = -1
+SUPERLIST = 1
+EQUAL = 0
+UNEQUAL = 2
+
+def sublist(list_one, list_two):
+    """
+    This function checks whether one list is a sublist, superlist, equal or unequal to another list.
+    
+    Args:
+      list_one: First list to compare
+      list_two: Second list to compare
+      
+    Returns:
+      One of the enumerated constants indicating the relationship between the two lists.
+    """
+    if not list_one or not list_two:
+        # Both lists must be nonempty for them to have a meaningful relationship.
+        raise ValueError("Both input lists must be nonempty")
+
+    if set(list_one) == set(list_two):
+        # The sets are equal only when the lists are equal.
+        return EQUAL
+    elif all(i in list_two for i in list_one):
+        # All elements of list_one are in list_two => list_one is a sublist of list_two.
+        return SUBLIST
+    elif all(i in list_one for i in list_two):
+        # All elements of list_two are in list_one => list_one is a superlist of list_two.
+        return SUPERLIST
+    else:
+        # Neither list is a subset of the other and neither is equal to the other.
+        return UNEQUAL
+
+```
+
+
+### User Message
+....EE..F....EF.FF....
+====
+ERROR: test_empty_list_within_non_empty_list (sublist_test.SublistTest.test_empty_list_within_non_empty_list)
+----
+Traceback (most recent call last):
+  File "sublist/sublist_test.py", line 21, in test_empty_list_within_non_empty_list
+    self.assertEqual(sublist([], [1, 2, 3]), SUBLIST)
+                     ^^^^^^^^^^^^^^^^^^^^^^
+  File "sublist/sublist.py", line 33, in sublist
+    raise ValueError("Both input lists must be nonempty")
+ValueError: Both input lists must be nonempty
+
+====
+ERROR: test_empty_lists (sublist_test.SublistTest.test_empty_lists)
+----
+Traceback (most recent call last):
+  File "sublist/sublist_test.py", line 18, in test_empty_lists
+    self.assertEqual(sublist([], []), EQUAL)
+                     ^^^^^^^^^^^^^^^
+  File "sublist/sublist.py", line 33, in sublist
+    raise ValueError("Both input lists must be nonempty")
+ValueError: Both input lists must be nonempty
+
+====
+ERROR: test_non_empty_list_contains_empty_list (sublist_test.SublistTest.test_non_empty_list_contains_empty_list)
+----
+Traceback (most recent call last):
+  File "sublist/sublist_test.py", line 24, in test_non_empty_list_contains_empty_list
+    self.assertEqual(sublist([1, 2, 3], []), SUPERLIST)
+                     ^^^^^^^^^^^^^^^^^^^^^^
+  File "sublist/sublist.py", line 33, in sublist
+    raise ValueError("Both input lists must be nonempty")
+ValueError: Both input lists must be nonempty
+
+====
+FAIL: test_first_list_missing_element_from_second_list (sublist_test.SublistTest.test_first_list_missing_element_from_second_list)
+----
+Traceback (most recent call last):
+  File "sublist/sublist_test.py", line 57, in test_first_list_missing_element_from_second_list
+    self.assertEqual(sublist([1, 3], [1, 2, 3]), UNEQUAL)
+AssertionError: -1 != 2
+
+====
+FAIL: test_order_matters_to_a_list (sublist_test.SublistTest.test_order_matters_to_a_list)
+----
+Traceback (most recent call last):
+  File "sublist/sublist_test.py", line 66, in test_order_matters_to_a_list
+    self.assertEqual(sublist([1, 2, 3], [3, 2, 1]), UNEQUAL)
+AssertionError: 0 != 2
+
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in sublist.py to resolve the errors.
+
+Filepath: sublist.py
+```python
+"""
+This exercise stub and the test suite contain several enumerated constants.
+
+Enumerated constants can be done with a NAME assigned to an arbitrary,
+but unique value. An integer is traditionally used because it’s memory
+efficient.
+It is a common practice to export both constants and functions that work with
+those constants (ex. the constants in the os, subprocess and re modules).
+
+You can learn more here: https://en.wikipedia.org/wiki/Enumerated_type
+"""
+
+# Possible sublist categories.
+# Change the values as you see fit.
+SUBLIST = -1
+SUPERLIST = 1
+EQUAL = 0
+UNEQUAL = 2
+
+def sublist(list_one, list_two):
+    """
+    This function checks whether one list is a sublist, superlist, equal or unequal to another list.
+    
+    Args:
+      list_one: First list to compare
+      list_two: Second list to compare
+      
+    Returns:
+      One of the enumerated constants indicating the relationship between the two lists.
+    """
+    if not list_one or not list_two:
+        # Both lists must be nonempty for them to have a meaningful relationship.
+        raise ValueError("Both input lists must be nonempty")
+
+    if set(list_one) == set(list_two):
+        # The sets are equal only when the lists are equal.
+        return EQUAL
+    elif all(i in list_two for i in list_one):
+        # All elements of list_one are in list_two => list_one is a sublist of list_two.
+        return SUBLIST
+    elif all(i in list_one for i in list_two):
+        # All elements of list_two are in list_one => list_one is a superlist of list_two.
+        return SUPERLIST
+    else:
+        # Neither list is a subset of the other and neither is equal to the other.
+        return UNEQUAL
+
+```
+
+
+### Assistant
+Filepath: sublist.py
+```python
+
+

@@ -1,0 +1,103 @@
+method: on_llm_end [2023-09-04 14:37:07]
+llm_output: null
+prompt:
+import math
+from functools import reduce
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return abs(a)
+
+def lcm(a, b):
+    return abs((a * b)) // gcd(a, b)
+
+class Rational:
+    def __init__(self, numer, denom):
+        if not isinstance(numer, int) or not isinstance(denom, int):
+            raise ValueError("Both numerator and denominator must be integers.")
+        
+        common = gcd(numer, denom)
+        self.numer = numer // common
+        self.denom = denom // common
+    
+    def __eq__(self, other):
+        return self.numer == other.numer and self.denom == other.denom
+    
+    def __repr__(self):
+        return f'{self.numer}/{self.denom}'
+    
+    def __add__(self, other):
+        numer = self.numer * other.denom + self.denom * other.numer
+        denom = self.denom * other.denom
+        return Rational(numer, denom)
+    
+    def __sub__(self, other):
+        numer = self.numer * other.denom - self.denom * other.numer
+        denom = self.denom * other.denom
+        return Rational(numer, denom)
+    
+    def __mul__(self, other):
+        numer = self.numer * other.numer
+        denom = self.denom * other.denom
+        return Rational(numer, denom)
+    
+    def __truediv__(self, other):
+        if other.numer == 0:
+            raise ZeroDivisionError("Cannot divide by zero.")
+        numer = self.numer * other.denom
+        denom = self.denom * other.numer
+        return Rational(numer, denom)
+    
+    def __abs__(self):
+        return Rational(abs(self.numer), abs(self.denom))
+    
+    def __pow__(self, power):
+        if isinstance(power, int):
+            if power > 0:
+                return Rational(self.numer ** power, self.denom ** power)
+            elif power < 0:
+                return Rational(self.denom ** (-power), self.numer ** (-power))
+            else:
+                return Rational(1, 1)
+        elif isinstance(power, float):
+            return pow(float(self.numer) / self.denom, power)
+        else:
+            raise TypeError("Power must be either an integer or a floating-point number.")
+    
+    @staticmethod
+    def _validate_real_base(base):
+        if not isinstance(base, (int, float)):
+            raise TypeError("Base must be an integer or a floating-point number.")
+        return float(base)
+    
+    @staticmethod
+    def _reduce_roots(roots):
+        roots = [Rational(*root) for root in roots]
+        least_common_multiple = reduce(lcm, [root.denom for root in roots])
+        reduced_roots = []
+        for root in roots:
+            reduced_roots.append(Rational(root.numer * (least_common_multiple // root.denom), least_common_maximum))
+        return reduced_roots
+    
+    @staticmethod
+    def _calculate_roots(base, n):
+        roots = []
+        for i in range(n):
+            numer = base ** (i+1)
+            denom = math.factorial(i+1)
+            roots.append((numer, denom))
+        return roots
+    
+    @classmethod
+    def root(cls, base, n=2):
+        if not isinstance(n, int) or n <= 0:
+            raise ValueError("Root index must be a positive integer.")
+        base = cls._validate_real_base(base)
+        if base < 0:
+            raise ValueError("Negative bases are not supported.")
+        roots = cls._calculate_roots(base, n)
+        reduced_roots = cls._reduce_roots(roots)
+        result = reduced_roots[0]
+        for root in reduced_roots[1:]:
+---

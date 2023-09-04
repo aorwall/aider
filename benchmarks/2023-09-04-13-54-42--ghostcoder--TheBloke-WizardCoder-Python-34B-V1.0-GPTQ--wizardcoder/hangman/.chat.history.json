@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement the logic of the hangman game using functional reactive programming.\n\n[Hangman][hangman] is a simple word guessing game.\n\n[Functional Reactive Programming][frp] is a way to write interactive programs.\nIt differs from the usual perspective in that instead of saying \"when the button is pressed increment the counter\", you write \"the value of the counter is the sum of the number of times the button is pressed.\"\n\nImplement the basic logic behind hangman using functional reactive programming.\nYou'll need to install an FRP library for this, this will be described in the language/track specific files of the exercise.\n\n[hangman]: https://en.wikipedia.org/wiki/Hangman_%28game%29\n[frp]: https://en.wikipedia.org/wiki/Functional_reactive_programming\n# Instructions append\n\n## Python Special Instructions\n\nA third party library **is not required** for this exercise.  Please ignore the instructions regarding **FRP library**.\n\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" a `ValueError` when the game has ended but the player tries to continue playing. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# when player tries to play, but the game is already over.\nraise ValueError(\"The game has already ended.\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: hangman.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "hangman.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import random\nfrom typing import List\n\n# Game status categories\n# Change the values as you see fit\nSTATUS_WIN = 'win'\nSTATUS_LOSE = 'lose'\nSTATUS_ONGOING = 'ongoing'\n\n\nclass Hangman:\n    def __init__(self, word):\n        self.secret_word = word\n        self.masked_word = ['*'] * len(word)\n        self.remaining_guesses = 6\n        self.used_chars = set()\n        self.status = STATUS_ONGOING\n\n    def guess(self, char):\n        if self.status != STATUS_ONGOING:\n            raise ValueError(\"The game has already ended.\")\n\n        if char in self.used_chars:\n            return\n\n        self.used_chars.add(char)\n\n        found = False\n        masked_word = []\n        for secret_char in self.secret_word:\n            if secret_char == char:\n                found = True\n                masked_word.append(char)\n            else:\n                masked_word.append(self.masked_word[self.secret_word.index(secret_char)] if char not in self.used_chars else \"*\")\n\n        self.masked_word = masked_word\n\n        if not found:\n            self.remaining_guesses -= 1\n\n        if all([c != '*' for c in self.masked_word]):\n            self.status = STATUS_WIN\n        elif self.remaining_guesses < 0:\n            self.status = STATUS_LOSE\n\n    def get_masked_word(self):\n        return ''.join(self.masked_word)\n\n    def get_status(self):\n        return self.status\n\n\ndef pick_random_word():\n    words = [\"apple\", \"banana\", \"cherry\", \"date\", \"elderberry\"]\n    return random.choice(words)\n\nif __name__ == \"__main__\":\n    word = pick_random_word()\n    game = Hangman(word)\n    print(\"Welcome to hangman!\")\n    while game.get_status() == STATUS_ONGOING:\n        print(\"\\nYour word: {}\".format(game.get_masked_word()))\n        print(\"You have {} guesses left\".format(game.remaining_guesses))\n        char = input(\"Enter your guess (one character): \")\n        try:\n            game.guess(char)\n        except ValueError as e:\n            print(e)\n\n    if game.get_status() == STATUS_WIN:\n        print(\"\\nCongratulations! You won :)\")\n    else:\n        print(\"\\nSorry, you lost :(\\nThe word was: {}\".format(word))\n",
+        "language": "python",
+        "file_path": "hangman.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFE\n====\nERROR: test_winning_on_last_guess_still_counts_as_a_win (hangman_test.HangmanTests.test_winning_on_last_guess_still_counts_as_a_win)\n----\nTraceback (most recent call last):\n  File \"hangman/hangman_test.py\", line 93, in test_winning_on_last_guess_still_counts_as_a_win\n    game.guess(ch)\n  File \"hangman/hangman.py\", line 21, in guess\n    raise ValueError(\"The game has already ended.\")\nValueError: The game has already ended.\n\n====\nFAIL: test_after_10_failures_the_game_is_over (hangman_test.HangmanTests.test_after_10_failures_the_game_is_over)\n----\nTraceback (most recent call last):\n  File \"hangman/hangman_test.py\", line 26, in test_after_10_failures_the_game_is_over\n    self.assertEqual(game.get_status(), hangman.STATUS_LOSE)\nAssertionError: 'ongoing' != 'lose'\n- ongoing\n+ lose\n\n\n====\nFAIL: test_feeding_a_correct_letter_removes_underscores (hangman_test.HangmanTests.test_feeding_a_correct_letter_removes_underscores)\n----\nTraceback (most recent call last):\n  File \"hangman/hangman_test.py\", line 37, in test_feeding_a_correct_letter_removes_underscores\n    self.assertEqual(game.remaining_guesses, 9)\nAssertionError: 6 != 9\n\n====\nFAIL: test_feeding_a_correct_letter_twice_counts_as_a_failure (hangman_test.HangmanTests.test_feeding_a_correct_letter_twice_counts_as_a_failure)\n----\nTraceback (most recent call last):\n  File \"hangman/hangman_test.py\", line 50, in test_feeding_a_correct_letter_twice_counts_as_a_failure\n    self.assertEqual(game.remaining_guesses, 9)\nAssertionError: 6 != 9\n\n====\nFAIL: test_getting_all_the_letters_right_makes_for_a_win (hangman_test.HangmanTests.test_getting_all_the_letters_right_makes_for_a_win)\n----\nTraceback (most recent call last):\n  File \"hangman/hangman_test.py\", line 63, in test_getting_all_the_letters_right_makes_for_a_win\n    self.assertEqual(game.remaining_guesses, 8)\nAssertionError: 5 != 8\n\n====\nFAIL: test_initially_9_failures_are_allowed (hangman_test.HangmanTests.test_initially_9_failures_are_allowed)\n----\nTraceback (most recent call last):\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in hangman.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "hangman.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import random\nfrom typing import List\n\n# Game status categories\n# Change the values as you see fit\nSTATUS_WIN = 'win'\nSTATUS_LOSE = 'lose'\nSTATUS_ONGOING = 'ongoing'\n\n\nclass Hangman:\n    def __init__(self, word):\n        self.secret_word = word\n        self.masked_word = ['*'] * len(word)\n        self.remaining_guesses = 9 # Changed from 6 to 9\n        self.used_chars = set()\n        self.status = STATUS_ONGOING\n\n    def guess(self, char):\n        if self.status != STATUS_ONGOING:\n            raise ValueError(\"The game has already ended.\")\n\n        if char in self.used_chars:\n            self.remaining_guesses -= 1 # Penalize for guessing a used character\n            return\n\n        self.used_chars.add(char)\n\n        found = False\n        masked_word = []\n        for secret_char in self.secret_word:\n            if secret_char == char:\n                found = True\n                masked_word.append(char)\n            else:\n                masked_word.append(self.masked_word[self.secret_word.index(secret_char)] if char not in self.used_chars else \"*\")\n\n        self.masked_word = masked_word\n\n        if not found:\n            self.remaining_guesses -= 1\n\n        if all([c != '*' for c in self.masked_word]):\n            self.status = STATUS_WIN\n        elif self.remaining_guesses < 0:\n            self.status = STATUS_LOSE\n\n    def get_masked_word(self):\n        return ''.join(self.masked_word)\n\n    def get_status(self):\n        return self.status\n\n\ndef pick_random_word():\n    words = [\"apple\", \"banana\", \"cherry\", \"date\", \"elderberry\"]\n    return random.choice(words)\n\nif __name__ == \"__main__\":\n    word = pick_random_word()\n    game = Hangman(word)\n    print(\"Welcome to hangman!\")\n    while game.get_status() == STATUS_ONGOING:\n        print(\"\\nYour word: {}\".format(game.get_masked_word()))\n        print(\"You have {} guesses left\".format(game.remaining_guesses))\n        char = input(\"Enter your guess (one character): \")\n        try:\n            game.guess(char)\n        except ValueError as e:\n            print(e)\n\n    if game.get_status() == STATUS_WIN:\n        print(\"\\nCongratulations! You won :)\")\n    else:\n        print(\"\\nSorry, you lost :(\\nThe word was: {}\".format(word))\n",
+        "language": "python",
+        "file_path": "hangman.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement various kinds of error handling and resource management.\n\nAn important point of programming is how to handle errors and close resources even if errors occur.\n\nThis exercise requires you to handle various errors.\nBecause error handling is rather programming language specific you'll have to refer to the tests for your track to see what's exactly required.\n# Hints\n\nFor the `filelike_objects_are_closed_on_exception` function, the `filelike_object`\nwill be an instance of a custom `FileLike` class defined in the test suite. This\nclass implements the following methods:\n- `open` and `close`, for explicit opening and closing.\n- `__enter__` and `__exit__`, for implicit opening and closing.\n- `do_something`, which may or may not throw an `Exception`.\n\n####\n\nUse the above instructions to modify the supplied files: error_handling.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "error_handling.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import sys\nfrom typing import Optional, Tuple\n\nclass FileLike:\n    def open(self):\n        print('Opening')\n\n    def do_something(self):\n        raise Exception('Error occurred while doing something')\n\n    def close(self):\n        print('Closing')\n\n    def __enter__(self):\n        self.open()\n        return self\n\n    def __exit__(self, exc_type, exc_val, traceback):\n        self.close()\n        if exc_type is None:\n            # No exception was raised\n            return True\n        else:\n            # An exception was raised\n            return False\n\n\ndef handle_error_by_throwing_exception():\n    try:\n        1 / 0\n    except ZeroDivisionError:\n        raise ValueError('A value error occurred')\n\n\ndef handle_error_by_returning_none(input_data):\n    try:\n        int(input_data)\n    except ValueError:\n        return None\n    return int(input_data)\n\n\ndef handle_error_by_returning_tuple(input_data):\n    try:\n        int(input_data)\n    except ValueError:\n        return (None, 'Invalid input data')\n    return (int(input_data), '')\n\n\ndef filelike_objects_are_closed_on_exception(filelike_object):\n    try:\n        with filelike_object as f:\n            f.do_something()\n    except Exception as e:\n        print(f\"An exception occurred: {e}\")\n        sys.exit(1)\n",
+        "language": "python",
+        "file_path": "error_handling.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "E..F.\n====\nERROR: test_filelike_objects_are_closed_on_exception (error_handling_test.ErrorHandlingTest.test_filelike_objects_are_closed_on_exception)\n----\nTraceback (most recent call last):\n  File \"error-handling/error_handling.py\", line 54, in filelike_objects_are_closed_on_exception\n    f.do_something()\n  File \"error-handling/test_utils.py\", line 26, in do_something\n    raise Exception(\"Failed while doing something\")\nException: Failed while doing something\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"error-handling/error_handling_test.py\", line 31, in test_filelike_objects_are_closed_on_exception\n    er.filelike_objects_are_closed_on_exception(filelike_object)\n  File \"error-handling/error_handling.py\", line 57, in filelike_objects_are_closed_on_exception\n    sys.exit(1)\nSystemExit: 1\n\n====\nFAIL: test_return_tuple (error_handling_test.ErrorHandlingTest.test_return_tuple)\n----\nTraceback (most recent call last):\n  File \"error-handling/error_handling_test.py\", line 20, in test_return_tuple\n    self.assertIs(successful_result, True,\nAssertionError: 1 is not True : Valid input should be successful\n\n----\n\n\nFAILED (failures=1, errors=1)\nAn exception occurred: Failed while doing something\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in error_handling.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "error_handling.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import sys\nfrom typing import Optional, Tuple\n\nclass FileLike:\n    def open(self):\n        print('Opening')\n\n    def do_something(self):\n        raise Exception('Error occurred while doing something')\n\n    def close(self):\n        print('Closing')\n\n    def __enter__(self):\n        self.open()\n        return self\n\n    def __exit__(self, exc_type, exc_val, traceback):\n        self.close()\n        if exc_type is None:\n            # No exception was raised\n            return True\n        else:\n            # An exception was raised\n            return False\n\n\ndef handle_error_by_throwing_exception():\n    try:\n        1 / 0\n    except ZeroDivisionError:\n        raise ValueError('A value error occurred')\n\n\ndef handle_error_by_returning_none(input_data):\n    try:\n        int(input_data)\n    except ValueError:\n        return None\n    return int(input_data)\n\n\ndef handle_error_by_returning_tuple(input_data):\n    try:\n        int(input_data)\n    except ValueError:\n        return (None, 'Invalid input data')\n    return (int(input_data), '')\n\n\ndef filelike_objects_are_closed_on_exception(filelike_object):\n    try:\n        with filelike_object as f:\n            f.do_something()\n    except Exception as e:\n        print(f\"An exception occurred: {e}\")\n        sys.exit(1)\n",
+        "language": "python",
+        "file_path": "error_handling.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

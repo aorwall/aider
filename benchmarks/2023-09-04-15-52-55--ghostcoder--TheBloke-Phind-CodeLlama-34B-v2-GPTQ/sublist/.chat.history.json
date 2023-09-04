@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven any two lists `A` and `B`, determine if:\n\n- List `A` is equal to list `B`; or\n- List `A` contains list `B` (`A` is a superlist of `B`); or\n- List `A` is contained by list `B` (`A` is a sublist of `B`); or\n- None of the above is true, thus lists `A` and `B` are unequal\n\nSpecifically, list `A` is equal to list `B` if both lists have the same values in the same order.\nList `A` is a superlist of `B` if `A` contains a sub-sequence of values equal to `B`.\nList `A` is a sublist of `B` if `B` contains a sub-sequence of values equal to `A`.\n\nExamples:\n\n- If `A = []` and `B = []` (both lists are empty), then `A` and `B` are equal\n- If `A = [1, 2, 3]` and `B = []`, then `A` is a superlist of `B`\n- If `A = []` and `B = [1, 2, 3]`, then `A` is a sublist of `B`\n- If `A = [1, 2, 3]` and `B = [1, 2, 3, 4, 5]`, then `A` is a sublist of `B`\n- If `A = [3, 4, 5]` and `B = [1, 2, 3, 4, 5]`, then `A` is a sublist of `B`\n- If `A = [3, 4]` and `B = [1, 2, 3, 4, 5]`, then `A` is a sublist of `B`\n- If `A = [1, 2, 3]` and `B = [1, 2, 3]`, then `A` and `B` are equal\n- If `A = [1, 2, 3, 4, 5]` and `B = [2, 3, 4]`, then `A` is a superlist of `B`\n- If `A = [1, 2, 4]` and `B = [1, 2, 3, 4, 5]`, then `A` and `B` are unequal\n- If `A = [1, 2, 3]` and `B = [1, 3, 2]`, then `A` and `B` are unequal\n\n####\n\nUse the above instructions to modify the supplied files: sublist.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "sublist.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "\"\"\"\nThis exercise stub and the test suite contain several enumerated constants.\n\nEnumerated constants can be done with a NAME assigned to an arbitrary,\nbut unique value. An integer is traditionally used because it\u2019s memory\nefficient.\nIt is a common practice to export both constants and functions that work with\nthose constants (ex. the constants in the os, subprocess and re modules).\n\nYou can learn more here: https://en.wikipedia.org/wiki/Enumerated_type\n\"\"\"\n\n# Possible sublist categories.\n# Change the values as you see fit.\nSUBLIST = -1\nSUPERLIST = 1\nEQUAL = 0\nUNEQUAL = 2\n\ndef sublist(list_one, list_two):\n    \"\"\"\n    This function checks whether one list is a sublist, superlist, equal or unequal to another list.\n    \n    Args:\n      list_one: First list to compare\n      list_two: Second list to compare\n      \n    Returns:\n      One of the enumerated constants indicating the relationship between the two lists.\n    \"\"\"\n    if not list_one or not list_two:\n        # Both lists must be nonempty for them to have a meaningful relationship.\n        raise ValueError(\"Both input lists must be nonempty\")\n\n    if set(list_one) == set(list_two):\n        # The sets are equal only when the lists are equal.\n        return EQUAL\n    elif all(i in list_two for i in list_one):\n        # All elements of list_one are in list_two => list_one is a sublist of list_two.\n        return SUBLIST\n    elif all(i in list_one for i in list_two):\n        # All elements of list_two are in list_one => list_one is a superlist of list_two.\n        return SUPERLIST\n    else:\n        # Neither list is a subset of the other and neither is equal to the other.\n        return UNEQUAL\n",
+        "language": "python",
+        "file_path": "sublist.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "....EE..F....EF.FF....\n====\nERROR: test_empty_list_within_non_empty_list (sublist_test.SublistTest.test_empty_list_within_non_empty_list)\n----\nTraceback (most recent call last):\n  File \"sublist/sublist_test.py\", line 21, in test_empty_list_within_non_empty_list\n    self.assertEqual(sublist([], [1, 2, 3]), SUBLIST)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"sublist/sublist.py\", line 33, in sublist\n    raise ValueError(\"Both input lists must be nonempty\")\nValueError: Both input lists must be nonempty\n\n====\nERROR: test_empty_lists (sublist_test.SublistTest.test_empty_lists)\n----\nTraceback (most recent call last):\n  File \"sublist/sublist_test.py\", line 18, in test_empty_lists\n    self.assertEqual(sublist([], []), EQUAL)\n                     ^^^^^^^^^^^^^^^\n  File \"sublist/sublist.py\", line 33, in sublist\n    raise ValueError(\"Both input lists must be nonempty\")\nValueError: Both input lists must be nonempty\n\n====\nERROR: test_non_empty_list_contains_empty_list (sublist_test.SublistTest.test_non_empty_list_contains_empty_list)\n----\nTraceback (most recent call last):\n  File \"sublist/sublist_test.py\", line 24, in test_non_empty_list_contains_empty_list\n    self.assertEqual(sublist([1, 2, 3], []), SUPERLIST)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"sublist/sublist.py\", line 33, in sublist\n    raise ValueError(\"Both input lists must be nonempty\")\nValueError: Both input lists must be nonempty\n\n====\nFAIL: test_first_list_missing_element_from_second_list (sublist_test.SublistTest.test_first_list_missing_element_from_second_list)\n----\nTraceback (most recent call last):\n  File \"sublist/sublist_test.py\", line 57, in test_first_list_missing_element_from_second_list\n    self.assertEqual(sublist([1, 3], [1, 2, 3]), UNEQUAL)\nAssertionError: -1 != 2\n\n====\nFAIL: test_order_matters_to_a_list (sublist_test.SublistTest.test_order_matters_to_a_list)\n----\nTraceback (most recent call last):\n  File \"sublist/sublist_test.py\", line 66, in test_order_matters_to_a_list\n    self.assertEqual(sublist([1, 2, 3], [3, 2, 1]), UNEQUAL)\nAssertionError: 0 != 2\n\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in sublist.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "sublist.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "\"\"\"\nThis exercise stub and the test suite contain several enumerated constants.\n\nEnumerated constants can be done with a NAME assigned to an arbitrary,\nbut unique value. An integer is traditionally used because it\u2019s memory\nefficient.\nIt is a common practice to export both constants and functions that work with\nthose constants (ex. the constants in the os, subprocess and re modules).\n\nYou can learn more here: https://en.wikipedia.org/wiki/Enumerated_type\n\"\"\"\n\n# Possible sublist categories.\n# Change the values as you see fit.\nSUBLIST = -1\nSUPERLIST = 1\nEQUAL = 0\nUNEQUAL = 2\n\ndef sublist(list_one, list_two):\n    \"\"\"\n    This function checks whether one list is a sublist, superlist, equal or unequal to another list.\n    \n    Args:\n      list_one: First list to compare\n      list_two: Second list to compare\n      \n    Returns:\n      One of the enumerated constants indicating the relationship between the two lists.\n    \"\"\"\n    if not list_one or not list_two:\n        # Both lists must be nonempty for them to have a meaningful relationship.\n        raise ValueError(\"Both input lists must be nonempty\")\n\n    if set(list_one) == set(list_two):\n        # The sets are equal only when the lists are equal.\n        return EQUAL\n    elif all(i in list_two for i in list_one):\n        # All elements of list_one are in list_two => list_one is a sublist of list_two.\n        return SUBLIST\n    elif all(i in list_one for i in list_two):\n        # All elements of list_two are in list_one => list_one is a superlist of list_two.\n        return SUPERLIST\n    else:\n        # Neither list is a subset of the other and neither is equal to the other.\n        return UNEQUAL\n",
+        "language": "python",
+        "file_path": "sublist.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

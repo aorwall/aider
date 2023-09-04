@@ -1,0 +1,36 @@
+method: on_llm_end [2023-09-04 17:01:01]
+llm_output: null
+prompt:
+import re
+
+class PhoneNumber:
+    def __init__(self, number):
+        # Remove all characters except digits
+        number = re.sub('[^\d]', '', str(number))
+        
+        # Check length of remaining string
+        num_length = len(number)
+        if num_length < 10 or num_length > 11:
+            raise ValueError("must have 10 or 11 digits")
+            
+        elif num_length == 11 and number[0] != '1':
+            raise ValueError("11 digits must start with 1")
+        
+        self.number = number
+    
+    @property
+    def area_code(self):
+        return self.number[:3]
+
+    @property
+    def central_office_code(self):
+        return self.number[4:7]
+
+    @property
+    def line_number(self):
+        return self.number[-4:]
+
+    def pretty(self):
+        return f"({self.area_code}) {self.central_office_code}-{self.line_number}"
+
+---

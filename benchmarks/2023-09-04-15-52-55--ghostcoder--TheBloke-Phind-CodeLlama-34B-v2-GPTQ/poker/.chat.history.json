@@ -1,0 +1,76 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nPick the best hand(s) from a list of poker hands.\n\nSee [wikipedia][poker-hands] for an overview of poker hands.\n\n[poker-hands]: https://en.wikipedia.org/wiki/List_of_poker_hands\n\n####\n\nUse the above instructions to modify the supplied files: poker.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: poker.py\n```python\ndef best_hands(hands):\n    # Define card values\n    card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}\n    \n    # Function to get the highest card value from a hand\n    def high_card(hand):\n        values = sorted([card_values[card[-1]] for card in hand])\n        return values[-1]\n    \n    # Function to check if a hand has a straight (consecutive numbers)\n    def is_straight(ranks):\n        ranks = sorted(ranks)\n        for i in range(len(ranks) - 1):\n            if ranks[i+1] != ranks[i] + 1:\n                return False\n        return True\n    \n    # Function to count the number of each rank in a hand\n    def rank_count(hand):\n        counts = {rank: 0 for rank in card_values.keys()}\n        for card in hand:\n            counts[card[-1]] += 1\n        return counts\n    \n    # Function to determine the type of hand\n    def hand_type(hand):\n        ranks = [card_values[card[-1]] for card in hand]\n        \n        if len(set(ranks)) == 1:\n            return \"Straight Flush\" if is_straight(ranks) else \"Flush\"\n            \n        elif is_straight(ranks):\n            return \"Straight\"\n            \n        else:\n            counts = rank_count(hand)\n            pairs = sum(value > 1 for value in counts.values())\n            return f\"{pairs}-Pair\" if pairs >= 1 else \"High Card\"\n    \n    # Determine the best hand\n    best_hand = max(hands, key=lambda x: (high_card(x), hand_type(x)))\n    \n    return best_hand```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\n====\nFAIL: test_a_straight_beats_three_of_a_kind (poker_test.PokerTest.test_a_straight_beats_three_of_a_kind)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 106, in test_a_straight_beats_three_of_a_kind\n    self.assertEqual(\nAssertionError: None != ['3S 4D 2S 6D 5C']\n\n====\nFAIL: test_a_tie_has_multiple_winners (poker_test.PokerTest.test_a_tie_has_multiple_winners)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 23, in test_a_tie_has_multiple_winners\n    self.assertEqual(\nAssertionError: None != ['3S 4S 5D 6H JH', '3H 4H 5C 6C JD']\n\n====\nFAIL: test_aces_can_end_a_straight_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_10_j_q_k_a)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 111, in test_aces_can_end_a_straight_10_j_q_k_a\n    self.assertEqual(\nAssertionError: None != ['10D JH QS KD AC']\n\n====\nFAIL: test_aces_can_end_a_straight_flush_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_flush_10_j_q_k_a)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 189, in test_aces_can_end_a_straight_flush_10_j_q_k_a\n    self.assertEqual(\nAssertionError: None != ['10C JC QC KC AC']\n\n====\nFAIL: test_aces_can_start_a_straight_a_2_3_4_5 (poker_test.PokerTest.test_aces_can_start_a_straight_a_2_3_4_5)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 116, in test_aces_can_start_a_straight_a_2_3_4_5\n    self.assertEqual(\nAssertionError: None != ['4D AH 3S 2D 5C']\n\n====\nFAIL: test_aces_can_start_a_straight_flush_a_2_3_4_5 (poker_test.PokerTest.test_aces_can_start_a_straight_flush_a_2_3_4_5)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 194, in test_aces_can_start_a_straight_flush_a_2_3_4_5\n    self.assertEqual(\nAssertionError: None != ['4H AH 3H 2H 5H']\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in poker.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from collections import Counter\nimport itertools\n\ndef card_rank(card):\n    \"\"\"Return the rank of a card.\"\"\"\n    return int(card[0]) if card[0] in '23456789' else {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 1}[card[0]]\n\ndef card_suit(card):\n    \"\"\"Return the suit of a card.\"\"\"\n    return card[-1]\n\ndef is_straight(ranks):\n    \"\"\"Check if a list of ranks is a straight.\"\"\"\n    return len(set(ranks)) == len(ranks) and max(ranks)-min(ranks) == len(ranks)-1\n\ndef is_flush(cards):\n    \"\"\"Check if a list of cards is flush.\"\"\"\n    return len(set([card_suit(card) for card in cards])) == 1\n\ndef is_royal_flush(cards):\n    \"\"\"Check if a list of cards is a royal flush.\"\"\"\n    return is_straight([card_rank(card) for card in cards]) and is_flush(cards) and max(cards,key=card_rank)=='TC'\n\ndef get_hand_strength(hand):\n    \"\"\"Evaluate the strength of a hand.\"\"\"\n    ranks = [card_rank(card) for card in hand]\n    if is_royal_flush(hand):\n        return (9, )\n    elif is_straight_flush(hand):\n        return (8, max(ranks))\n    elif is_four_of_a_kind(ranks):\n        return (7, max(ranks))\n    elif is_full_house(ranks):\n        return (6, max(ranks))\n    elif is_flush(hand):\n        return (5, )\n    elif is_straight(ranks):\n        return (4, max(ranks))\n    elif is_three_of_a_kind(ranks):\n        return (3, max(ranks))\n    elif is_two_pair(ranks):\n        return (2, sorted(ranks)[-1], sorted(ranks)[-2])\n    elif is_pair(ranks):\n        return (1, max(ranks))\n    else:\n        return (0, max(ranks))\n\ndef compare_hands(hand1, hand2):\n    \"\"\"Compare two hands and return the winner.\"\"\"\n    strength1 = get_hand_strength(hand1)\n    strength2 = get_hand_strength(hand2)\n    if strength1 > strength2:\n        return hand1\n    elif strength2 > strength1:\n        return hand2\n    else:\n        return None\n\ndef best_hands(hands):\n    \"\"\"Find the best hand among multiple hands.\"\"\"\n    assert len(hands) > 0\n    if len(hands) == 1:\n        return hands[0]\n    else:\n        pairs = [(compare_hands(h1, h2), h1, h2) for h1 in hands for h2 in hands if h1 < h2]\n        return min((p[0] or p[1] for p in pairs), default=None)\n",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,266 @@
+method: on_llm_start [2023-09-04 15:08:38]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Given a number from 0 to 999,999,999,999, spell out that number in English.
+
+## Step 1
+
+Handle the basic case of 0 through 99.
+
+If the input to the program is `22`, then the output should be `'twenty-two'`.
+
+Your program should complain loudly if given a number outside the blessed range.
+
+Some good test cases for this program are:
+
+- 0
+- 14
+- 50
+- 98
+- -1
+- 100
+
+### Extension
+
+If you're on a Mac, shell out to Mac OS X's `say` program to talk out loud.
+If you're on Linux or Windows, eSpeakNG may be available with the command `espeak`.
+
+## Step 2
+
+Implement breaking a number up into chunks of thousands.
+
+So `1234567890` should yield a list like 1, 234, 567, and 890, while the far simpler `1000` should yield just 1 and 0.
+
+The program must also report any values that are out of range.
+
+## Step 3
+
+Now handle inserting the appropriate scale word between those chunks.
+
+So `1234567890` should yield `'1 billion 234 million 567 thousand 890'`
+
+The program must also report any values that are out of range.
+It's fine to stop at "trillion".
+
+## Step 4
+
+Put it all together to get nothing but plain English.
+
+`12345` should give `twelve thousand three hundred forty-five`.
+
+The program must also report any values that are out of range.
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to "throw" a `ValueError` if the number input to `say()` is out of range. The tests will only pass if you both `raise` the `exception` and include a message with it.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# if the number is negative
+raise ValueError("input out of range")
+
+# if the number is larger than 999,999,999,999
+raise ValueError("input out of range")
+```
+
+####
+
+Use the above instructions to modify the supplied files: say.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: say.py
+```python
+
+```
+
+### Response:
+Filepath: say.py
+```python
+import math
+from num2words import num2words
+
+def say(number):
+    if not (0 <= number <= 99999999999999):
+        raise ValueError("Input out of range")
+
+    words = []
+    chunks = split_into_chunks(number)
+    for i, chunk in enumerate(chunks):
+        chunk_words = num2words(chunk, lang='en', to='cardinal')
+
+        # Add scale word if needed
+        if i != len(chunks)-1:
+            scale_word = get_scale_word(len(chunks)-i)
+            chunk_words += f" {scale_word}"
+
+        words.append(chunk_words)
+
+    result = ' '.join(words)
+    print(result)
+
+def split_into_chunks(num):
+    chunks = []
+    while num > 0:
+        chunks.insert(0, num % 1000)
+        num //= 1000
+    return chunks
+
+def get_scale_word(power):
+    scales = ["", "thousand", "million", "billion"]
+    return scales[power]
+
+if __name__ == "__main__":
+    try:
+        number = int(input())
+        say(number)
+    except ValueError as ve:
+        print(ve)
+
+```
+
+### Instruction:
+E
+====
+ERROR: say_test (unittest.loader._FailedTest.say_test)
+----
+ImportError: Failed to import test module: say_test
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/unittest/loader.py", line 407, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/unittest/loader.py", line 350, in _get_module_from_name
+    __import__(name)
+  File "say/say_test.py", line 7, in <module>
+    from say import (
+  File "say/say.py", line 2, in <module>
+    from num2words import num2words
+ModuleNotFoundError: No module named 'num2words'
+
+
+----
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in say.py to resolve the errors.
+
+Filepath: say.py
+```python
+import math
+from num2words import num2words
+
+def say(number):
+    if not (0 <= number <= 99999999999999):
+        raise ValueError("Input out of range")
+
+    words = []
+    chunks = split_into_chunks(number)
+    for i, chunk in enumerate(chunks):
+        chunk_words = num2words(chunk, lang='en', to='cardinal')
+
+        # Add scale word if needed
+        if i != len(chunks)-1:
+            scale_word = get_scale_word(len(chunks)-i)
+            chunk_words += f" {scale_word}"
+
+        words.append(chunk_words)
+
+    result = ' '.join(words)
+    print(result)
+
+def split_into_chunks(num):
+    chunks = []
+    while num > 0:
+        chunks.insert(0, num % 1000)
+        num //= 1000
+    return chunks
+
+def get_scale_word(power):
+    scales = ["", "thousand", "million", "billion"]
+    return scales[power]
+
+if __name__ == "__main__":
+    try:
+        number = int(input())
+        say(number)
+    except ValueError as ve:
+        print(ve)
+
+```
+
+
+### Response:
+Filepath: say.py
+```python
+
+

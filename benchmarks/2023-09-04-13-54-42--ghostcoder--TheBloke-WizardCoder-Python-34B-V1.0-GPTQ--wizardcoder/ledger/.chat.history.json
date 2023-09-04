@@ -1,0 +1,76 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nRefactor a ledger printer.\n\nThe ledger exercise is a refactoring exercise.\nThere is code that prints a nicely formatted ledger, given a locale (American or Dutch) and a currency (US dollar or euro).\nThe code however is rather badly written, though (somewhat surprisingly) it consistently passes the test suite.\n\nRewrite this code.\nRemember that in refactoring the trick is to make small steps that keep the tests passing.\nThat way you can always quickly go back to a working version.\nVersion control tools like git can help here as well.\n\nPlease keep a log of what changes you've made and make a comment on the exercise containing that log, this will help reviewers.\n\n####\n\nUse the above instructions to modify the supplied files: ledger.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class Ledger:\n    def __init__(self, name='My Ledger', currency='USD'):\n        self.name = name\n        self.currency = currency\n        self.entries = []\n\n    def add_entry(self, entry):\n        self.entries.append(entry)\n\n    def get_balance(self):\n        balance = 0\n        for entry in self.entries:\n            balance += entry.change\n        return balance\n\n    def print_to_console(self, currency=None):\n        if not currency:\n            currency = self.currency\n        print('-------------------------')\n        print(f\"{self.name} - {currency}\")\n        print('-------------------------')\n        print()\n        print('Date       | Description                     | Change')\n        print('----------|-------------------------------|-------')\n        print(self._get_table())\n        print()\n        total_balance = self.get_balance()\n        if total_balance >= 0:\n            sign = ''\n        else:\n            sign = '-'\n        if currency == 'USD':\n            total_balance_str = '$'\n        elif currency == 'EUR':\n            total_balance_str = u'\u20ac'\n        total_balance_abs = abs(total_balance)\n        total_balance_dollars = int(total_balance_abs / 100)\n        total_balance_cents = int(total_balance_abs % 100)\n        total_balance_str += '{:,.2f}'.format(total_balance_dollars).replace(',', '.')\n        total_balance_str += ','\n        total_balance_str += '{:02d}'.format(total_balance_cents)\n        print(sign + total_balance_str + ' Total Balance')\n\n    def _get_table(self):\n        table = ''\n        for entry in self.entries:\n            # Write entry date to table\n            day = entry.date.day\n            day = str(day)\n            if len(day) < 2:\n                day = '0' + day\n            date_str = day\n            date_str += '-'\n            month = entry.date.month\n            month = str(month)\n            if len(month) < 2:\n                month = '0' + month\n            date_str += month\n            date_str += '-'\n            year = entry.date.year\n            year = str(year)\n            while len(year) < 4:\n                year = '0' + year\n            date_str += year\n            table += date_str\n            table += ' | '\n\n            # Write entry description to table\n            # Truncate if necessary\n            if len(entry.description) > 25:\n                for i in range(22):\n                    table += entry.description[i]\n                table += '...'\n            else:\n                for i in range(25):\n                    if len(entry.description) > i:\n                        table += entry.description[i]\n                    else:\n                        table += ' '\n            table += ' | '\n\n            # Write entry change to table\n            if currency == 'USD':\n                change_str = '$ '\n                if entry.change < 0:\n                    change_str += '-'\n                change_dollar = abs(int(entry.change / 100.0))\n                dollar_parts = []\n                while change_dollar > 0:\n                    dollar_parts.insert(0, str(change_dollar % 1000))\n                    change_dollar = change_dollar // 1000\n                if len(dollar_parts) == 0:\n                    change_str += '0'\n                else:\n                    while True:\n                        change_str += dollar_parts[0]\n                        dollar_parts.pop(0)\n                        if len(dollar_parts) == 0:\n                            break\n                        change_str += '.'\n                change_str += ','\n                change_cents = abs(entry.change) % 100\n                change_cents = str(change_cents)\n                if len(change_cents) < 2:",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "E\n====\nERROR: ledger_test (unittest.loader._FailedTest.ledger_test)\n----\nImportError: Failed to import test module: ledger_test\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 407, in _find_test_path\n    module = self._get_module_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 350, in _get_module_from_name\n    __import__(name)\n  File \"ledger/ledger_test.py\", line 7, in <module>\n    from ledger import (\n  File \"ledger/ledger.py\", line 104\n    if len(change_cents) < 2:\n                             ^\nIndentationError: expected an indented block after 'if' statement on line 104\n\n\n----\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in ledger.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: ledger.py\n```python\nclass Entry:\n    def __init__(self, date, description, change):\n        self.date = date\n        self.description = description\n        self.change = change\n\nclass Ledger:\n    def __init__(self, name, currency='USD'):\n        self.name = name\n        self.currency = currency\n        self.entries = []\n\n    def add_entry(self, entry):\n        self.entries.append(entry)\n\n    def get_balance(self):\n        balance = 0\n        for entry in self.entries:\n            balance += entry.change\n        return balance\n\n    def print_to_console(self, currency=None):\n        if not currency:\n            currency = self.currency\n        print('-------------------------')\n        print(f\"{self.name} - {currency}\")\n        print('-------------------------')\n        print()\n        print('Date       | Description                     | Change')\n        print('----------|-------------------------------|-------')\n        print(self._get_table())\n        print()\n        total_balance = self.get_balance()\n        if total_balance >= 0:\n            sign = ''\n        else:\n            sign = '-'\n        if currency == 'USD':\n            total_balance_str = '$'\n        elif currency == 'EUR':\n            total_balance_str = u'\\u20AC'\n        total_balance_abs = abs(total_balance)\n        total_balance_dollars = int(total_balance_abs / 100)\n        total_balance_cents = int(total_balance_abs % 100)\n        total_balance_str += '{:,.2f}'.format(total_balance_dollars).replace(',', '.')\n        total_balance_str += ','\n        total_balance_str += '{:02d}'.format(total_balance_cents)\n        print(sign + total_balance_str + ' Total Balance')\n\n    def _get_table(self):\n        table = ''\n        for entry in self.entries:\n            # Write entry date to table\n            day = entry.date.day\n            day = str(day)\n            if len(day) < 2:\n                day = '0' + day\n            date_str = day\n            date_str += '-'\n            month = entry.date.month\n            month = str(month)\n            if len(month) < 2:\n                month = '0' + month\n            date_str += month\n            date_str += '-'\n            year = entry.date.year\n            year = str(year)\n            while len(year) < 4:\n                year = '0' + year\n            date_str += year\n            table += date_str\n            table += ' | '\n\n            # Write entry description to table\n            # Truncate if necessary\n            if len(entry.description) > 25:\n                for i in range(22):\n                    table += entry.description[i]\n                table += '...'\n            else:\n                for i in range(25):\n                    if len(entry.description) > i:\n                        table += entry.description[i]\n                    else:\n                        table += ' '\n            table += ' | '\n\n            # Write entry change to table\n            if currency == 'USD':\n                change_str = '$ '\n                if entry.change < 0:\n                    change_str += '-'\n                change_dollar = abs(int(entry.change / 100.0))\n                dollar_parts = []\n                while change_dollar > 0:\n                    dollar_parts.insert(0, str(change_dollar % 1000))\n                    change_dollar = change_dollar // 1000\n                if len(dollar_parts) == 0:\n                    change_str += '0'\n                else:\n                    while True:\n                        change_str += dollar_parts[0]\n                        dollar_parts.pop(0)\n                        if len(dollar_parts) == 0:\n                            break\n                        change_str += '.'\n                change_str += ','\n                change_cents = abs```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

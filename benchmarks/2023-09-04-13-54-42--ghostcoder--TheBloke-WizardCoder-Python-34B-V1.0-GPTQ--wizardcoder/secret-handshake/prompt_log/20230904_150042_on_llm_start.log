@@ -1,0 +1,246 @@
+method: on_llm_start [2023-09-04 15:00:42]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Introduction
+
+You are starting a secret coding club with some friends and friends-of-friends.
+Not everyone knows each other, so you and your friends have decided to create a secret handshake that you can use to recognize that someone is a member.
+You don't want anyone who isn't in the know to be able to crack the code.
+
+You've designed the code so that one person says a number between 1 and 31, and the other person turns it into a series of actions.
+# Instructions
+
+Your task is to convert a number between 1 and 31 to a sequence of actions in the secret handshake.
+
+The sequence of actions is chosen by looking at the rightmost five digits of the number once it's been converted to binary.
+Start at the right-most digit and move left.
+
+The actions for each number place are:
+
+```plaintext
+00001 = wink
+00010 = double blink
+00100 = close your eyes
+01000 = jump
+10000 = Reverse the order of the operations in the secret handshake.
+```
+
+Let's use the number `9` as an example:
+
+- 9 in binary is `1001`.
+- The digit that is farthest to the right is 1, so the first action is `wink`.
+- Going left, the next digit is 0, so there is no double-blink.
+- Going left again, the next digit is 0, so you leave your eyes open.
+- Going left again, the next digit is 1, so you jump.
+
+That was the last digit, so the final code is:
+
+```plaintext
+wink, jump
+```
+
+Given the number 26, which is `11010` in binary, we get the following actions:
+
+- double blink
+- jump
+- reverse actions
+
+The secret handshake for 26 is therefore:
+
+```plaintext
+jump, double blink
+```
+
+~~~~exercism/note
+If you aren't sure what binary is or how it works, check out [this binary tutorial][intro-to-binary].
+
+[intro-to-binary]: https://medium.com/basecs/bits-bytes-building-with-binary-13cb4289aafa
+~~~~
+To keep things simple (and to let you focus on the important part of this exercise), your function will receive its inputs as binary strings:
+
+```
+>>> commands("00011")
+["wink", "double blink"]
+```
+
+####
+
+Use the above instructions to modify the supplied files: secret_handshake.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: secret_handshake.py
+```python
+
+```
+
+### Response:
+Filepath: secret_handshake.py
+```python
+def commands(binary_str):
+    actions = {
+        1: 'wink',
+        2: 'double blink',
+        4: 'close your eyes',
+        8: 'jump',
+        16: 'Reverse the order of the operations in the secret handshake.'
+    }
+
+    binary_list = list(map(int, binary_str))
+    binary_list.reverse()
+
+    result = []
+    for index, value in enumerate(binary_list):
+        if value != 0:
+            result.append(actions[2**index])
+
+    return result
+
+```
+
+### Instruction:
+......FFFF.
+====
+FAIL: test_reverse_all_possible_actions (secret_handshake_test.SecretHandshakeTest.test_reverse_all_possible_actions)
+----
+Traceback (most recent call last):
+  File "secret-handshake/secret_handshake_test.py", line 43, in test_reverse_all_possible_actions
+    self.assertEqual(
+AssertionError: Lists differ: ['wink', 'double blink', 'close your eyes',[67 chars]ke.'] != ['jump', 'close your eyes', 'double blink', 'wink']
+
+First differing element 0:
+'wink'
+'jump'
+
+First list contains 1 additional elements.
+First extra element 4:
+'Reverse the order of the operations in the secret handshake.'
+
++ ['jump', 'close your eyes', 'double blink', 'wink']
+- ['wink',
+-  'double blink',
+-  'close your eyes',
+-  'jump',
+-  'Reverse the order of the operations in the secret handshake.']
+
+====
+FAIL: test_reverse_two_actions (secret_handshake_test.SecretHandshakeTest.test_reverse_two_actions)
+----
+Traceback (most recent call last):
+  File "secret-handshake/secret_handshake_test.py", line 29, in test_reverse_two_actions
+    self.assertEqual(commands("10011"), ["double blink", "wink"])
+AssertionError: Lists differ: ['wink', 'double blink', 'Reverse the order[40 chars]ke.'] != ['double blink', 'wink']
+
+First differing element 0:
+'wink'
+'double blink'
+
+First list contains 1 additional elements.
+First extra element 2:
+'Reverse the order of the operations in the secret handshake.'
+
+- ['wink',
+-  'double blink',
+? ^
+
++ ['double blink', 'wink']
+? ^               ++++++++
+
+-  'Reverse the order of the operations in the secret handshake.']
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in secret_handshake.py to resolve the errors.
+
+Filepath: secret_handshake.py
+```python
+def commands(binary_str):
+    actions = {
+        1: 'wink',
+        2: 'double blink',
+        4: 'close your eyes',
+        8: 'jump',
+        16: 'Reverse the order of the operations in the secret handshake.'
+    }
+
+    binary_list = list(map(int, binary_str))
+    binary_list.reverse()
+
+    result = []
+    for index, value in enumerate(binary_list):
+        if value != 0:
+            result.append(actions[2**index])
+
+    return result
+
+```
+
+
+### Response:
+Filepath: secret_handshake.py
+```python
+
+

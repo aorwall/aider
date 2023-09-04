@@ -1,0 +1,96 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "react.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a basic reactive system.\n\nReactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.\n\nImplement a basic reactive system with cells with settable values (\"input\" cells) and cells with values computed in terms of other cells (\"compute\" cells).\nImplement updates so that when an input value is changed, values propagate to reach a new stable system state.\n\nIn addition, compute cells should allow for registering change notification callbacks.\nCall a cell\u2019s callbacks when the cell\u2019s value in a new stable state has changed from the previous stable state.\n\n####\n\nUse the above instructions to modify the supplied files: react.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here's an implementation of the requested features using Python. The main changes involve setting up mechanisms for propagating updates and notifying interested parties about changes in values.",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "class InputCell:\n    def __init__(self, initial_value=None):\n        self._value = initial_value\n        self._callbacks = []\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, v):\n        if v != self._value:\n            self._value = v\n            self.notify()\n\n    def notify(self):\n        for callback in self._callbacks:\n            callback(self)\n\n    def add_callback(self, callback):\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        if callback in self._callbacks:\n            self._callbacks.remove(callback)\n\n\nclass ComputeCell:\n    def __init__(self, inputs, compute_function):\n        self._inputs = inputs\n        self._compute_function = compute_function\n        self._value = None\n        self._callbacks = []\n\n        # Subscribe to input cells\n        for cell in self._inputs:\n            cell.add_callback(self.on_input_change)\n\n        # Initial computation\n        self.recompute()\n\n    def on_input_change(self, changed_cell):\n        self.recompute()\n\n    def recompute(self):\n        new_value = self._compute_function([cell.value for cell in self._inputs])\n        if new_value != self._value:\n            self._value = new_value\n            self.notify()\n\n    @property\n    def value(self):\n        return self._value\n\n    def add_callback(self, callback):\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        if callback in self._callbacks:\n            self._callbacks.remove(callback)\n\n    def notify(self):\n        for callback in self._callbacks:\n            callback(self)\n    ",
+        "language": null,
+        "file_path": "react.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "This solution uses a list of callback functions to call whenever a `ComputeCell`'s value changes. Whenever an `InputCell` changes its value, it calls the `on_input_change` method of its dependent `ComputeCell` objects, which then recalculates their stored value and notifies subscribed callbacks if necessary.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "react.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": ".FFFFFF..F...F\n====\nFAIL: test_callback_cells_only_fire_on_change (react_test.ReactTest.test_callback_cells_only_fire_on_change)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 105, in test_callback_cells_only_fire_on_change\n    self.assertEqual(cb1_observer[-1], 222)\nAssertionError: <react.ComputeCell object at 0x7f1ef1207b90> != 222\n\n====\nFAIL: test_callbacks_can_be_added_and_removed (react_test.ReactTest.test_callbacks_can_be_added_and_removed)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 164, in test_callbacks_can_be_added_and_removed\n    self.assertEqual(cb1_observer[-1], 32)\nAssertionError: <react.ComputeCell object at 0x7f1ef1face90> != 32\n\n====\nFAIL: test_callbacks_can_fire_from_multiple_cells (react_test.ReactTest.test_callbacks_can_fire_from_multiple_cells)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 144, in test_callbacks_can_fire_from_multiple_cells\n    self.assertEqual(cb1_observer[-1], 11)\nAssertionError: <react.ComputeCell object at 0x7f1ef1207c50> != 11\n\n====\nFAIL: test_callbacks_do_not_report_already_reported_values (react_test.ReactTest.test_callbacks_do_not_report_already_reported_values)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 119, in test_callbacks_do_not_report_already_reported_values\n    self.assertEqual(cb1_observer[-1], 3)\nAssertionError: <react.ComputeCell object at 0x7f1ef13fd210> != 3\n\n====\nFAIL: test_callbacks_should_not_be_called_if_dependencies_change_but_output_value_doesn_t_change (react_test.ReactTest.test_callbacks_should_not_be_called_if_dependencies_change_but_output_value_doesn_t_change)\n----\nTraceback (most recent call last):\n  File \"react/react_test.py\", line 258, in test_callbacks_should_not_be_called_if_dependencies_change_but_output_value_doesn_t_change\n    self.assertEqual(cb1_observer, [])\nAssertionError: Lists differ: [<react.ComputeCell object at 0x7f1ef13fd2[45 chars]290>] != []\n\nFirst list contains 2 additional elements.\nFirst extra element 0:\n<react.ComputeCell object at 0x7f1ef13fd290>\n\n+ []\n- [<react.ComputeCell object at 0x7f1ef13fd290>,\n-  <react.ComputeCell object at 0x7f1ef13fd290>]\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in react.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here is a possible solution by modifying `react.py` file:",
+        "need_input": false
+      },
+      {
+        "type": "code",
+        "content": "class Cell:\n    def __init__(self, value=None):\n        self._value = value\n        self._callbacks = set()\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_val):\n        self._value = new_val\n        for cb in self._callbacks:\n            cb(self)\n            \n    def observe(self, func):\n        self._callbacks.add(func)\n        \n    def unobserve(self, func):\n        if func in self._callbacks:\n            self._callbacks.remove(func)",
+        "language": "python"
+      },
+      {
+        "type": "text",
+        "text": "In this version of `Cell`, we store callback functions directly in `_callbacks`. We use `@property` and `@value.setter` decorators to create getter and setter methods for `value`. When `value` is changed via the setter, it notifies all registered callback functions about the change. The `observe()` method adds a function to the cell's callback list, while the `unobserve()` checks whether the given function is already in the list before removing it.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

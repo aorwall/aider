@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven a string containing brackets `[]`, braces `{}`, parentheses `()`, or any combination thereof, verify that any and all pairs are matched and nested correctly.\nThe string may also contain other characters, which for the purposes of this exercise should be ignored.\n\n####\n\nUse the above instructions to modify the supplied files: matching_brackets.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "matching_brackets.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom collections import defaultdict\n\ndef is_paired(input_string):\n    stack = []\n    mapping = {\"(\": \")\", \"[\": \"]\", \"{\": \"}\"}\n\n    for char in input_string:\n        if char in mapping:\n            stack.append(char)\n        elif len(stack) > 0 and char == mapping[stack[-1]]:\n            stack.pop()\n\n    return len(stack) == 0\n",
+        "language": "python",
+        "file_path": "matching_brackets.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "..F...........FF....\n====\nFAIL: test_early_unexpected_brackets (matching_brackets_test.MatchingBracketsTest.test_early_unexpected_brackets)\n----\nTraceback (most recent call last):\n  File \"matching-brackets/matching_brackets_test.py\", line 62, in test_early_unexpected_brackets\n    self.assertEqual(is_paired(\")()\"), False)\nAssertionError: True != False\n\n====\nFAIL: test_too_many_closing_brackets (matching_brackets_test.MatchingBracketsTest.test_too_many_closing_brackets)\n----\nTraceback (most recent call last):\n  File \"matching-brackets/matching_brackets_test.py\", line 59, in test_too_many_closing_brackets\n    self.assertEqual(is_paired(\"[]]\"), False)\nAssertionError: True != False\n\n====\nFAIL: test_unopened_closing_brackets (matching_brackets_test.MatchingBracketsTest.test_unopened_closing_brackets)\n----\nTraceback (most recent call last):\n  File \"matching-brackets/matching_brackets_test.py\", line 44, in test_unopened_closing_brackets\n    self.assertEqual(is_paired(\"{[)][]}\"), False)\nAssertionError: True != False\n\n----\n\n\nFAILED (failures=3)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in matching_brackets.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "matching_brackets.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom collections import deque\nfrom collections import defaultdict\n\ndef is_paired(input_string):\n    stack = deque()\n    mapping = {\"(\": \")\", \"[\": \"]\", \"{\": \"}\"}\n\n    for char in input_string:\n        if char in mapping:\n            stack.append(char)\n        elif len(stack) > 0 and char == mapping[stack[-1]]:\n            stack.pop()\n\n    return len(stack) == 0\n",
+        "language": "python",
+        "file_path": "matching_brackets.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

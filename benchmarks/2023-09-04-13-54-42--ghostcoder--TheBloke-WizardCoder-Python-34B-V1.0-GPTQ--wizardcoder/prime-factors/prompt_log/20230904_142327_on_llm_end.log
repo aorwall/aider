@@ -1,0 +1,25 @@
+method: on_llm_end [2023-09-04 14:23:27]
+llm_output: null
+prompt:
+from math import sqrt
+
+def factors(value):
+    if value < 2:
+        raise ValueError("Value must be greater than or equal to 2")
+    
+    primes = []
+    while value % 2 == 0:
+        primes.append(2)
+        value //= 2
+        
+    for i in range(3, int(sqrt(value))+1, 2):
+        while value % i == 0:
+            primes.append(i)
+            value //= i
+            
+    if value > 2:
+        primes.append(value)
+        
+    return primes
+
+---

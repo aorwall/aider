@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nYour task in this exercise is to write code that returns the lyrics of the song: \"The Twelve Days of Christmas.\"\n\n\"The Twelve Days of Christmas\" is a common English Christmas carol.\nEach subsequent verse of the song builds on the previous verse.\n\nThe lyrics your code returns should _exactly_ match the full song text shown below.\n\n## Lyrics\n\n```text\nOn the first day of Christmas my true love gave to me: a Partridge in a Pear Tree.\n\nOn the second day of Christmas my true love gave to me: two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the third day of Christmas my true love gave to me: three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the fourth day of Christmas my true love gave to me: four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the fifth day of Christmas my true love gave to me: five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the sixth day of Christmas my true love gave to me: six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the seventh day of Christmas my true love gave to me: seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the eighth day of Christmas my true love gave to me: eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the ninth day of Christmas my true love gave to me: nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the tenth day of Christmas my true love gave to me: ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the eleventh day of Christmas my true love gave to me: eleven Pipers Piping, ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n\nOn the twelfth day of Christmas my true love gave to me: twelve Drummers Drumming, eleven Pipers Piping, ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.\n```\n# Instructions append\n\n## Test-driven development\n\n Be sure to check the comments at the top of the tests file.\n They will be helpful in understanding the expected output of your function.\n\nThis challenge _could_ be solved with a minimum of code and a lot of hardcoded text which is duplicated between the verses.\nHowever, this song is a type of [cumulative song][cumulative song], where each new verse builds on the verse that comes before it.\nFor more of a programming challenge, consider assembling each verse from its parts.\nFor example, for each verse, the day changes and the gift changes, and the rest of the verse is pretty much the same.\nWhat might be a good strategy for avoiding repetition?\n\n[cumulative song]: https://en.wikipedia.org/wiki/Cumulative_song\n\n####\n\nUse the above instructions to modify the supplied files: twelve_days.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "twelve_days.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import List\n\ndef build_gift_list(day: int) -> List[str]:\n    gifts = {\n        12: \"twelve Drummers Drumming\",\n        11: \"eleven Pipers Piping\",\n        10: \"ten Lords-a-Leaping\",\n         9: \"nine Ladies Dancing\",\n         8: \"eight Maids-a-Milking\",\n         7: \"seven Swans-a-Swimming\",\n         6: \"six Geese-a-Laying\",\n         5: \"five Gold Rings\",\n         4: \"four Calling Birds\",\n         3: \"three French Hens\",\n         2: \"two Turtle Doves\",\n        -1: \"Partridge in a Pear Tree\"\n    }\n\n    if day == 1:\n        return [gifts[-1]]\n    elif day > 12:\n        raise ValueError(\"Invalid day\")\n\n    gift_list = []\n    for i in range(day, 0, -1):\n        gift_list.append(gifts[i])\n\n    return gift_list\n\ndef build_verse(day: int) -> str:\n    gift_list = build_gift_list(day)\n    first_line = f\"On the {ordinal(day)} day of Christmas my true love gave to me:\"\n    gifts_str = \", \".join(gift_list[:-1]) + \", and \" + gift_list[-1]\n    last_line = \"\\n\".join([f\"{first_line}\", f\"{gifts_str}.\\n\"])\n    return last_line\n\ndef ordinal(num: int) -> str:\n    suffixes = {1: 'st', 2: 'nd', 3: 'rd'}\n    if 1 <= num % 100 <= 20:\n        return f\"{num}th\"\n    else:\n        return f\"{num}{suffixes.get(num % 10, 'th')}\"\n\ndef recite(start_verse: int, end_verse: int) -> List[str]:\n    return [build_verse(i) for i in range(start_verse, end_verse+1)]\n\nif __name__ == \"__main__\":\n    print(\"\\n\".join(recite(1, 12)))",
+        "language": "python",
+        "file_path": "twelve_days.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEFEEEEEEEEEEE\n====\nERROR: test_eighth_day_eight_maids_a_milking (twelve_days_test.TwelveDaysTest.test_eighth_day_eight_maids_a_milking)\n----\nTraceback (most recent call last):\n  File \"twelve-days/twelve_days_test.py\", line 99, in test_eighth_day_eight_maids_a_milking\n    self.assertEqual(recite(8, 8), expected)\n                     ^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 45, in recite\n    return [build_verse(i) for i in range(start_verse, end_verse+1)]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 45, in <listcomp>\n    return [build_verse(i) for i in range(start_verse, end_verse+1)]\n            ^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 31, in build_verse\n    gift_list = build_gift_list(day)\n                ^^^^^^^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 26, in build_gift_list\n    gift_list.append(gifts[i])\n                     ~~~~~^^^\nKeyError: 1\n\n====\nERROR: test_eleventh_day_eleven_pipers_piping (twelve_days_test.TwelveDaysTest.test_eleventh_day_eleven_pipers_piping)\n----\nTraceback (most recent call last):\n  File \"twelve-days/twelve_days_test.py\", line 147, in test_eleventh_day_eleven_pipers_piping\n    self.assertEqual(recite(11, 11), expected)\n                     ^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 45, in recite\n    return [build_verse(i) for i in range(start_verse, end_verse+1)]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 45, in <listcomp>\n    return [build_verse(i) for i in range(start_verse, end_verse+1)]\n            ^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 31, in build_verse\n    gift_list = build_gift_list(day)\n                ^^^^^^^^^^^^^^^^^^^^\n  File \"twelve-days/twelve_days.py\", line 26, in build_gift_list\n    gift_list.append(gifts[i])\n                     ~~~~~^^^\nKeyError: 1\n\n====\nERROR: test_fifth_day_five_gold_rings (twelve_days_test.TwelveDaysTest.test_fifth_day_five_gold_rings)\n----\nTraceback (most recent call last):\n  File \"twelve-days/twelve_days_test.py\", line 60, in test_fifth_day_five_gold_rings\n    self.assertEqual(recite(5, 5), expected)\n                     ^^^^^^^^^^^^\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in twelve_days.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "twelve_days.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import List\n\ndef build_gift_list(day: int) -> List[str]:\n    gifts = {\n        12: \"twelve Drummers Drumming\",\n        11: \"eleven Pipers Piping\",\n        10: \"ten Lords-a-Leaping\",\n         9: \"nine Ladies Dancing\",\n         8: \"eight Maids-a-Milking\",\n         7: \"seven Swans-a-Swimming\",\n         6: \"six Geese-a-Laying\",\n         5: \"five Gold Rings\",\n         4: \"four Calling Birds\",\n         3: \"three French Hens\",\n         2: \"two Turtle Doves\",\n         1: \"one Partridge in a Pear Tree\"\n    }\n\n    if day not in gifts:\n        raise ValueError(\"Invalid day\")\n\n    return [gifts[day]]\n\ndef build_verse(day: int) -> str:\n    gift_list = build_gift_list(day)\n    first_line = f\"On the {ordinal(day)} day of Christmas my true love gave to me:\"\n    gifts_str = \", \".join(gift_list)\n    last_line = f\"{first_line} {gifts_str}.\"\n    return last_line\n\ndef ordinal(num: int) -> str:\n    suffixes = {1: 'st', 2: 'nd', 3: 'rd'}\n    if 1 <= num % 100 <= 20:\n        return f\"{num}th\"\n    else:\n        return f\"{num}{suffixes.get(num % 10, 'th')}\"\n\ndef recite(start_verse: int, end_verse: int) -> List[str]:\n    return [build_verse(i) for i in range(start_verse, end_verse+1)]\n\nif __name__ == \"__main__\":\n    print(\"\\n\".join(recite(1, 12)))",
+        "language": "python",
+        "file_path": "twelve_days.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

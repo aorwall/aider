@@ -1,0 +1,68 @@
+method: on_llm_end [2023-09-04 19:57:12]
+llm_output: null
+prompt:
+import re
+
+LETTER_VALUES = {
+    "a": 1, "e": 1, "i": 1, "o": 1, "u": 1, "l": 1, "n": 1, "r": 1, "s": 1, "t": 1,
+    "d": 2, "g": 2,
+    "b": 3, "c": 3, "m": 3, "p": 3,
+    "f": 4, "h": 4, "v": 4, "w": 4, "y": 4,
+    "k": 5,
+    "j": 8, "x": 8,
+    "q": 10, "z": 10
+}
+
+def score(word):
+    """Returns the scrabble score for the input word."""
+    score = 0
+    for char in word:
+        score += LETTER_VALUES[char.lower()]
+    return score
+
+def test_scoring():
+    assert score("") == 0
+    assert score(" ") == 0
+    assert score("a") == 1
+    assert score("aa") == 2
+    assert score("aaa") == 3
+    assert score("aaaa") == 4
+    assert score("cake") == 7
+    assert score("chair") == 10
+    assert score("cabbage") == 14
+    assert score("quirky") == 22
+    assert score("street") == 14
+    assert score("strange") == 17
+    assert score("square") == 15
+    assert score("squares") == 18
+    assert score("squarespace") == 25
+    assert score("squarespaces") == 28
+    assert score("squarespaceship") == 34
+    assert score("squarespaceships") == 37
+    assert score("squarespaceshipscape") == 44
+    assert score("squarespaceshipscapes") == 47
+    assert score("squarespaceshipscapess") == 50
+    assert score("squarespaceshipscapesss") == 53
+    assert score("squarespaceshipscapessss") == 56
+    assert score("squarespaceshipscapesssss") == 59
+    assert score("squarespaceshipscapessssss") == 62
+    assert score("squarespaceshipscapesssssss") == 65
+    assert score("squarespaceshipscapessssssss") == 68
+    assert score("squarespaceshipscapesssssssss") == 71
+    assert score("squarespaceshipscapessssssssss") == 74
+    assert score("squarespaceshipscapesssssssssss") == 77
+    assert score("squarespaceshipscapessssssssssss") == 80
+    assert score("squarespaceshipscapesssssssssssss") == 83
+    assert score("squarespaceshipscapessssssssssssss") == 86
+    assert score("squarespaceshipscapesssssssssssssss") == 89
+    assert score("squarespaceshipscapessssssssssssssss") == 92
+    assert score("squarespaceshipscapesssssssssssssssss") == 95
+    assert score("squarespaceshipscapessssssssssssssssss") == 98
+    assert score("squarespaceshipscapesssssssssssssssssss") == 101
+    assert score("squarespaceshipscapessssssssssssssssssss") == 104
+    assert score("squarespaceshipscapesssssssssssssssssssss") == 107
+    assert score("squarespaceshipscapessssssssssssssssssssss") == 110
+    assert score("squarespaceshipscapesssssssssssssssssssssss") == 113
+    assert score("squarespaceshipscapessssssssssssssssssssssss") == 116
+    assert score("squarespaceshipscapesssssssssssssssssssssssss") == 119
+---

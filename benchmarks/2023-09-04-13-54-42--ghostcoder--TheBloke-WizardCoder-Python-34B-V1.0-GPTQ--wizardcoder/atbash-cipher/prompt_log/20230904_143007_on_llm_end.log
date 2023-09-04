@@ -1,0 +1,53 @@
+method: on_llm_end [2023-09-04 14:30:07]
+llm_output: null
+prompt:
+def encode(plain_text):
+    plain_text = plain_text.lower()
+    
+    # Create a dictionary to store the mapping between plain and cipher characters
+    char_mapping = dict(zip('abcdefghijklmnopqrstuvwxyz', 'zyxwvutsrqponmlkjihgfedcba'))
+    
+    # Replace each character in the plain text with its corresponding cipher character using the mapping
+    cipher_text = ''
+    for char in plain_text:
+        if char in char_mapping:
+            cipher_text += char_mapping[char]
+        else:
+            cipher_text += char
+            
+    # Group the cipher text into chunks of 5 characters separated by spaces
+    grouped_chars = []
+    current_chunk = ''
+    for index, char in enumerate(cipher_text):
+        current_chunk += char
+        
+        if (index + 1) % 5 == 0:
+            grouped_chars.append(current_chunk)
+            current_chunk = ''
+            
+    if len(current_chunk) > 0:
+        grouped_chars.append(current_chunk)
+        
+    final_cipher_text = ' '.join(grouped_chars)
+    
+    return final_cipher_text
+
+
+def decode(ciphered_text):
+    # Invert the character mapping to get the decryption mapping
+    char_mapping = dict(zip('zyxwvutsrqponmlkjihgfedcba', 'abcdefghijklmnopqrstuvwxyz'))
+    
+    # Remove spaces and convert the cipher text to lower case
+    ciphered_text = ciphered_text.lower().replace(' ', '')
+    
+    # Apply the decryption mapping to each character in the cipher text
+    plain_text = ''
+    for char in ciphered_text:
+        if char in char_mapping:
+            plain_text += char_mapping[char]
+        else:
+            plain_text += char
+            
+    return plain_text
+
+---

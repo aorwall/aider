@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nTally the results of a small football competition.\n\nBased on an input file containing which team played against which and what the outcome was, create a file with a table like this:\n\n```text\nTeam                           | MP |  W |  D |  L |  P\nDevastating Donkeys            |  3 |  2 |  1 |  0 |  7\nAllegoric Alaskans             |  3 |  2 |  0 |  1 |  6\nBlithering Badgers             |  3 |  1 |  0 |  2 |  3\nCourageous Californians        |  3 |  0 |  1 |  2 |  1\n```\n\nWhat do those abbreviations mean?\n\n- MP: Matches Played\n- W: Matches Won\n- D: Matches Drawn (Tied)\n- L: Matches Lost\n- P: Points\n\nA win earns a team 3 points.\nA draw earns 1.\nA loss earns 0.\n\nThe outcome is ordered by points, descending.\nIn case of a tie, teams are ordered alphabetically.\n\n## Input\n\nYour tallying program will receive input that looks like:\n\n```text\nAllegoric Alaskans;Blithering Badgers;win\nDevastating Donkeys;Courageous Californians;draw\nDevastating Donkeys;Allegoric Alaskans;win\nCourageous Californians;Blithering Badgers;loss\nBlithering Badgers;Devastating Donkeys;loss\nAllegoric Alaskans;Courageous Californians;win\n```\n\nThe result of the match refers to the first team listed.\nSo this line:\n\n```text\nAllegoric Alaskans;Blithering Badgers;win\n```\n\nmeans that the Allegoric Alaskans beat the Blithering Badgers.\n\nThis line:\n\n```text\nCourageous Californians;Blithering Badgers;loss\n```\n\nmeans that the Blithering Badgers beat the Courageous Californians.\n\nAnd this line:\n\n```text\nDevastating Donkeys;Courageous Californians;draw\n```\n\nmeans that the Devastating Donkeys and Courageous Californians tied.\n\n####\n\nUse the above instructions to modify the supplied files: tournament.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import sys\nfrom collections import defaultdict\n\ndef tally(rows):\n    results = defaultdict(lambda: [0, 0, 0])\n\n    for row in rows:\n        home_team, away_team, outcome = row.split(';')\n\n        if outcome == 'win':\n            results[home_team][0] += 1\n            results[home_team][3] += 3\n            results[away_team][0] += 1\n        elif outcome == 'draw':\n            results[home_team][0] += 1\n            results[home_team][4] += 1\n            results[away_team][0] += 1\n            results[away_team][4] += 1\n        else:\n            results[home_team][0] += 1\n            results[home_team][5] += 1\n            results[away_team][0] += 1\n            results[away_team][3] += 3\n\n    sorted_results = sorted(results.items(), key=lambda x: (-x[1][3], x[0]))\n\n    print(\"{:<30} | {:^3} | {:^2} | {:^2} | {:^2} | {:^2}\".format(\"Team\", \"MP\", \"W\", \"D\", \"L\", \"P\"))\n    print(\"-\"*50)\n\n    for team, record in sorted_results:\n        print(\"{:<30} | {:>3} | {:>2} | {:>2} | {:>2} | {:>2}\".format(team, sum([record[i] for i in [0, 1, 2]]), record[1], record[4], record[5], record[3]*3+record[4]))\n\nif __name__ == \"__main__\":\n    lines = []\n    while True:\n        try:\n            lines.append(input())\n        except EOFError:\n            break\n    tally(lines)\n",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEEEFEEEEE\n====\nERROR: test_a_different_team_can_win (tournament_test.TournamentTest.test_a_different_team_can_win)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 43, in test_a_different_team_can_win\n    self.assertEqual(tally(results), table)\n                     ^^^^^^^^^^^^^^\n  File \"tournament/tournament.py\", line 12, in tally\n    results[home_team][3] += 3\n    ~~~~~~~~~~~~~~~~~~^^^\nIndexError: list index out of range\n\n====\nERROR: test_a_draw_is_one_point_each (tournament_test.TournamentTest.test_a_draw_is_one_point_each)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 52, in test_a_draw_is_one_point_each\n    self.assertEqual(tally(results), table)\n                     ^^^^^^^^^^^^^^\n  File \"tournament/tournament.py\", line 16, in tally\n    results[home_team][4] += 1\n    ~~~~~~~~~~~~~~~~~~^^^\nIndexError: list index out of range\n\n====\nERROR: test_a_win_can_also_be_expressed_as_a_loss (tournament_test.TournamentTest.test_a_win_can_also_be_expressed_as_a_loss)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 34, in test_a_win_can_also_be_expressed_as_a_loss\n    self.assertEqual(tally(results), table)\n                     ^^^^^^^^^^^^^^\n  File \"tournament/tournament.py\", line 21, in tally\n    results[home_team][5] += 1\n    ~~~~~~~~~~~~~~~~~~^^^\nIndexError: list index out of range\n\n====\nERROR: test_a_win_is_three_points_a_loss_is_zero_points (tournament_test.TournamentTest.test_a_win_is_three_points_a_loss_is_zero_points)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 25, in test_a_win_is_three_points_a_loss_is_zero_points\n    self.assertEqual(tally(results), table)\n                     ^^^^^^^^^^^^^^\n  File \"tournament/tournament.py\", line 12, in tally\n    results[home_team][3] += 3\n    ~~~~~~~~~~~~~~~~~~^^^\nIndexError: list index out of range\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in tournament.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import sys\nfrom collections import defaultdict\n\ndef tally(rows):\n    results = defaultdict(lambda: [0, 0, 0, 0, 0, 0])\n\n    for row in rows:\n        home_team, away_team, outcome = row.split(';')\n\n        if outcome == 'win':\n            results[home_team][0] += 1\n            results[home_team][3] += 1\n            results[away_team][0] += 1\n            results[away_team][5] += 1\n        elif outcome == 'draw':\n            results[home_team][0] += 1\n            results[home_team][4] += 1\n            results[away_team][0] += 1\n            results[away_team][4] += 1\n        else:\n            results[home_team][0] += 1\n            results[home_team][5] += 1\n            results[away_team][0] += 1\n            results[away_team][3] += 1\n\n    sorted_results = sorted(results.items(), key=lambda x: (-x[1][3], x[0]))\n\n    print(\"{:<30} | {:^3} | {:^2} | {:^2} | {:^2} | {:^2}\".format(\"Team\", \"MP\", \"W\", \"D\", \"L\", \"P\"))\n    print(\"-\"*50)\n\n    for team, record in sorted_results:\n        points = record[3]*3 + record[4]*1 + record[5]*0\n        print(\"{:<30} | {:>3} | {:>2} | {:>2} | {:>2} | {:>2}\".format(team, sum([record[i] for i in [0, 1, 2]]), record[1], record[4], record[5], points))\n\nif __name__ == \"__main__\":\n    lines = []\n    while True:\n        try:\n            lines.append(input())\n        except EOFError:\n            break\n    tally(lines)\n",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,20 @@
+method: on_llm_end [2023-09-03 19:29:53]
+llm_output: null
+prompt:
+Your function doesn't handle cases where a character is not found within your `scores` dictionary. You should add an exception for characters that aren't letters or don't have a defined score. Also you need to properly indent the condition of checking whether a letter is upper case so it adds 7 only when needed. Here is the corrected function:
+
+
+```python
+def score(word):
+    scores = {'a': 1, 'e': 1, 'i': 1, 'o': 1, 'l': 1, 'r': 1, 's': 1, 'u': 1, 't': 1, 'd': 2, 'g': 2, 'b': 3, 'm': 3, 'p': 3, 'f': 4, 'h': 4, 'v': 4, 'w': 4, 'y': 4, 'k': 5, 'j': 8, 'x': 8, 'q': 10, 'z': 10}
+    total = 0
+    for char in word:
+        try:
+            total += scores[char.lower()]
+        except KeyError:
+            pass
+        if char.isupper():
+            total += 7
+    return total
+```
+---

@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven a diagram, determine which plants each child in the kindergarten class is\nresponsible for.\n\nThe kindergarten class is learning about growing plants.\nThe teacher thought it would be a good idea to give them actual seeds, plant them in actual dirt, and grow actual plants.\n\nThey've chosen to grow grass, clover, radishes, and violets.\n\nTo this end, the children have put little cups along the window sills, and\nplanted one type of plant in each cup, choosing randomly from the available\ntypes of seeds.\n\n```text\n[window][window][window]\n........................ # each dot represents a cup\n........................\n```\n\nThere are 12 children in the class:\n\n- Alice, Bob, Charlie, David,\n- Eve, Fred, Ginny, Harriet,\n- Ileana, Joseph, Kincaid, and Larry.\n\nEach child gets 4 cups, two on each row.\nTheir teacher assigns cups to the children alphabetically by their names.\n\nThe following diagram represents Alice's plants:\n\n```text\n[window][window][window]\nVR......................\nRG......................\n```\n\nIn the first row, nearest the windows, she has a violet and a radish.\nIn the second row she has a radish and some grass.\n\nYour program will be given the plants from left-to-right starting with the row nearest the windows.\nFrom this, it should be able to determine which plants belong to each student.\n\nFor example, if it's told that the garden looks like so:\n\n```text\n[window][window][window]\nVRCGVVRVCGGCCGVRGCVCGCGV\nVRCCCGCRRGVCGCRVVCVGCGCV\n```\n\nThen if asked for Alice's plants, it should provide:\n\n- Violets, radishes, violets, radishes\n\nWhile asking for Bob's plants would yield:\n\n- Clover, grass, clover, clover\n# Instructions append\n\n## Python Implementation\n\nThe tests for this exercise expect your program to be implemented as a Garden `class` in Python.\nIf you are unfamiliar with classes in Python, [classes][classes in python] from the Python docs is a good place to start.\n\nYour `class` should implement a `method` called plants, which takes a student's name as an argument and returns the `list` of plant names belonging to that student.\n\n## Constructors\n\nCreating the example garden\n\n```\n[window][window][window]\nVRCGVVRVCGGCCGVRGCVCGCGV\nVRCCCGCRRGVCGCRVVCVGCGCV\n```\n\nwould, in the tests, be represented as `Garden(\"VRCGVVRVCGGCCGVRGCVCGCGV\\nVRCCCGCRRGVCGCRVVCVGCGCV\")`.\n\nTo make this representation work, your `class` will need to implement an `__init__()` method.\nIf you're not familiar with `__init__()` or _constructors_, [class and instance objects][class vs instance objects in python] from the Python docs gives a more detailed explanation.\n\n\n## Default Parameters\n\nIn some tests, a `list` of students is passed as an argument to `__init__()`.\nThis should override the twelve student roster provided in the problem statement.\nBoth of these statements need to work with your `__init__()` method:\n\n```Python\n# Make a garden based on the default 12-student roster.\nGarden(\"VRCGVVRVCGGCCGVRGCVCGCGV\\nVRCCCGCRRGVCGCRVVCVGCGCV\") \n\n# Make a garden based on a 2-student roster.\nGarden(\"VRCC\\nVCGG\", students=[\"Valorie\", \"Raven\"]) \n```\n\n\nOne approach is to make the student `list` a [default argument][default argument values]; the Python docs describe `default parameters` in depth while explaining [function definitions][function definitions].\n\n\n[classes in python]: https://docs.python.org/3/tutorial/classes.html\n[class vs instance objects in python]: https://docs.python.org/3/tutorial/classes.html#class-objects\n[default argument values]: https://docs.python.org/3/tutorial/controlflow.html#default-argument-values\n[function definitions]: https://docs.python.org/3/reference/compound_stmts.html#function-definitions\n\n####\n\nUse the above instructions to modify the supplied files: kindergarten_garden.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "kindergarten_garden.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class Garden:\n    def __init__(self, diagram, students=None):\n        self.diagram = diagram.split(\"\\n\")\n        self.students = [\"Alice\", \"Bob\", \"Charlie\", \"David\", \"Eve\", \"Fred\", \"Ginny\", \"Harriet\", \"Ileana\", \"Joseph\", \"Kincaid\", \"Larry\"] \\\n            if students is None else students\n\n        # Calculate the number of rows and columns in the diagram\n        self.rows = len(self.diagram)\n        self.cols = len(self.diagram[0])\n\n    def plants(self, student_name):\n        index = self.students.index(student_name)\n        plants = []\n        for i in range(self.rows):\n            row = self.diagram[i]\n            for j in range(self.cols // 2):\n                pos = (j * 2 + index % 2) * 2\n                plants.append(row[pos:pos+2])\n        return plants\n",
+        "language": "python",
+        "file_path": "kindergarten_garden.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFFFFFFF\n====\nFAIL: test_full_garden_for_alice_first_student_s_garden (kindergarten_garden_test.KindergartenGardenTest.test_full_garden_for_alice_first_student_s_garden)\n----\nTraceback (most recent call last):\n  File \"kindergarten-garden/kindergarten_garden_test.py\", line 41, in test_full_garden_for_alice_first_student_s_garden\n    self.assertEqual(\nAssertionError: Lists differ: ['VR', 'VV', 'CG', 'CG', 'GC', 'GC', '', '',[71 chars], ''] != ['Violets', 'Radishes', 'Violets', 'Radishes']\n\nFirst differing element 0:\n'VR'\n'Violets'\n\nFirst list contains 20 additional elements.\nFirst extra element 4:\n'GC'\n\n+ ['Violets', 'Radishes', 'Violets', 'Radishes']\n- ['VR',\n-  'VV',\n-  'CG',\n-  'CG',\n-  'GC',\n-  'GC',\n-  '',\n-  '',\n-  '',\n-  '',\n-  '',\n-  '',\n-  'VR',\n-  'CG',\n-  'RG',\n-  'GC',\n-  'VC',\n-  'CG',\n-  '',\n-  '',\n-  '',\n-  '',\n-  '',\n-  '']\n\n====\nFAIL: test_full_garden_for_bob_second_student_s_garden (kindergarten_garden_test.KindergartenGardenTest.test_full_garden_for_bob_second_student_s_garden)\n----\nTraceback (most recent call last):\n  File \"kindergarten-garden/kindergarten_garden_test.py\", line 47, in test_full_garden_for_bob_second_student_s_garden\n    self.assertEqual(garden.plants(\"Bob\"), [\"Clover\", \"Grass\", \"Clover\", \"Clover\"])\nAssertionError: Lists differ: ['CG', 'RV', 'GC', 'VR', 'VC', 'GV', '', '',[71 chars], ''] != ['Clover', 'Grass', 'Clover', 'Clover']\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in kindergarten_garden.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "kindergarten_garden.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import List\n\ndef parse_initial_diagram(diagram: str) -> List[List[str]]:\n    parsed_diagram = [list(row) for row in diagram.strip().split('\\n')]\n\n    for row in parsed_diagram:\n        assert all(len(cell) == 2 for cell in row), f\"Invalid input: {parsed_diagram}\"\n\n    return parsed_diagram\n\nclass Garden:\n    def __init__(self, diagram: str, students: List[str] = None):\n        self.diagram = parse_initial_diagram(diagram)\n        self.students = sorted(['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Fred', 'Ginny', 'Harriet', 'Ileana', 'Joseph', 'Kincaid', 'Larry']) \\\n            if students is None else sorted(students)\n\n        self.plant_names = {'C': 'Clover', 'G': 'Grass', 'R': 'Radish', 'T': 'Tulip', 'V': 'Violet'}\n\n    def plants(self, student_name: str) -> List[str]:\n        index = self.students.index(student_name)\n        plants = []\n        for row in self.diagram:\n            for col in range(index, len(row), len(self.students)):\n                plant_code = row[col][0].upper()\n                plants.append(self.plant_names[plant_code])\n\n        return plants\n",
+        "language": "python",
+        "file_path": "kindergarten_garden.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

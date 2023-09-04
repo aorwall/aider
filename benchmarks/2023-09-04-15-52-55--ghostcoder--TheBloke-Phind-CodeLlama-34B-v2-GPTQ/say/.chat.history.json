@@ -1,0 +1,72 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven a number from 0 to 999,999,999,999, spell out that number in English.\n\n## Step 1\n\nHandle the basic case of 0 through 99.\n\nIf the input to the program is `22`, then the output should be `'twenty-two'`.\n\nYour program should complain loudly if given a number outside the blessed range.\n\nSome good test cases for this program are:\n\n- 0\n- 14\n- 50\n- 98\n- -1\n- 100\n\n### Extension\n\nIf you're on a Mac, shell out to Mac OS X's `say` program to talk out loud.\nIf you're on Linux or Windows, eSpeakNG may be available with the command `espeak`.\n\n## Step 2\n\nImplement breaking a number up into chunks of thousands.\n\nSo `1234567890` should yield a list like 1, 234, 567, and 890, while the far simpler `1000` should yield just 1 and 0.\n\nThe program must also report any values that are out of range.\n\n## Step 3\n\nNow handle inserting the appropriate scale word between those chunks.\n\nSo `1234567890` should yield `'1 billion 234 million 567 thousand 890'`\n\nThe program must also report any values that are out of range.\nIt's fine to stop at \"trillion\".\n\n## Step 4\n\nPut it all together to get nothing but plain English.\n\n`12345` should give `twelve thousand three hundred forty-five`.\n\nThe program must also report any values that are out of range.\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" a `ValueError` if the number input to `say()` is out of range. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# if the number is negative\nraise ValueError(\"input out of range\")\n\n# if the number is larger than 999,999,999,999\nraise ValueError(\"input out of range\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: say.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "say.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: say.py\n```python\ndef say(number):\n    ONES = [\"\", \"one \", \"two \", \"three \", \"four \", \"five \", \"six \", \"seven \", \"eight \", \"nine \", \"ten \",\n            \"eleven \", \"twelve \", \"thirteen \", \"fourteen \", \"fifteen \", \"sixteen \", \"seventeen \", \"eighteen \", \"nineteen \"]\n    TENS = [\"\", \"\", \"twenty \", \"thirty \", \"forty \", \"fifty \", \"sixty \", \"seventy \", \"eighty \", \"ninety \"]\n    THOUSANDS = [\"\", \"thousand \", \"million \", \"billion \", \"trillion \"]\n    \n    if not (0 <= number < 10**12):\n      raise ValueError('Number out of range')\n      \n    result = \"\"\n    i = 0\n    while number > 0:\n        chunk = number % 1000\n        number //= 1000\n        \n        if chunk > 0:\n            result = ONES[chunk//100]*100 + TENS[chunk%100//10]+ONES[chunk%10] + THOUSANDS[i] + result\n        i += 1\n    \n    # remove leading spaces\n    return result.strip()```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFFFFFFFF\n====\nFAIL: test_a_big_number (say_test.SayTest.test_a_big_number)\n----\nTraceback (most recent call last):\n  File \"say/say_test.py\", line 64, in test_a_big_number\n    self.assertEqual(\nAssertionError: None != 'nine hundred eighty-seven billion six hu[79 chars]hree'\n\n====\nFAIL: test_fourteen (say_test.SayTest.test_fourteen)\n----\nTraceback (most recent call last):\n  File \"say/say_test.py\", line 20, in test_fourteen\n    self.assertEqual(say(14), \"fourteen\")\nAssertionError: None != 'fourteen'\n\n====\nFAIL: test_nine_hundred_ninety_nine (say_test.SayTest.test_nine_hundred_ninety_nine)\n----\nTraceback (most recent call last):\n  File \"say/say_test.py\", line 44, in test_nine_hundred_ninety_nine\n    self.assertEqual(say(999), \"nine hundred ninety-nine\")\nAssertionError: None != 'nine hundred ninety-nine'\n\n====\nFAIL: test_ninety_nine (say_test.SayTest.test_ninety_nine)\n----\nTraceback (most recent call last):\n  File \"say/say_test.py\", line 32, in test_ninety_nine\n    self.assertEqual(say(99), \"ninety-nine\")\nAssertionError: None != 'ninety-nine'\n\n====\nFAIL: test_numbers_above_999_999_999_999_are_out_of_range (say_test.SayTest.test_numbers_above_999_999_999_999_are_out_of_range)\n----\nTraceback (most recent call last):\n  File \"say/say_test.py\", line 77, in test_numbers_above_999_999_999_999_are_out_of_range\n    with self.assertRaises(ValueError) as err:\nAssertionError: ValueError not raised\n\n====\nFAIL: test_numbers_below_zero_are_out_of_range (say_test.SayTest.test_numbers_below_zero_are_out_of_range)\n----\nTraceback (most recent call last):\n  File \"say/say_test.py\", line 70, in test_numbers_below_zero_are_out_of_range\n    with self.assertRaises(ValueError) as err:\nAssertionError: ValueError not raised\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in say.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "say.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: say.py\n```python\ndef say(number):\n    def group_digits(num):\n        chunks = []\n        digits = str(num)\n        for i in range((len(digits) - 1) // 3, -1, -1):\n            chunks.append(digits[i * 3 : i * 3 + 3])\n        return ','.join(reversed(chunks))\n\n    ONES = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']\n    TEENS = [None, 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']\n    TENS = [None, '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety']\n    THOUSANDS = [None, 'thousand', 'million', 'billion', 'trillion']\n\n    if not (0 <= number < 10 ** 12):\n        raise ValueError('Number out of range')\n\n    level = 0\n    chunks = []\n    while number > 0:\n        thousand = number % 1000\n        number //= 1000\n        if thousand == 0 and level == 0:\n            continue\n        chunks.append(_process_group(level, thousand))\n        level += 1\n    return ' '.join(reversed(chunks)).strip()\n\ndef _process_group(level, num):\n    ones = num % 10\n    tens = num % 100 // 10\n    teens = num % 1000 // 100\n    hundreds = num // 1000\n    parts = []\n    if hundreds > 0:\n        parts.append(f\"{ONES[hundreds]} hundred\")\n    if teens > 0:\n        parts.append(TEENS[teens])\n    elif tens > 0 or ones > 0:\n        if tens > 0:\n            parts.append(TENS[tens])\n        if ones > 0:\n            parts.append(ONES[ones])\n    else:\n        parts.append(THOUSANDS[level])\n    return '-'.join(parts).replace('-', '')\n\nif __name__ == '__main__':\n    import doctest\n    doctest.testmod()```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

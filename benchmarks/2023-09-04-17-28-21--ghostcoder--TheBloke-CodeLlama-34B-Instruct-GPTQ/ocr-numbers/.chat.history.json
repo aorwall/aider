@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven a 3 x 4 grid of pipes, underscores, and spaces, determine which number is represented, or whether it is garbled.\n\n## Step One\n\nTo begin with, convert a simple binary font to a string containing 0 or 1.\n\nThe binary font uses pipes and underscores, four rows high and three columns wide.\n\n```text\n     _   #\n    | |  # zero.\n    |_|  #\n         # the fourth row is always blank\n```\n\nIs converted to \"0\"\n\n```text\n         #\n      |  # one.\n      |  #\n         # (blank fourth row)\n```\n\nIs converted to \"1\"\n\nIf the input is the correct size, but not recognizable, your program should return '?'\n\nIf the input is the incorrect size, your program should return an error.\n\n## Step Two\n\nUpdate your program to recognize multi-character binary strings, replacing garbled numbers with ?\n\n## Step Three\n\nUpdate your program to recognize all numbers 0 through 9, both individually and as part of a larger string.\n\n```text\n _\n _|\n|_\n\n```\n\nIs converted to \"2\"\n\n```text\n      _  _     _  _  _  _  _  _  #\n    | _| _||_||_ |_   ||_||_|| | # decimal numbers.\n    ||_  _|  | _||_|  ||_| _||_| #\n                                 # fourth line is always blank\n```\n\nIs converted to \"1234567890\"\n\n## Step Four\n\nUpdate your program to handle multiple numbers, one per line.\nWhen converting several lines, join the lines with commas.\n\n```text\n    _  _\n  | _| _|\n  ||_  _|\n\n    _  _\n|_||_ |_\n  | _||_|\n\n _  _  _\n  ||_||_|\n  ||_| _|\n\n```\n\nIs converted to \"123,456,789\".\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" a `ValueError` when the `convert()` function receives a string that isn't a valid OCR number. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# when the rows aren't multiples of 4\nraise ValueError(\"Number of input lines is not a multiple of four\")\n\n# when the columns aren't multiples of 3\nraise ValueError(\"Number of input columns is not a multiple of three\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: ocr_numbers.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ocr_numbers.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def convert(input_grid):\n    \"\"\"\n    Converts a grid of text representing numbers into a list of integers.\n    \n    Args:\n        input_grid: A list of strings representing the input grid.\n    \n    Returns:\n        A list of ints representing the numbers found in the grid.\n    \"\"\"\n    numbers = []\n    for row in range(len(input_grid)):\n        for col in range(len(input_grid[row])):\n            char = input_grid[row][col]\n            if char == \" \":\n                continue\n            elif char == \"_\":\n                numbers.append(0)\n            elif char == \"|\":\n                numbers.append(1)\n            else:\n                raise ValueError(\"Invalid character encountered.\")\n    return numbers\n\n",
+        "language": "python",
+        "file_path": "ocr_numbers.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFFFFF\n====\nFAIL: test_garbled_numbers_in_a_string_are_replaced_with (ocr_numbers_test.OcrNumbersTest.test_garbled_numbers_in_a_string_are_replaced_with)\n----\nTraceback (most recent call last):\n  File \"ocr-numbers/ocr_numbers_test.py\", line 56, in test_garbled_numbers_in_a_string_are_replaced_with\n    self.assertEqual(\nAssertionError: [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1[47 chars]0, 1] != '11?10?1?0'\n\n====\nFAIL: test_input_with_a_number_of_columns_that_is_not_a_multiple_of_three_raises_an_error (ocr_numbers_test.OcrNumbersTest.test_input_with_a_number_of_columns_that_is_not_a_multiple_of_three_raises_an_error)\n----\nTraceback (most recent call last):\n  File \"ocr-numbers/ocr_numbers_test.py\", line 35, in test_input_with_a_number_of_columns_that_is_not_a_multiple_of_three_raises_an_error\n    with self.assertRaises(ValueError) as err:\nAssertionError: ValueError not raised\n\n====\nFAIL: test_input_with_a_number_of_lines_that_is_not_a_multiple_of_four_raises_an_error (ocr_numbers_test.OcrNumbersTest.test_input_with_a_number_of_lines_that_is_not_a_multiple_of_four_raises_an_error)\n----\nTraceback (most recent call last):\n  File \"ocr-numbers/ocr_numbers_test.py\", line 25, in test_input_with_a_number_of_lines_that_is_not_a_multiple_of_four_raises_an_error\n    with self.assertRaises(ValueError) as err:\nAssertionError: ValueError not raised\n\n====\nFAIL: test_numbers_separated_by_empty_lines_are_recognized_lines_are_joined_by_commas (ocr_numbers_test.OcrNumbersTest.test_numbers_separated_by_empty_lines_are_recognized_lines_are_joined_by_commas)\n----\nTraceback (most recent call last):\n  File \"ocr-numbers/ocr_numbers_test.py\", line 108, in test_numbers_separated_by_empty_lines_are_recognized_lines_are_joined_by_commas\n    self.assertEqual(\nAssertionError: [0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0[83 chars]0, 1] != '123,456,789'\n\n====\nFAIL: test_recognizes_0 (ocr_numbers_test.OcrNumbersTest.test_recognizes_0)\n----\nTraceback (most recent call last):\n  File \"ocr-numbers/ocr_numbers_test.py\", line 14, in test_recognizes_0\n    self.assertEqual(convert([\" _ \", \"| |\", \"|_|\", \"   \"]), \"0\")\nAssertionError: [0, 1, 1, 1, 0, 1] != '0'\n\n====\nFAIL: test_recognizes_1 (ocr_numbers_test.OcrNumbersTest.test_recognizes_1)\n----\nTraceback (most recent call last):\n  File \"ocr-numbers/ocr_numbers_test.py\", line 17, in test_recognizes_1\n    self.assertEqual(convert([\"   \", \"  |\", \"  |\", \"   \"]), \"1\")\nAssertionError: [1, 1] != '1'\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in ocr_numbers.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ocr_numbers.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def convert(input_grid):\n    \"\"\"\n    Converts a grid of text representing numbers into a list of integers.\n    \n    Args:\n        input_grid: A list of strings representing the input grid.\n    \n    Returns:\n        A list of ints representing the numbers found in the grid.\n    \"\"\"\n    numbers = []\n    for row in range(len(input_grid)):\n        for col in range(len(input_grid[row])):\n            char = input_grid[row][col]\n            if char == \" \":\n                continue\n            elif char == \"_\":\n                numbers.append(0)\n            elif char == \"|\":\n                numbers.append(1)\n            else:\n                raise ValueError(\"Invalid character encountered.\")\n    return numbers\n\n",
+        "language": "python",
+        "file_path": "ocr_numbers.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,63 @@
+method: on_llm_end [2023-09-03 13:06:06]
+llm_output: null
+prompt:
+Here is how you could solve this problem using Python:
+
+```python
+COLOR_CODES = {
+    'black': 0,
+    'brown': 1,
+    'red': 2,
+    'orange': 3,
+    'yellow': 4,
+    'green': 5,
+    'blue': 6,
+    'violet': 7,
+    'gray': 8,
+    'white': 9
+}
+
+TOLERANCE_CODES = {
+    'gold': 5,
+    'silver': 10,
+    'none': None
+}
+
+def decode_resistor(colors):
+    multipliers = {'red': 10**4, 'blue': 10**5, 'violet': 10**6, 'gray': 10**7, 'white': 10**8, 'gold': 10**9, 'silver': 10**10}
+    value = COLOR_CODES[colors[0]] * 10 + COLOR_CODES[colors[1]]
+    ohm_value = value * multipliers[colors[-2]]
+    tolerance = TOLERANCE_CODES.get(colors[-1], 0)
+    unit = ''
+    if ohm_value >= 1000:
+        unit = 'kilo'
+        ohm_value /= 1000
+    if ohm_value >= 1000:
+        unit = 'mega'
+        ohm_value /= 1000
+        
+    tolerance_str = f"{tolerance}%" if tolerance else ""
+    return f"{int(round(ohm_value))} {unit}ohms {tolerance_str}"
+
+class ResistorColorExpert:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def ohms(colors):
+        return decode_resistor(colors)
+```
+
+You can then test your code with some assert statements:
+
+```python
+if __name__ == '__main__':
+    expert = ResistorColorExpert()
+    assert expert.ohms(['orange', 'orange', 'black']) == "33 ohms"
+    assert expert.ohms(['orange', 'orange', 'orange', 'red']) == "33 kohms"
+    assert expert.ohms(['orange', 'orange', 'orange', 'violet']) == "33 MOhms"
+    assert expert.ohms(['orange', 'orange', 'orange', 'white']) == "33 GOhms"
+    assert expert.ohms(['orange', 'orange', 'orange', 'gold']) == "33 MOhms 5%"
+    assert expert.ohms(['orange', 'orange', 'orange', 'silver']) == "33 KOOhms 10%"
+```
+---

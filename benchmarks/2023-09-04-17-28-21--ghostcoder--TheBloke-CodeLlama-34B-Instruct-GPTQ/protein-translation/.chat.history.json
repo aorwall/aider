@@ -1,0 +1,41 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nTranslate RNA sequences into proteins.\n\nRNA can be broken into three nucleotide sequences called codons, and then translated to a polypeptide like so:\n\nRNA: `\"AUGUUUUCU\"` => translates to\n\nCodons: `\"AUG\", \"UUU\", \"UCU\"`\n=> which become a polypeptide with the following sequence =>\n\nProtein: `\"Methionine\", \"Phenylalanine\", \"Serine\"`\n\nThere are 64 codons which in turn correspond to 20 amino acids; however, all of the codon sequences and resulting amino acids are not important in this exercise.\nIf it works for one codon, the program should work for all of them.\nHowever, feel free to expand the list in the test suite to include them all.\n\nThere are also three terminating codons (also known as 'STOP' codons); if any of these codons are encountered (by the ribosome), all translation ends and the protein is terminated.\n\nAll subsequent codons after are ignored, like this:\n\nRNA: `\"AUGUUUUCUUAAAUG\"` =>\n\nCodons: `\"AUG\", \"UUU\", \"UCU\", \"UAA\", \"AUG\"` =>\n\nProtein: `\"Methionine\", \"Phenylalanine\", \"Serine\"`\n\nNote the stop codon `\"UAA\"` terminates the translation and the final methionine is not translated into the protein sequence.\n\nBelow are the codons and resulting Amino Acids needed for the exercise.\n\nCodon                 | Protein\n:---                  | :---\nAUG                   | Methionine\nUUU, UUC              | Phenylalanine\nUUA, UUG              | Leucine\nUCU, UCC, UCA, UCG    | Serine\nUAU, UAC              | Tyrosine\nUGU, UGC              | Cysteine\nUGG                   | Tryptophan\nUAA, UAG, UGA         | STOP\n\nLearn more about [protein translation on Wikipedia][protein-translation].\n\n[protein-translation]: https://en.wikipedia.org/wiki/Translation_(biology)\n\n####\n\nUse the above instructions to modify the supplied files: protein_translation.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "protein_translation.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def proteins(rna):\n    codon_table = {\n        \"AUG\": \"Methionine\",\n        \"UUU\": \"Phenylalanine\",\n        \"UUC\": \"Phenylalanine\",\n        \"UUA\": \"Leucine\",\n        \"UUG\": \"Leucine\",\n        \"UCU\": \"Serine\",\n        \"UCC\": \"Serine\",\n        \"UCA\": \"Serine\",\n        \"UCG\": \"Serine\",\n        \"UAU\": \"Tyrosine\",\n        \"UAC\": \"Tyrosine\",\n        \"UGU\": \"Cysteine\",\n        \"UGC\": \"Cysteine\",\n        \"UGG\": \"Tryptophan\",\n        \"UAA\": \"STOP\",\n        \"UAG\": \"STOP\",\n        \"UGA\": \"STOP\"\n    }\n\n    proteins = []\n    for i in range(0, len(rna)-2, 3):\n        codon = rna[i:i+3]\n        if codon_table[codon] != \"STOP\":\n            proteins.append(codon_table[codon])\n        else:\n            break\n\n    return proteins",
+        "language": "python",
+        "file_path": "protein_translation.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

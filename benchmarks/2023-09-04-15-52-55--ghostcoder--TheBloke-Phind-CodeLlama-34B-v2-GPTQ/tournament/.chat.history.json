@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nTally the results of a small football competition.\n\nBased on an input file containing which team played against which and what the outcome was, create a file with a table like this:\n\n```text\nTeam                           | MP |  W |  D |  L |  P\nDevastating Donkeys            |  3 |  2 |  1 |  0 |  7\nAllegoric Alaskans             |  3 |  2 |  0 |  1 |  6\nBlithering Badgers             |  3 |  1 |  0 |  2 |  3\nCourageous Californians        |  3 |  0 |  1 |  2 |  1\n```\n\nWhat do those abbreviations mean?\n\n- MP: Matches Played\n- W: Matches Won\n- D: Matches Drawn (Tied)\n- L: Matches Lost\n- P: Points\n\nA win earns a team 3 points.\nA draw earns 1.\nA loss earns 0.\n\nThe outcome is ordered by points, descending.\nIn case of a tie, teams are ordered alphabetically.\n\n## Input\n\nYour tallying program will receive input that looks like:\n\n```text\nAllegoric Alaskans;Blithering Badgers;win\nDevastating Donkeys;Courageous Californians;draw\nDevastating Donkeys;Allegoric Alaskans;win\nCourageous Californians;Blithering Badgers;loss\nBlithering Badgers;Devastating Donkeys;loss\nAllegoric Alaskans;Courageous Californians;win\n```\n\nThe result of the match refers to the first team listed.\nSo this line:\n\n```text\nAllegoric Alaskans;Blithering Badgers;win\n```\n\nmeans that the Allegoric Alaskans beat the Blithering Badgers.\n\nThis line:\n\n```text\nCourageous Californians;Blithering Badgers;loss\n```\n\nmeans that the Blithering Badgers beat the Courageous Californians.\n\nAnd this line:\n\n```text\nDevastating Donkeys;Courageous Californians;draw\n```\n\nmeans that the Devastating Donkeys and Courageous Californians tied.\n\n####\n\nUse the above instructions to modify the supplied files: tournament.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def tally(rows):\n    # Create a dictionary to store the statistics of each team\n    stats = {}\n\n    # Define a helper function to update the statistics of a team\n    def update_stats(team, mp, w, d, l, p):\n        if team not in stats:\n            stats[team] = {\"MP\": 0, \"W\": 0, \"D\": 0, \"L\": 0, \"P\": 0}\n\n        stats[team][\"MP\"] += mp\n        stats[team][\"W\"] += w\n        stats[team][\"D\"] += d\n        stats[team][\"L\"] += l\n        stats[team][\"P\"] += p\n\n    # Parse the rows and update the statistics of each team\n    for row in rows:\n        team1, team2, outcome = row.split(';')\n\n        if outcome == 'win':\n            update_stats(team1, 1, 1, 0, 0, 3)\n            update_stats(team2, 1, 0, 0, 1, 0)\n        elif outcome == 'draw':\n            update_stats(team1, 1, 0, 1, 0, 1)\n            update_stats(team2, 1, 0, 1, 0, 1)\n        else:  # outcome == 'loss'\n            update_stats(team1, 1, 0, 0, 1, 0)\n            update_stats(team2, 1, 1, 0, 0, 3)\n\n    # Convert the dictionary to a list of tuples\n    result = sorted([(team, stats[team]['MP'], stats[team]['W'], stats[team]['D'], stats[team]['L'], stats[team]['P']) for team in stats], key=lambda x: (-x[-1], x[0]))\n\n    return result\n",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFF\n====\nFAIL: test_a_different_team_can_win (tournament_test.TournamentTest.test_a_different_team_can_win)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 43, in test_a_different_team_can_win\n    self.assertEqual(tally(results), table)\nAssertionError: Lists differ: [('Blithering Badgers', 1, 1, 0, 0, 3), ('[31 chars], 0)] != ['Team                           | MP |  W[130 chars]  0']\n\nFirst differing element 0:\n('Blithering Badgers', 1, 1, 0, 0, 3)\n'Team                           | MP |  W |  D |  L |  P'\n\nSecond list contains 1 additional elements.\nFirst extra element 2:\n'Allegoric Alaskans             |  1 |  0 |  0 |  1 |  0'\n\n- [('Blithering Badgers', 1, 1, 0, 0, 3), ('Allegoric Alaskans', 1, 0, 0, 1, 0)]\n+ ['Team                           | MP |  W |  D |  L |  P',\n+  'Blithering Badgers             |  1 |  1 |  0 |  0 |  3',\n+  'Allegoric Alaskans             |  1 |  0 |  0 |  1 |  0']\n\n====\nFAIL: test_a_draw_is_one_point_each (tournament_test.TournamentTest.test_a_draw_is_one_point_each)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 52, in test_a_draw_is_one_point_each\n    self.assertEqual(tally(results), table)\nAssertionError: Lists differ: [('Allegoric Alaskans', 1, 0, 1, 0, 1), ('[31 chars], 1)] != ['Team                           | MP |  W[130 chars]  1']\n\nFirst differing element 0:\n('Allegoric Alaskans', 1, 0, 1, 0, 1)\n'Team                           | MP |  W |  D |  L |  P'\n\nSecond list contains 1 additional elements.\nFirst extra element 2:\n'Blithering Badgers             |  1 |  0 |  1 |  0 |  1'\n\n- [('Allegoric Alaskans', 1, 0, 1, 0, 1), ('Blithering Badgers', 1, 0, 1, 0, 1)]\n+ ['Team                           | MP |  W |  D |  L |  P',\n+  'Allegoric Alaskans             |  1 |  0 |  1 |  0 |  1',\n+  'Blithering Badgers             |  1 |  0 |  1 |  0 |  1']\n\n====\nFAIL: test_a_win_can_also_be_expressed_as_a_loss (tournament_test.TournamentTest.test_a_win_can_also_be_expressed_as_a_loss)\n----\nTraceback (most recent call last):\n  File \"tournament/tournament_test.py\", line 34, in test_a_win_can_also_be_expressed_as_a_loss\n    self.assertEqual(tally(results), table)\nAssertionError: Lists differ: [('Allegoric Alaskans', 1, 1, 0, 0, 3), ('[31 chars], 0)] != ['Team                           | MP |  W[130 chars]  0']\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in tournament.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def tally(rows):\n    # Create a dictionary to store the statistics of each team\n    stats = {}\n\n    # Define a helper function to update the statistics of a team\n    def update_stats(team, mp, w, d, l, p):\n        if team not in stats:\n            stats[team] = {\"MP\": 0, \"W\": 0, \"D\": 0, \"L\": 0, \"P\": 0}\n\n        stats[team][\"MP\"] += mp\n        stats[team][\"W\"] += w\n        stats[team][\"D\"] += d\n        stats[team][\"L\"] += l\n        stats[team][\"P\"] += p\n\n    # Parse the rows and update the statistics of each team\n    for row in rows:\n        team1, team2, outcome = row.split(';')\n\n        if outcome == 'win':\n            update_stats(team1, 1, 1, 0, 0, 3)\n            update_stats(team2, 1, 0, 0, 1, 0)\n        elif outcome == 'draw':\n            update_stats(team1, 1, 0, 1, 0, 1)\n            update_stats(team2, 1, 0, 1, 0, 1)\n        else:  # outcome == 'loss'\n            update_stats(team1, 1, 0, 0, 1, 0)\n            update_stats(team2, 1, 1, 0, 0, 3)\n\n    # Convert the dictionary to a list of tuples\n    result = [(team, stats[team]['MP'], stats[team]['W'], stats[team]['D'], stats[team]['L'], stats[team]['P']) for team in stats]\n    result = sorted(result, key=lambda x: (-x[-1], x[0]))\n\n    return result\n",
+        "language": "python",
+        "file_path": "tournament.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

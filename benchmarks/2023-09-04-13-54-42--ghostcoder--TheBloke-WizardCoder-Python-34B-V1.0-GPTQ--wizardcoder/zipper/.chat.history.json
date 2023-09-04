@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreating a zipper for a binary tree.\n\n[Zippers][zipper] are a purely functional way of navigating within a data structure and manipulating it.\nThey essentially contain a data structure and a pointer into that data structure (called the focus).\n\nFor example given a rose tree (where each node contains a value and a list of child nodes) a zipper might support these operations:\n\n- `from_tree` (get a zipper out of a rose tree, the focus is on the root node)\n- `to_tree` (get the rose tree out of the zipper)\n- `value` (get the value of the focus node)\n- `prev` (move the focus to the previous child of the same parent,\n  returns a new zipper)\n- `next` (move the focus to the next child of the same parent, returns a\n  new zipper)\n- `up` (move the focus to the parent, returns a new zipper)\n- `set_value` (set the value of the focus node, returns a new zipper)\n- `insert_before` (insert a new subtree before the focus node, it\n  becomes the `prev` of the focus node, returns a new zipper)\n- `insert_after` (insert a new subtree after the focus node, it becomes\n  the `next` of the focus node, returns a new zipper)\n- `delete` (removes the focus node and all subtrees, focus moves to the\n  `next` node if possible otherwise to the `prev` node if possible,\n  otherwise to the parent node, returns a new zipper)\n\n[zipper]: https://en.wikipedia.org/wiki/Zipper_%28data_structure%29\n\n####\n\nUse the above instructions to modify the supplied files: zipper.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "zipper.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class TreeNode:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\nclass Zipper:\n    def __init__(self, tree, path):\n        self._tree = tree\n        self._path = path\n\n    @property\n    def value(self):\n        return self._current_node().value\n\n    def set_value(self, value):\n        current_node = self._current_node()\n        new_node = TreeNode(value, current_node.left, current_node.right)\n        self._update_parent(new_node)\n        return Zipper(self._tree, self._path[:-1])\n\n    def left(self):\n        if not self._current_node().left:\n            raise ValueError('Cannot move left')\n        return Zipper(self._tree, self._path + [0])\n\n    def set_left(self, left):\n        current_node = self._current_node()\n        new_node = TreeNode(current_node.value, left, current_node.right)\n        self._update_parent(new_node)\n        return Zipper(self._tree, self._path)\n\n    def right(self):\n        if not self._current_node().right:\n            raise ValueError('Cannot move right')\n        return Zipper(self._tree, self._path + [1])\n\n    def set_right(self, right):\n        current_node = self._current_node()\n        new_node = TreeNode(current_node.value, current_node.left, right)\n        self._update_parent(new_node)\n        return Zipper(self._tree, self._path)\n\n    def up(self):\n        if len(self._path) < 2:\n            raise ValueError('Cannot move up')\n        return Zipper(self._tree, self._path[:-2])\n\n    def to_tree(self):\n        return self._tree\n\n    def _current_node(self):\n        node = self._tree\n        for index in self._path:\n            node = node.left if index == 0 else node.right\n        return node\n\n    def _update_parent(self, new_child):\n        if not self._path:\n            self._tree = new_child\n        else:\n            parent = self._current_node().__getattribute__(['left', 'right'][self._path[-1]])\n            parent.__setattr__(['left', 'right'][self._path[-2]], new_child)\n\n    @staticmethod\n    def from_tree(tree):\n        return Zipper(tree, [])\n\n    def value(self):\n        pass\n\n    def set_value(self):\n        pass\n\n    def left(self):\n        pass\n\n    def set_left(self):\n        pass\n\n    def right(self):\n        pass\n\n    def set_right(self):\n        pass\n\n    def up(self):\n        pass\n\n    def to_tree(self):\n        pass\n",
+        "language": "python",
+        "file_path": "zipper.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FEEEEEEEEEEE.E\n====\nERROR: test_dead_end (zipper_test.ZipperTest.test_dead_end)\n----\nTraceback (most recent call last):\n  File \"zipper/zipper_test.py\", line 65, in test_dead_end\n    result = zipper.left().left()\n             ^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'left'\n\n====\nERROR: test_different_paths_to_same_zipper (zipper_test.ZipperTest.test_different_paths_to_same_zipper)\n----\nTraceback (most recent call last):\n  File \"zipper/zipper_test.py\", line 306, in test_different_paths_to_same_zipper\n    result = Zipper.from_tree(initial).left().up().right().to_tree()\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'up'\n\n====\nERROR: test_left_right_and_up (zipper_test.ZipperTest.test_left_right_and_up)\n----\nTraceback (most recent call last):\n  File \"zipper/zipper_test.py\", line 120, in test_left_right_and_up\n    result = zipper.left().up().right().up().left().right().value()\n             ^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'up'\n\n====\nERROR: test_left_right_and_value (zipper_test.ZipperTest.test_left_right_and_value)\n----\nTraceback (most recent call last):\n  File \"zipper/zipper_test.py\", line 50, in test_left_right_and_value\n    result = zipper.left().right().value()\n             ^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'right'\n\n====\nERROR: test_set_left_with_leaf (zipper_test.ZipperTest.test_set_left_with_leaf)\n----\nTraceback (most recent call last):\n  File \"zipper/zipper_test.py\", line 211, in test_set_left_with_leaf\n    zipper.left().set_left({\"value\": 5, \"left\": None, \"right\": None}).to_tree()\n    ^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'set_left'\n\n====\nERROR: test_set_right_with_null (zipper_test.ZipperTest.test_set_right_with_null)\n----\nTraceback (most recent call last):\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in zipper.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "zipper.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class TreeNode:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\nclass Zipper:\n    def __init__(self, tree, path):\n        self._tree = tree\n        self._path = path\n\n    @property\n    def value(self):\n        return self._current_node().value\n\n    def set_value(self, value):\n        current_node = self._current_node()\n        new_node = TreeNode(value, current_node.left, current_node.right)\n        self._update_parent(new_node)\n        return Zipper(self._tree, self._path[:-1])\n\n    def left(self):\n        if not self._current_node().left:\n            raise ValueError('Cannot move left')\n        return Zipper(self._tree, self._path + [0])\n\n    def set_left(self, left):\n        current_node = self._current_node()\n        new_node = TreeNode(current_node.value, left, current_node.right)\n        self._update_parent(new_node)\n        return Zipper(self._tree, self._path)\n\n    def right(self):\n        if not self._current_node().right:\n            raise ValueError('Cannot move right')\n        return Zipper(self._tree, self._path + [1])\n\n    def set_right(self, right):\n        current_node = self._current_node()\n        new_node = TreeNode(current_node.value, current_node.left, right)\n        self._update_parent(new_node)\n        return Zipper(self._tree, self._path)\n\n    def up(self):\n        if len(self._path) < 2:\n            raise ValueError('Cannot move up')\n        return Zipper(self._tree, self._path[:-2])\n\n    def to_tree(self):\n        return self._tree\n\n    def _current_node(self):\n        node = self._tree\n        for index in self._path:\n            node = node.left if index == 0 else node.right\n        return node\n\n    def _update_parent(self, new_child):\n        if not self._path:\n            self._tree = new_child\n        else:\n            parent = self._current_node().__getattribute__(['left', 'right'][self._path[-1]])\n            parent.__setattr__(['left', 'right'][self._path[-2]], new_child)\n\n    @staticmethod\n    def from_tree(tree):\n        return Zipper(tree, [])\n\n    # These methods were added to fix the errors in the tests\n    def get_left(self):\n        try:\n            return self.left()\n        except ValueError:\n            return None\n\n    def get_right(self):\n        try:\n            return self.right()\n        except ValueError:\n            return None\n\n    def replace_with(self, replacement):\n        parent = self.up()\n        if self.is_left():\n            parent.set_left(replacement)\n        elif self.is_right():\n            parent.set_right(replacement)\n        else:\n            raise ValueError(\"Invalid position\")\n        return parent\n\n    def is_left(self):\n        return self._path and self._path[-1] == 0\n\n    def is_right(self):\n        return self._path and self._path[-1] == 1\n\n    def delete(self):\n        if not self._path:\n            raise ValueError(\"Cannot delete root of a tree\")\n\n        parent = self.up()\n        if self.is_left():\n            parent.set_left(None)\n        elif self.is_right():\n            parent.set_right(None)\n        else:\n            raise ValueError(\"Invalid position\")\n        return parent\n",
+        "language": "python",
+        "file_path": "zipper.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

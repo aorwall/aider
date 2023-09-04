@@ -1,0 +1,18 @@
+method: on_llm_end [2023-09-04 15:08:04]
+llm_output: null
+prompt:
+def saddle_points(matrix):
+    # Check if the matrix is irregular
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+    if not all([len(row) == num_cols for row in matrix]):
+        raise ValueError("Irregular matrix")
+
+    saddle_points = []
+    for r in range(num_rows):
+        for c in range(num_cols):
+            if matrix[r][c] == max(matrix[r]) and matrix[r][c] == min([row[c] for row in matrix]):
+                saddle_points.append((r, c))
+    return saddle_points
+
+---

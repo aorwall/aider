@@ -1,0 +1,37 @@
+method: on_llm_end [2023-09-04 15:58:51]
+llm_output: null
+prompt:
+def rebase(input_base, digits, output_base):
+    
+    # Check validity of input and output bases
+    if input_base < 2 or output_base < 2:
+        raise ValueError("Bases must be >= 2.")
+        
+    # Check validity of each digit
+    for digit in digits:
+        if not 0 <= digit < input_base:
+            raise ValueError("All digits must satisfy 0 <= d < input base.")
+            
+    # Convert input number from input base to decimal
+    num_decimal = 0
+    power = len(digits) - 1
+    for digit in digits:
+        num_decimal += digit * (input_base ** power)
+        power -= 1
+
+    # Now we have the decimal representation of the original number.
+    # We want to convert this to the output base.
+
+    # First, find the highest power of output_base that fits within num_decimal
+    max_power = int(math.log(num_decimal, output_base))
+
+    result = []  # list of digits in the output base
+    while num_decimal > 0:
+        result.append(num_decimal % output_base)
+        num_decimal //= output_base
+
+    # Since we built up the result backwards, reverse it to get the correct order
+    result.reverse()
+
+    return result
+---

@@ -1,0 +1,31 @@
+method: on_llm_end [2023-09-03 13:07:33]
+llm_output: null
+prompt:
+Here is a possible solution by modifying `react.py` file:
+
+```python
+class Cell:
+    def __init__(self, value=None):
+        self._value = value
+        self._callbacks = set()
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_val):
+        self._value = new_val
+        for cb in self._callbacks:
+            cb(self)
+            
+    def observe(self, func):
+        self._callbacks.add(func)
+        
+    def unobserve(self, func):
+        if func in self._callbacks:
+            self._callbacks.remove(func)
+```
+
+In this version of `Cell`, we store callback functions directly in `_callbacks`. We use `@property` and `@value.setter` decorators to create getter and setter methods for `value`. When `value` is changed via the setter, it notifies all registered callback functions about the change. The `observe()` method adds a function to the cell's callback list, while the `unobserve()` checks whether the given function is already in the list before removing it.
+---

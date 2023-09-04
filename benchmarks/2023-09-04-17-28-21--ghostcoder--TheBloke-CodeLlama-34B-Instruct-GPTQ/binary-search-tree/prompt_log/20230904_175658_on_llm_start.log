@@ -1,0 +1,297 @@
+method: on_llm_start [2023-09-04 17:56:58]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+[INST]Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+[/INST] Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+[/INST] Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+[/INST] Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+<</SYS>>
+# Instructions
+
+Insert and search for numbers in a binary tree.
+
+When we need to represent sorted data, an array does not make a good data structure.
+
+Say we have the array `[1, 3, 4, 5]`, and we add 2 to it so it becomes `[1, 3, 4, 5, 2]`.
+Now we must sort the entire array again!
+We can improve on this by realizing that we only need to make space for the new item `[1, nil, 3, 4, 5]`, and then adding the item in the space we added.
+But this still requires us to shift many elements down by one.
+
+Binary Search Trees, however, can operate on sorted data much more efficiently.
+
+A binary search tree consists of a series of connected nodes.
+Each node contains a piece of data (e.g. the number 3), a variable named `left`, and a variable named `right`.
+The `left` and `right` variables point at `nil`, or other nodes.
+Since these other nodes in turn have other nodes beneath them, we say that the left and right variables are pointing at subtrees.
+All data in the left subtree is less than or equal to the current node's data, and all data in the right subtree is greater than the current node's data.
+
+For example, if we had a node containing the data 4, and we added the data 2, our tree would look like this:
+
+      4
+     /
+    2
+
+If we then added 6, it would look like this:
+
+      4
+     / \
+    2   6
+
+If we then added 3, it would look like this
+
+       4
+     /   \
+    2     6
+     \
+      3
+
+And if we then added 1, 5, and 7, it would look like this
+
+          4
+        /   \
+       /     \
+      2       6
+     / \     / \
+    1   3   5   7
+
+####
+
+Use the above instructions to modify the supplied files: binary_search_tree.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: binary_search_tree.py
+```python
+
+```
+[/INST] Filepath: binary_search_tree.py
+```python
+class TreeNode:
+    def __init__(self, data, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return f"TreeNode({self.data}, {self.left}, {self.right})"
+
+
+class BinarySearchTree:
+    def __init__(self, tree_data):
+        self.root = None
+        for data in tree_data:
+            self.insert(data)
+
+    def insert(self, data):
+        if self.root is None:
+            self.root = TreeNode(data)
+        else:
+            self._insert(data, self.root)
+
+    def _insert(self, data, node):
+        if data <= node.data:
+            if node.left is None:
+                node.left = TreeNode(data)
+            else:
+                self._insert(data, node.left)
+        elif data > node.data:
+            if node.right is None:
+                node.right = TreeNode(data)
+            else:
+                self._insert(data, node.right)
+
+    def data(self):
+        return self.sorted_data()
+
+    def sorted_data(self):
+        result = []
+        self._sort(result, self.root)
+        return result
+
+    def _sort(self, result, node):
+        if node is not None:
+            self._sort(result, node.left)
+            result.append(node.data)
+            self._sort(result, node.right)
+
+
+if __name__ == "__main__":
+    bst = BinarySearchTree([10, 5, 15, 8])
+    print(bst.data()) # [5, 8, 10, 15]
+
+```
+</s>
+<s>[INST]E.....EEEE
+====
+ERROR: test_can_create_complex_tree (binary_search_tree_test.BinarySearchTreeTest.test_can_create_complex_tree)
+----
+Traceback (most recent call last):
+  File "binary-search-tree/binary_search_tree_test.py", line 36, in test_can_create_complex_tree
+    self.assertTreeEqual(
+  File "binary-search-tree/binary_search_tree_test.py", line 65, in assertTreeEqual
+    self.compare_tree(tree_one, tree_two)
+  File "binary-search-tree/binary_search_tree_test.py", line 70, in compare_tree
+    self.assertEqual(tree_one.data, tree_two.data)
+                     ^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'data'
+
+====
+ERROR: test_data_is_retained (binary_search_tree_test.BinarySearchTreeTest.test_data_is_retained)
+----
+Traceback (most recent call last):
+  File "binary-search-tree/binary_search_tree_test.py", line 16, in test_data_is_retained
+    self.assertTreeEqual(BinarySearchTree(["4"]).data(), expected)
+  File "binary-search-tree/binary_search_tree_test.py", line 65, in assertTreeEqual
+    self.compare_tree(tree_one, tree_two)
+  File "binary-search-tree/binary_search_tree_test.py", line 70, in compare_tree
+    self.assertEqual(tree_one.data, tree_two.data)
+                     ^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'data'
+
+====
+ERROR: test_greater_number_at_right_node (binary_search_tree_test.BinarySearchTreeTest.test_greater_number_at_right_node)
+----
+Traceback (most recent call last):
+  File "binary-search-tree/binary_search_tree_test.py", line 28, in test_greater_number_at_right_node
+    self.assertTreeEqual(BinarySearchTree(["4", "5"]).data(), expected)
+  File "binary-search-tree/binary_search_tree_test.py", line 65, in assertTreeEqual
+    self.compare_tree(tree_one, tree_two)
+  File "binary-search-tree/binary_search_tree_test.py", line 70, in compare_tree
+    self.assertEqual(tree_one.data, tree_two.data)
+                     ^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'data'
+
+====
+ERROR: test_same_number_at_left_node (binary_search_tree_test.BinarySearchTreeTest.test_same_number_at_left_node)
+----
+Traceback (most recent call last):
+  File "binary-search-tree/binary_search_tree_test.py", line 24, in test_same_number_at_left_node
+    self.assertTreeEqual(BinarySearchTree(["4", "4"]).data(), expected)
+  File "binary-search-tree/binary_search_tree_test.py", line 65, in assertTreeEqual
+    self.compare_tree(tree_one, tree_two)
+  File "binary-search-tree/binary_search_tree_test.py", line 70, in compare_tree
+    self.assertEqual(tree_one.data, tree_two.data)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in binary_search_tree.py to resolve the errors.
+
+Filepath: binary_search_tree.py
+```python
+class TreeNode:
+    def __init__(self, data, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return f"TreeNode({self.data}, {self.left}, {self.right})"
+
+
+class BinarySearchTree:
+    def __init__(self, tree_data):
+        self.root = None
+        for data in tree_data:
+            self.insert(data)
+
+    def insert(self, data):
+        if self.root is None:
+            self.root = TreeNode(data)
+        else:
+            self._insert(data, self.root)
+
+    def _insert(self, data, node):
+        if data <= node.data:
+            if node.left is None:
+                node.left = TreeNode(data)
+            else:
+                self._insert(data, node.left)
+        elif data > node.data:
+            if node.right is None:
+                node.right = TreeNode(data)
+            else:
+                self._insert(data, node.right)
+
+    def data(self):
+        return self.sorted_data()
+
+    def sorted_data(self):
+        result = []
+        self._sort(result, self.root)
+        return result
+
+    def _sort(self, result, node):
+        if node is not None:
+            self._sort(result, node.left)
+            result.append(node.data)
+            self._sort(result, node.right)
+
+
+if __name__ == "__main__":
+    bst = BinarySearchTree([10, 5, 15, 8])
+    print(bst.data()) # [5, 8, 10, 15]
+
+```
+[/INST]Filepath: binary_search_tree.py
+```python
+
+

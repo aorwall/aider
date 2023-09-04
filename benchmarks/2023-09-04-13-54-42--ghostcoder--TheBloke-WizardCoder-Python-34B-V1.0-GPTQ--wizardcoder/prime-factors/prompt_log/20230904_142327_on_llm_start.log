@@ -1,0 +1,191 @@
+method: on_llm_start [2023-09-04 14:23:27]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Compute the prime factors of a given natural number.
+
+A prime number is only evenly divisible by itself and 1.
+
+Note that 1 is not a prime number.
+
+## Example
+
+What are the prime factors of 60?
+
+- Our first divisor is 2.
+  2 goes into 60, leaving 30.
+- 2 goes into 30, leaving 15.
+  - 2 doesn't go cleanly into 15.
+    So let's move on to our next divisor, 3.
+- 3 goes cleanly into 15, leaving 5.
+  - 3 does not go cleanly into 5.
+    The next possible factor is 4.
+  - 4 does not go cleanly into 5.
+    The next possible factor is 5.
+- 5 does go cleanly into 5.
+- We're left only with 1, so now, we're done.
+
+Our successful divisors in that computation represent the list of prime factors of 60: 2, 2, 3, and 5.
+
+You can check this yourself:
+
+```text
+2 * 2 * 3 * 5
+= 4 * 15
+= 60
+```
+
+Success!
+
+####
+
+Use the above instructions to modify the supplied files: prime_factors.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: prime_factors.py
+```python
+
+```
+
+### Response:
+Filepath: prime_factors.py
+```python
+from math import sqrt
+
+def factors(value):
+    if value < 2:
+        raise ValueError("Value must be greater than or equal to 2")
+
+    primes = []
+    while value % 2 == 0:
+        primes.append(2)
+        value //= 2
+
+    for i in range(3, int(sqrt(value))+1, 2):
+        while value % i == 0:
+            primes.append(i)
+            value //= i
+
+    if value > 2:
+        primes.append(value)
+
+    return primes
+
+```
+
+### Instruction:
+...E........
+====
+ERROR: test_no_factors (prime_factors_test.PrimeFactorsTest.test_no_factors)
+----
+Traceback (most recent call last):
+  File "prime-factors/prime_factors_test.py", line 14, in test_no_factors
+    self.assertEqual(factors(1), [])
+                     ^^^^^^^^^^
+  File "prime-factors/prime_factors.py", line 5, in factors
+    raise ValueError("Value must be greater than or equal to 2")
+ValueError: Value must be greater than or equal to 2
+
+----
+
+
+FAILED (errors=1)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in prime_factors.py to resolve the errors.
+
+Filepath: prime_factors.py
+```python
+from math import sqrt
+
+def factors(value):
+    if value < 2:
+        raise ValueError("Value must be greater than or equal to 2")
+
+    primes = []
+    while value % 2 == 0:
+        primes.append(2)
+        value //= 2
+
+    for i in range(3, int(sqrt(value))+1, 2):
+        while value % i == 0:
+            primes.append(i)
+            value //= i
+
+    if value > 2:
+        primes.append(value)
+
+    return primes
+
+```
+
+
+### Response:
+Filepath: prime_factors.py
+```python
+
+

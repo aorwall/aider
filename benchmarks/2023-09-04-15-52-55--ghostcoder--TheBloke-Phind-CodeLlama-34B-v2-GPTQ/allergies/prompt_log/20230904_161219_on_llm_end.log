@@ -1,0 +1,26 @@
+method: on_llm_end [2023-09-04 16:12:19]
+llm_output: null
+prompt:
+class Allergies:
+
+    def __init__(self, score):
+        self.score = score
+        self.allergens = {
+            1: 'eggs',
+            2: 'peanuts',
+            4: 'shellfish',
+            8: 'strawberries',
+            16: 'tomatoes',
+            32: 'chocolate',
+            64: 'pollen',
+            128: 'cats'}
+
+    def allergic_to(self, item):
+        mask = self.allergens[item]
+        return bool(mask & self.score)
+
+    @property
+    def lst(self):
+        return [kid for kid in self.allergens.keys() if self.allergic_to(kid)]
+
+---

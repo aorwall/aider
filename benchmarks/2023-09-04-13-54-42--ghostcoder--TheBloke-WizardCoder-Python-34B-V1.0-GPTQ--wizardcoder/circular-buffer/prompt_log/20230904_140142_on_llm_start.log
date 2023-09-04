@@ -1,0 +1,330 @@
+method: on_llm_start [2023-09-04 14:01:42]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+A circular buffer, cyclic buffer or ring buffer is a data structure that uses a single, fixed-size buffer as if it were connected end-to-end.
+
+A circular buffer first starts empty and of some predefined length.
+For example, this is a 7-element buffer:
+<!-- prettier-ignore -->
+    [ ][ ][ ][ ][ ][ ][ ]
+
+Assume that a 1 is written into the middle of the buffer (exact starting location does not matter in a circular buffer):
+<!-- prettier-ignore -->
+    [ ][ ][ ][1][ ][ ][ ]
+
+Then assume that two more elements are added — 2 & 3 — which get appended after the 1:
+<!-- prettier-ignore -->
+    [ ][ ][ ][1][2][3][ ]
+
+If two elements are then removed from the buffer, the oldest values inside the buffer are removed.
+The two elements removed, in this case, are 1 & 2, leaving the buffer with just a 3:
+<!-- prettier-ignore -->
+    [ ][ ][ ][ ][ ][3][ ]
+
+If the buffer has 7 elements then it is completely full:
+<!-- prettier-ignore -->
+    [5][6][7][8][9][3][4]
+
+When the buffer is full an error will be raised, alerting the client that further writes are blocked until a slot becomes free.
+
+When the buffer is full, the client can opt to overwrite the oldest data with a forced write.
+In this case, two more elements — A & B — are added and they overwrite the 3 & 4:
+<!-- prettier-ignore -->
+    [5][6][7][8][9][A][B]
+
+3 & 4 have been replaced by A & B making 5 now the oldest data in the buffer.
+Finally, if two elements are removed then what would be returned is 5 & 6 yielding the buffer:
+<!-- prettier-ignore -->
+    [ ][ ][7][8][9][A][B]
+
+Because there is space available, if the client again uses overwrite to store C & D then the space where 5 & 6 were stored previously will be used not the location of 7 & 8.
+7 is still the oldest element and the buffer is once again full.
+<!-- prettier-ignore -->
+    [C][D][7][8][9][A][B]
+# Instructions append
+
+## Customizing and Raising Exceptions
+
+Sometimes it is necessary to both [customize](https://docs.python.org/3/tutorial/errors.html#user-defined-exceptions) and [`raise`](https://docs.python.org/3/tutorial/errors.html#raising-exceptions) exceptions in your code. When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. 
+
+Custom exceptions can be created through new exception classes (see [`classes`](https://docs.python.org/3/tutorial/classes.html#tut-classes) for more detail.) that are typically subclasses of [`Exception`](https://docs.python.org/3/library/exceptions.html#Exception).
+
+For situations where you know the error source will be a derivative of a certain exception type, you can choose to inherit from one of the [`built in error types`](https://docs.python.org/3/library/exceptions.html#base-classes) under the _Exception_ class. When raising the error, you should still include a meaningful message.
+
+This particular exercise requires that you create two _custom exceptions_.  One exception to be [raised](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement)/"thrown" when your circular buffer is **full**, and one for when it is **empty**. The tests will only pass if you customize appropriate exceptions, `raise` those exceptions, and include appropriate error messages.
+
+To customize a `built-in exception`, create a `class` that inherits from that exception. When raising the custom exception with a message, write the message as an argument to the `exception` type:
+
+```python
+# subclassing the built-in BufferError to create BufferFullException
+class BufferFullException(BufferError):
+    """Exception raised when CircularBuffer is full.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        self.message = message
+
+        
+# raising a BufferFullException
+raise BufferFullException("Circular buffer is full")
+```
+
+####
+
+Use the above instructions to modify the supplied files: circular_buffer.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: circular_buffer.py
+```python
+
+```
+
+### Response:
+Filepath: circular_buffer.py
+```python
+import collections
+from typing import Union
+
+class BufferFullException(BufferError):
+    """Exception raised when CircularBuffer is full.
+    
+    message: explanation of the error.
+    
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class BufferEmptyException(BufferError):
+    """Exception raised when CircularBuffer is empty.
+    
+    message: explanation of the error.
+    
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class CircularBuffer:
+    def __init__(self, capacity):
+        self._capacity = capacity
+        self._deque = collections.deque([], maxlen=capacity)
+
+    @property
+    def capacity(self):
+        return self._capacity
+
+    @property
+    def size(self):
+        return len(self._deque)
+
+    def read(self):
+        try:
+            return self._deque.popleft()
+        except IndexError:
+            raise BufferEmptyException("Circular buffer is empty.")
+
+    def write(self, data):
+        if self.size == self.capacity:
+            raise BufferFullException("Circular buffer is full.")
+        self._deque.append(data)
+
+    def overwrite(self, data):
+        if self.size < self.capacity:
+            self._deque.append(data)
+        else:
+            self._deque[0] = data
+
+    def clear(self):
+        self._deque.clear()
+
+```
+
+### Instruction:
+....FFF.F.FF.F
+====
+FAIL: test_each_item_may_only_be_read_once (circular_buffer_test.CircularBufferTest.test_each_item_may_only_be_read_once)
+----
+Traceback (most recent call last):
+  File "circular-buffer/circular_buffer_test.py", line 36, in test_each_item_may_only_be_read_once
+    self.assertEqual(err.exception.args[0], "Circular buffer is empty")
+AssertionError: 'Circular buffer is empty.' != 'Circular buffer is empty'
+- Circular buffer is empty.
+?                         -
++ Circular buffer is empty
+
+
+====
+FAIL: test_full_buffer_can_t_be_written_to (circular_buffer_test.CircularBufferTest.test_full_buffer_can_t_be_written_to)
+----
+Traceback (most recent call last):
+  File "circular-buffer/circular_buffer_test.py", line 52, in test_full_buffer_can_t_be_written_to
+    self.assertEqual(err.exception.args[0], "Circular buffer is full")
+AssertionError: 'Circular buffer is full.' != 'Circular buffer is full'
+- Circular buffer is full.
+?                        -
++ Circular buffer is full
+
+
+====
+FAIL: test_initial_clear_does_not_affect_wrapping_around (circular_buffer_test.CircularBufferTest.test_initial_clear_does_not_affect_wrapping_around)
+----
+Traceback (most recent call last):
+  File "circular-buffer/circular_buffer_test.py", line 129, in test_initial_clear_does_not_affect_wrapping_around
+    self.assertEqual(buf.read(), "3")
+AssertionError: '4' != '3'
+- 4
++ 3
+
+
+====
+FAIL: test_items_cleared_out_of_buffer_can_t_be_read (circular_buffer_test.CircularBufferTest.test_items_cleared_out_of_buffer_can_t_be_read)
+----
+Traceback (most recent call last):
+  File "circular-buffer/circular_buffer_test.py", line 78, in test_items_cleared_out_of_buffer_can_t_be_read
+    self.assertEqual(err.exception.args[0], "Circular buffer is empty")
+AssertionError: 'Circular buffer is empty.' != 'Circular buffer is empty'
+- Circular buffer is empty.
+?                         -
++ Circular buffer is empty
+
+
+====
+FAIL: test_overwrite_replaces_the_oldest_item_on_full_buffer (circular_buffer_test.CircularBufferTest.test_overwrite_replaces_the_oldest_item_on_full_buffer)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in circular_buffer.py to resolve the errors.
+
+Filepath: circular_buffer.py
+```python
+import collections
+from typing import Union
+
+class BufferFullException(BufferError):
+    """Exception raised when CircularBuffer is full.
+    
+    message: explanation of the error.
+    
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class BufferEmptyException(BufferError):
+    """Exception raised when CircularBuffer is empty.
+    
+    message: explanation of the error.
+    
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class CircularBuffer:
+    def __init__(self, capacity):
+        self._capacity = capacity
+        self._deque = collections.deque([], maxlen=capacity)
+
+    @property
+    def capacity(self):
+        return self._capacity
+
+    @property
+    def size(self):
+        return len(self._deque)
+
+    def read(self):
+        try:
+            return self._deque.popleft()
+        except IndexError:
+            raise BufferEmptyException("Circular buffer is empty.")
+
+    def write(self, data):
+        if self.size == self.capacity:
+            raise BufferFullException("Circular buffer is full.")
+        self._deque.append(data)
+
+    def overwrite(self, data):
+        if self.size < self.capacity:
+            self._deque.append(data)
+        else:
+            self._deque[0] = data
+
+    def clear(self):
+        self._deque.clear()
+
+```
+
+
+### Response:
+Filepath: circular_buffer.py
+```python
+
+

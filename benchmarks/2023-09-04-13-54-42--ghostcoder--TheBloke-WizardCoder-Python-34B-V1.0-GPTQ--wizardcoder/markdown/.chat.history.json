@@ -1,0 +1,41 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nRefactor a Markdown parser.\n\nThe markdown exercise is a refactoring exercise.\nThere is code that parses a given string with [Markdown syntax][markdown] and returns the associated HTML for that string.\nEven though this code is confusingly written and hard to follow, somehow it works and all the tests are passing!\nYour challenge is to re-write this code to make it easier to read and maintain while still making sure that all the tests keep passing.\n\nIt would be helpful if you made notes of what you did in your refactoring in comments so reviewers can see that, but it isn't strictly necessary.\nThe most important thing is to make the code better!\n\n[markdown]: https://guides.github.com/features/mastering-markdown/\n\n####\n\nUse the above instructions to modify the supplied files: markdown.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "markdown.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom typing import List\n\nclass MarkdownParser:\n    def __init__(self):\n        self._lines = []\n\n    def add_line(self, line: str) -> None:\n        self._lines.append(line)\n\n    def parse(self) -> str:\n        result = \"\"\n        in_list = False\n        in_list_append = False\n\n        for i, line in enumerate(self._lines):\n            # Check if it's a header\n            match = re.match(\"^#{1,6} (.*)\", line)\n            if match:\n                heading_level = len(match.groups()[0])\n                line = f\"<h{heading_level}>{match.groups()[0]}</h{heading_level}>\"\n\n            # Check if it's an unordered list item\n            match = re.match(\"^ *[-+\\*] (.*)\", line)\n            if match:\n                if not in_list:\n                    in_list = True\n                    line = f\"<ul>\\n<li>{match.groups()[0].strip()} </li>\"\n                else:\n                    line = f\"\\n<li>{match.groups()[0].strip()} </li>\"\n\n            # Check if it's an ordered list item\n            match = re.match(\"^ *\\d*\\. (.*)\", line)\n            if match:\n                if not in_list:\n                    in_list = True\n                    line = f\"<ol>\\n<li>{match.groups()[0].strip()} </li>\"\n                else:\n                    line = f\"\\n<li>{match.groups()[0].strip()} </li>\"\n\n            # Check if it's a paragraph\n            match = re.match(\"<h|<ul|<ol|<li\", line)\n            if not match:\n                line = f\"<p>{line}</p>\"\n\n            # Check if it's strong text\n            while \"__\" in line:\n                match = re.search(\"^(.*?)__(.*?)__(.*)$\", line)\n                if match:\n                    line = match.group(1) + \"<strong>\" + match.group(2) + \"</strong>\" + match.group(3)\n                else:\n                    break\n\n            # Check if it's italic text\n            while \"_\" in line:\n                match = re.search(\"^(.*?)_(.*?)_(.*)$\", line)\n                if match:\n                    line = match.group(1) + \"<em>\" + match.group(2) + \"</em>\" + match.group(3)\n                else:\n                    break\n\n            # Append the processed line to the result\n            result += line\n\n            # If we were previously in a list but this line doesn't continue it, close the list tag\n            if in_list and not re.match(\"^ *(-|\\+|\\*|\\d+\\.) \", line):\n                in_list = False\n                result += \"\\n</ul>\" if in_list_append else \"\\n</ol></li>\"\n                in_list_append = False\n\n        # Close any remaining lists\n        if in_list:\n            result += \"\\n</ul>\" if not in_list_append else \"\\n</ol></li>\"\n\n        return result\n\nif __name__ == \"__main__\":\n    parser = MarkdownParser()\n    parser.add_line(\"# Heading\")\n    parser.add_line(\"- Item 1\")\n    parser.add_line(\"- Item 2\")\n    print(parser.parse())\n\n\ndef parse(markdown):\n    lines = markdown.split('\\n')\n    res = ''\n    in_list = False\n    in_list_append = False\n    for i in lines:\n        if re.match('###### (.*)', i) is not None:\n            i = '<h6>' + i[7:] + '</h6>'\n        elif re.match('##### (.*)', i) is not None:\n            i = '<h5>' + i[6:] + '</h5>'\n        elif re.match('#### (.*)', i) is not None:\n            i = '<h4>' + i[5:] + '</h4>'\n        elif re.match('### (.*)', i) is not None:\n            i = '<h3>' + i[4:] + '</h3>'\n        elif re.match('## (.*)', i) is not None:\n            i = '<h2>' + i[3:] + '</h2>'\n        elif re.match('# (.*)', i) is not None:\n            i = '<h1>' + i[2:] + '</h1>'\n        m = re.match(r'\\* (.*)', i)\n        if m:\n            if not in_list:\n                in_list = True\n                is_bold = False\n                is_italic = False\n                curr = m.group(1)\n                m1 = re.match('(.*)__(.*)__(.*)', curr)\n                if m1:\n                    curr = m1.group(1) + '<strong>' + \\\n                        m1.group(2) + '</strong>' + m1.group(3)\n                    is_bold = True\n                m1 = re.match('(.*)_(.*)_(.*)', curr)\n                if m1:\n                    curr = m1.group(1) + '<em>' + m1.group(2) + \\\n                        '</em>' + m1.group(3)\n                    is_italic = True\n                i = '<ul><li>' + curr + '</li>'\n            else:\n                is_bold = False\n                is_italic = False\n                curr = m.group(1)\n                m1 = re.match('(.*)__(.*)__(.*)', curr)\n                if m1:\n                    is_bold = True\n                m1 = re.match('(.*)_(.*)_(.*)', curr)\n                if m1:\n                    is_italic = True\n                if is_bold:\n                    curr = m1.group(1) + '<strong>' + \\\n                        m1.group(2) + '</strong>' + m1.group(3)\n                if is_italic:\n                    curr = m1.group(1) + '<em>' + m1.group(2) + \\\n                        '</em>' + m1.group(3)\n                i = '<li>' + curr + '</li>'\n        else:\n            if in_list:\n                in_list_append = True\n                in_list = False\n\n        m = re.match('<h|<ul|<p|<li', i)\n        if not m:\n            i = '<p>' + i + '</p>'\n        m = re.match('(.*)__(.*)__(.*)', i)\n        if m:\n            i = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)\n        m = re.match('(.*)_(.*)_(.*)', i)\n        if m:\n            i = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)\n        if in_list_append:\n            i = '</ul>' + i\n            in_list_append = False\n        res += i\n    if in_list:\n        res += '</ul>'\n    return res\n",
+        "language": "python",
+        "file_path": "markdown.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

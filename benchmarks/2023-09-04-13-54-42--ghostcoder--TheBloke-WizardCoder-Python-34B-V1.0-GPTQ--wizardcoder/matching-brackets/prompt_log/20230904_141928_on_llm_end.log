@@ -1,0 +1,20 @@
+method: on_llm_end [2023-09-04 14:19:28]
+llm_output: null
+prompt:
+import re
+from collections import defaultdict
+
+def is_paired(input_string):
+    stack = []
+    mapping = {"(": ")", "[": "]", "{": "}"}
+    
+    for char in input_string:
+        if char in mapping:
+            stack.append(char)
+        elif len(stack) > 0 and char == mapping[stack[-1]]:
+            stack.pop()
+            
+    return len(stack) == 0
+
+
+---

@@ -1,0 +1,262 @@
+method: on_llm_start [2023-09-04 16:33:17]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+### User Message
+Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+
+### Assistant
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+
+### User Message
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+
+### Assistant
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+
+### User Message
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+
+### Assistant
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+
+
+### User Message
+# Instructions
+
+Write a robot simulator.
+
+A robot factory's test facility needs a program to verify robot movements.
+
+The robots have three possible movements:
+
+- turn right
+- turn left
+- advance
+
+Robots are placed on a hypothetical infinite grid, facing a particular direction (north, east, south, or west) at a set of {x,y} coordinates,
+e.g., {3,8}, with coordinates increasing to the north and east.
+
+The robot then receives a number of instructions, at which point the testing facility verifies the robot's new position, and in which direction it is pointing.
+
+- The letter-string "RAALAL" means:
+  - Turn right
+  - Advance twice
+  - Turn left
+  - Advance once
+  - Turn left yet again
+- Say a robot starts at {7, 3} facing north.
+  Then running this stream of instructions should leave it at {9, 4} facing west.
+
+####
+
+Use the above instructions to modify the supplied files: robot_simulator.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: robot_simulator.py
+```python
+
+```
+
+
+### Assistant
+Filepath: robot_simulator.py
+```python
+from collections import defaultdict
+
+# Globals for the directions
+# Change the values as you see fit
+EAST = 0
+NORTH = 1
+WEST = 2
+SOUTH = 3
+DIRECTIONS = [EAST, NORTH, WEST, SOUTH]
+TURNS = {'R': 1, 'L': -1}
+STEP_SIZES = {EAST: (0, 1), NORTH: (1, 0), WEST: (0, -1), SOUTH: (-1, 0)}
+
+
+class Robot:
+    def __init__(self, direction=NORTH, x_pos=0, y_pos=0):
+        self.direction = direction
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+    def move(self, instruction):
+        for turn, steps in zip(instruction[::2], map(int, instruction[1::2])):
+            self.direction = (self.direction + TURNS[turn]) % 4  # Turn
+            dx, dy = STEP_SIZES[DIRECTIONS[self.direction]]
+            self.x_pos += dx * steps  # Move forward
+            self.y_pos += dy * steps
+
+    def get_position(self):
+        return self.x_pos, self.y_pos
+
+    def get_direction(self):
+        return DIRECTIONS[self.direction]
+
+```
+
+
+### User Message
+EEEEEEEEEEEEEEEEEE
+====
+ERROR: test_at_negative_position_facing_south (robot_simulator_test.RobotSimulatorTest.test_at_negative_position_facing_south)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 28, in test_at_negative_position_facing_south
+    self.assertEqual(robot.coordinates, (-1, -1))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_at_origin_facing_north (robot_simulator_test.RobotSimulatorTest.test_at_origin_facing_north)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 22, in test_at_origin_facing_north
+    self.assertEqual(robot.coordinates, (0, 0))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_changes_east_to_north (robot_simulator_test.RobotSimulatorTest.test_changes_east_to_north)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 86, in test_changes_east_to_north
+    self.assertEqual(robot.coordinates, (0, 0))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_changes_east_to_south (robot_simulator_test.RobotSimulatorTest.test_changes_east_to_south)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 43, in test_changes_east_to_south
+    self.assertEqual(robot.coordinates, (0, 0))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_changes_north_to_east (robot_simulator_test.RobotSimulatorTest.test_changes_north_to_east)
+----
+Traceback (most recent call last):
+  File "robot-simulator/robot_simulator_test.py", line 36, in test_changes_north_to_east
+    self.assertEqual(robot.coordinates, (0, 0))
+                     ^^^^^^^^^^^^^^^^^
+AttributeError: 'Robot' object has no attribute 'coordinates'
+
+====
+ERROR: test_changes_north_to_west (robot_simulator_test.RobotSimulatorTest.test_changes_north_to_west)
+----
+Traceback (most recent call last):
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in robot_simulator.py to resolve the errors.
+
+Filepath: robot_simulator.py
+```python
+from collections import defaultdict
+
+# Globals for the directions
+# Change the values as you see fit
+EAST = 0
+NORTH = 1
+WEST = 2
+SOUTH = 3
+DIRECTIONS = [EAST, NORTH, WEST, SOUTH]
+TURNS = {'R': 1, 'L': -1}
+STEP_SIZES = {EAST: (0, 1), NORTH: (1, 0), WEST: (0, -1), SOUTH: (-1, 0)}
+
+
+class Robot:
+    def __init__(self, direction=NORTH, x_pos=0, y_pos=0):
+        self.direction = direction
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+    def move(self, instruction):
+        for turn, steps in zip(instruction[::2], map(int, instruction[1::2])):
+            self.direction = (self.direction + TURNS[turn]) % 4  # Turn
+            dx, dy = STEP_SIZES[DIRECTIONS[self.direction]]
+            self.x_pos += dx * steps  # Move forward
+            self.y_pos += dy * steps
+
+    def get_position(self):
+        return self.x_pos, self.y_pos
+
+    def get_direction(self):
+        return DIRECTIONS[self.direction]
+
+```
+
+
+### Assistant
+Filepath: robot_simulator.py
+```python
+
+

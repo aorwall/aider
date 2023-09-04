@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou work for a government agency that has intercepted a series of encrypted communication signals from a group of bank robbers.\nThe signals contain a long sequence of digits.\nYour team needs to use various digital signal processing techniques to analyze the signals and identify any patterns that may indicate the planning of a heist.\n# Instructions\n\nYour task is to look for patterns in the long sequence of digits in the encrypted signal.\n\nThe technique you're going to use here is called the largest series product.\n\nLet's define a few terms, first.\n\n- **input**: the sequence of digits that you need to analyze\n- **series**: a sequence of adjacent digits (those that are next to each other) that is contained within the input\n- **span**: how many digits long each series is\n- **product**: what you get when you multiply numbers together\n\nLet's work through an example, with the input `\"63915\"`.\n\n- To form a series, take adjacent digits in the original input.\n- If you are working with a span of `3`, there will be three possible series:\n  - `\"639\"`\n  - `\"391\"`\n  - `\"915\"`\n- Then we need to calculate the product of each series:\n  - The product of the series `\"639\"` is 162 (`6 \u00d7 3 \u00d7 9 = 162`)\n  - The product of the series `\"391\"` is 27 (`3 \u00d7 9 \u00d7 1 = 27`)\n  - The product of the series `\"915\"` is 45 (`9 \u00d7 1 \u00d7 5 = 45`)\n- 162 is bigger than both 27 and 45, so the largest series product of `\"63915\"` is from the series `\"639\"`.\n  So the answer is **162**.\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" a `ValueError` when your `largest_product()` function receives invalid input. The tests will only pass if you both `raise` the `exception` and include a message with it.  Feel free to reuse your code from the `series` exercise!\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# span of numbers is longer than number series\nraise ValueError(\"span must be smaller than string length\")\n\n# span of number is negative\nraise ValueError(\"span must not be negative\")\n\n# series includes non-number input\nraise ValueError(\"digits input must only contain digits\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: largest_series_product.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def largest_product(series, size):\n    # Check inputs\n    if len(str(series)) < size:\n        raise ValueError(\"span must be smaller than string length\")\n    elif size < 0:\n        raise ValueError(\"span must not be negative\")\n    elif not str(series).isdigit():\n        raise ValueError(\"digits input must only contain digits\")\n\n    # Calculate products\n    products = []\n    for i in range(len(str(series)) - size + 1):\n        substring = int(str(series)[i : i + size])\n        products.append(prod([int(d) for d in str(substring)]))\n\n    return max(products)\n\ndef prod(factors):\n    result = factors[0]\n    for f in factors[1:]:\n        result *= f\n    return result\n",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "............F.\n====\nFAIL: test_reports_zero_if_all_spans_include_zero (largest_series_product_test.LargestSeriesProductTest.test_reports_zero_if_all_spans_include_zero)\n----\nTraceback (most recent call last):\n  File \"largest-series-product/largest_series_product_test.py\", line 41, in test_reports_zero_if_all_spans_include_zero\n    self.assertEqual(largest_product(\"99099\", 3), 0)\nAssertionError: 81 != 0\n\n----\n\n\nFAILED (failures=1)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in largest_series_product.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def largest_product(series, size):\n    # Check inputs\n    if len(str(series)) < size:\n        raise ValueError(\"span must be smaller than string length\")\n    elif size < 0:\n        raise ValueError(\"span must not be negative\")\n    elif not str(series).isdigit():\n        raise ValueError(\"digits input must only contain digits\")\n\n    # Calculate products\n    products = []\n    for i in range(len(str(series)) - size + 1):\n        substring = int(str(series)[i : i + size])\n        products.append(prod([int(d) for d in str(substring)]))\n\n    return max(products)\n\ndef prod(factors):\n    result = factors[0]\n    for f in factors[1:]:\n        result *= f\n    return result\n",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

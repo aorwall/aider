@@ -1,0 +1,72 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nSolve the zebra puzzle.\n\n1. There are five houses.\n2. The Englishman lives in the red house.\n3. The Spaniard owns the dog.\n4. Coffee is drunk in the green house.\n5. The Ukrainian drinks tea.\n6. The green house is immediately to the right of the ivory house.\n7. The Old Gold smoker owns snails.\n8. Kools are smoked in the yellow house.\n9. Milk is drunk in the middle house.\n10. The Norwegian lives in the first house.\n11. The man who smokes Chesterfields lives in the house next to the man with the fox.\n12. Kools are smoked in the house next to the house where the horse is kept.\n13. The Lucky Strike smoker drinks orange juice.\n14. The Japanese smokes Parliaments.\n15. The Norwegian lives next to the blue house.\n\nEach of the five houses is painted a different color, and their inhabitants are of different national extractions, own different pets, drink different beverages and smoke different brands of cigarettes.\n\nWhich of the residents drinks water?\nWho owns the zebra?\n\n####\n\nUse the above instructions to modify the supplied files: zebra_puzzle.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "zebra_puzzle.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: zebra_puzzle.py\n```python\nclass House:\n    def __init__(self, nationality, pet, drink, brand, animal):\n        self.nationality = nationality\n        self.pet = pet\n        self.drink = drink\n        self.brand = brand\n        self.animal = animal\n\n\ndef find_owner_of_pet(houses, pet):\n    for house in houses:\n        if house.pet == pet:\n            return house.nationality\n\n\ndef find_house_with_color(houses, color):\n    for index, house in enumerate(houses):\n        if house.animal == color:\n            return index\n\n\ndef drinks_water():\n    houses = [House('English', None, 'tea', None, 'red'),\n             House('Spaniard', 'dog', 'coffee', 'OldGold', 'ivory'),\n             House('Ukrainian', None, 'milk', 'Kools', 'green'),\n             House('Norwegian', 'fox', 'water', 'Chesterfields', 'blue'),\n             House('Japanese', 'snails', 'orange juice', 'LuckyStrikes', 'yellow')]\n    \n    norwegian_index = find_house_with_color(houses, 'blue')\n    japanese_index = find_house_with_color(houses, 'yellow')\n    \n    # The Norwegian lives in the first house.\n    # The man who smokes Chesterfields lives in the house next to the man with the fox.\n    chesterfield_index = norwegian_index + 1\n    \n    # The man who smokes Chesterfields lives in the house next to the house where the horse is kept.\n    horse_index = chesterfield_index - 1\n    \n    # The Lucky Strike smoker drinks orange juice.\n    lucky_strike_index = horse_index + 1\n    \n    # The Japanese smokes Parliaments.\n    parliament_index = japanese_index - 1\n    \n    # The green house is immediately to the right of the ivory house.\n    green_index = find_house_with_color(houses, 'ivory') + 1\n    \n    # The Old Gold smoker owns snails.\n    old_gold_index = find_house_with_color(houses, 'green') - 1\n    \n    # The Spaniard owns the dog.\n    spaniard_index = find_house_with_color(houses, 'yellow') + 2\n    \n    # The Englishman lives in the red house.\n    englishman_index = find_house_with_color(houses, 'red')\n    \n    # The Ukranian drinks tea.\n    ukrainian_index = find_house_with_color(houses, 'green')\n    \n    # The Norwegian lives next to the blue house.\n    # The man who smokes Chesterfields lives in the house next to the man with the fox.\n    # The man who smokes Chesterfields lives in the house next to the house where the horse is kept.\n    # The Lucky Strike smoker drinks orange juice.\n    # The Japanese smokes Parliaments.\n    # The green house is immediately to the right of the ivory house.\n    # The Old Gold smoker owns snails.\n    # The Spaniard owns the dog.\n    # The Englishman lives in the red house.\n    # The Ukranian drinks tea.\n    \n    possible_solutions = []\n    for index, house in enumerate(houses):\n        if (index != englishman_index and house.nationality == \"English\") or \\\n           (index != spaniard_index and house.pet == \"dog\") or \\\n           (index != lucky_strike_index and house.brand == \"LuckyStrikes\" and house.drink == \"orange juice\") or \\\n           (index != parliament_index and house.brand == \"Parliaments\" and house.nationality == \"Japanese\") or \\\n           (index != green_index and house.animal == \"horse\") or \\\n           (index != old_gold_index and house.brand == \"OldGold\" and house.pet == \"snails\") or \\\n           (index != norwegian_index and house.```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FF\n====\nFAIL: test_resident_who_drinks_water (zebra_puzzle_test.ZebraPuzzleTest.test_resident_who_drinks_water)\n----\nTraceback (most recent call last):\n  File \"zebra-puzzle/zebra_puzzle_test.py\", line 15, in test_resident_who_drinks_water\n    self.assertEqual(drinks_water(), \"Norwegian\")\nAssertionError: None != 'Norwegian'\n\n====\nFAIL: test_resident_who_owns_zebra (zebra_puzzle_test.ZebraPuzzleTest.test_resident_who_owns_zebra)\n----\nTraceback (most recent call last):\n  File \"zebra-puzzle/zebra_puzzle_test.py\", line 18, in test_resident_who_owns_zebra\n    self.assertEqual(owns_zebra(), \"Japanese\")\nAssertionError: None != 'Japanese'\n\n----\n\n\nFAILED (failures=2)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in zebra_puzzle.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "zebra_puzzle.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: zebra_puzzle.py\n```python\nclass House:\n    def __init__(self, nationality=\"\", pet=\"\", brand=\"\", color=\"\"):\n        self.nationality = nationality\n        self.pet = pet\n        self.brand = brand\n        self.color = color\n\n\ndef find_house_with_color(houses, target_color):\n    return next((i for i, h in enumerate(houses) if h.color == target_color), None)\n\n\ndef solve_puzzle():\n    houses = [House()] * 5\n\n    # The Englishman lives in the red house.\n    englishman_index = find_house_with_color(houses, \"red\")\n    houses[englishman_index].nationality = \"English\"\n\n    # The Spaniard owns the dog.\n    spaniard_index = find_house_with_color(houses, \"\")\n    while True:\n        spaniard_index = (spaniard_index + 1) % len(houses)\n        if houses[spaniard_index].pet != \"dog\":\n            break\n    houses[spaniard_index].nationality = \"Spaniard\"\n    houses[spaniard_index].pet = \"dog\"\n\n    # The Japanese smokes Parliaments.\n    japanese_index = find_house_with_color(houses, \"\")\n    while True:\n        japanese_index = (japanese_index + 1) % len(houses)\n        if houses[japanese_index].brand == \"Parliaments\":\n            break\n    houses[japanese_index].nationality = \"Japanese\"\n    houses[japanese_index].brand = \"Parliaments\"\n\n    # The Ukrainian drinks tea.\n    ukrainian_index = find_house_with_color(houses, \"\")\n    while True:\n        ukrainian_index = (ukrainian_index + 1) % len(houses)\n        if houses[ukrainian_index].drink == \"tea\":\n            break\n    houses[ukrainian_index].nationality = \"Ukrainian\"\n    houses[ukrainian_index].drink = \"tea\"\n\n    # The Green house is immediately to the left of the White house.\n    white_index = find_house_with_color(houses, \"white\")\n    green_index = white_index - 1\n    houses[green_index].color = \"green\"\n\n    # The person who smokes Bluemasters drinks beer.\n    bluemasters_index = find_house_with_color(houses, \"\")\n    while True:\n        bluemasters_index = (bluemasters_index + 1) % len(houses)\n        if houses[bluemasters_index].brand == \"Bluemasters\":\n            break\n    houses[bluemasters_index].drink = \"beer\"\n    houses[bluemasters_index].brand = \"Bluemasters\"\n\n    # The Norwegian lives next to the first house on the left.\n    norwegian_index = find_house_with_color(houses, \"\")\n    while True:\n        norwegian_index = (norwegian_index - 1) % len(houses)\n        if norwegian_index == 0:\n            break\n    houses[norwegian_index].nationality = \"Norwegian\"\n\n    # The yellow house is next to the blue house.\n    yellow_index = find_house_with_color(houses, \"blue\") + 1\n    houses[yellow_index].color = \"yellow\"\n\n    # The Chesterfield smoker lives in the house next to the house with the fox.\n    fox_index = find_house_with_color(houses, \"\")\n    while True:\n        fox_index = (fox_index + 1) % len(houses)\n        if houses[fox_index].pet == \"fox\":\n            break\n    chesterfield_index = fox_index + 1\n    houses[chesterfield_index].brand = \"Chesterfield\"\n\n    # The horse is kept in the second house on the left.\n    horse_index = find_house_with_color(h```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

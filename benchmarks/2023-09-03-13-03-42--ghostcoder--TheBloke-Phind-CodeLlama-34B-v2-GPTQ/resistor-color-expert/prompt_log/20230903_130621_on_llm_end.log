@@ -1,0 +1,47 @@
+method: on_llm_end [2023-09-03 13:06:21]
+llm_output: null
+prompt:
+Here is a simple solution for this problem using Python programming language:
+
+In your `resistor_color_expert.py` file you should define the function as follows:
+
+```python
+def resistor_value(colors):
+    color_dict = {
+        "black": 0, "brown": 1, "red": 2, "orange": 3, "yellow": 4,
+        "green": 5, "blue": 6, "violet": 7, "gray": 8, "white": 9
+    }
+    
+    value = ""
+    multiplier = 0
+    tolerance = 0
+    
+    if colors[0] in ["gold","silver"]:
+        value += str(color_dict[colors[1]])
+        value += str(color_dict[colors[2]])
+        
+        if colors[0]=="gold":
+            multiplier=1
+        else:
+            multiplier=0.1
+            
+        tolerance=5
+    elif len(colors)>3 and colors[-1]=="gold" or colors[-1]=="silver":
+        value += str(color_dict[colors[0]]*10+color_dict[colors[1]])
+        multiplier = color_dict[colors[2]]
+        
+        if colors[-1]=="gold":
+            multiplier+=1
+        else:
+            multiplier+=0.1
+        
+        tolerance=20
+    else:
+        value += str(color_dict[colors[0]]*10+color_dict[colors[1]])
+        multiplier = color_dict[colors[2]]
+        tolerance=25
+    
+    return "{0} {1}Ohms {2}%".format(float(value)*pow(10,multiplier),("kilo","mega")[int(multiplier/3)-1],tolerance)
+```
+This function uses dictionaries to map the colors to their corresponding values. It checks first three bands of resistance value, then multiplier and at last the tolerance band. According to the given conditions it forms the label for resistors.
+---

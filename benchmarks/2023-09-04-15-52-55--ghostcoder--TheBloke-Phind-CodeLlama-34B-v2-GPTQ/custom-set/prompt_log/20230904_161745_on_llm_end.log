@@ -1,0 +1,39 @@
+method: on_llm_end [2023-09-04 16:17:45]
+llm_output: null
+prompt:
+class CustomSet:
+    def __init__(self, elements=None):
+        if elements is None:
+            self._elements = []
+        else:
+            self._elements = list(elements)
+
+    def isempty(self):
+        return len(self._elements) == 0
+
+    def __contains__(self, element):
+        return element in self._elements
+
+    def issubset(self, other):
+        return all([item in other for item in self._elements])
+
+    def isdisjoint(self, other):
+        return not bool(set(other).intersection(self._elements))
+
+    def __eq__(self, other):
+        return sorted(self._elements) == sorted(other)
+
+    def add(self, element):
+        if element not in self._elements:
+            self._elements.append(element)
+
+    def intersection(self, other):
+        return [value for value in self._elements if value in other]
+
+    def __sub__(self, other):
+        return [value for value in self._elements if value not in other]
+
+    def __add__(self, other):
+        return [value for value in self._elements] + [value for value in other if value not in self._elements]
+
+---

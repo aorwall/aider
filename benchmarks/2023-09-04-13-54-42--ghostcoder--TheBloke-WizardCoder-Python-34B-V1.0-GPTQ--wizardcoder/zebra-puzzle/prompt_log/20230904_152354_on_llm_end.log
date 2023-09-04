@@ -1,0 +1,87 @@
+method: on_llm_end [2023-09-04 15:23:54]
+llm_output: null
+prompt:
+class House:
+    def __init__(self, nationality="", pet="", brand="", color=""):
+        self.nationality = nationality
+        self.pet = pet
+        self.brand = brand
+        self.color = color
+
+
+def find_house_with_color(houses, target_color):
+    return next((i for i, h in enumerate(houses) if h.color == target_color), None)
+
+
+def solve_puzzle():
+    houses = [House()] * 5
+
+    # The Englishman lives in the red house.
+    englishman_index = find_house_with_color(houses, "red")
+    houses[englishman_index].nationality = "English"
+
+    # The Spaniard owns the dog.
+    spaniard_index = find_house_with_color(houses, "")
+    while True:
+        spaniard_index = (spaniard_index + 1) % len(houses)
+        if houses[spaniard_index].pet != "dog":
+            break
+    houses[spaniard_index].nationality = "Spaniard"
+    houses[spaniard_index].pet = "dog"
+
+    # The Japanese smokes Parliaments.
+    japanese_index = find_house_with_color(houses, "")
+    while True:
+        japanese_index = (japanese_index + 1) % len(houses)
+        if houses[japanese_index].brand == "Parliaments":
+            break
+    houses[japanese_index].nationality = "Japanese"
+    houses[japanese_index].brand = "Parliaments"
+
+    # The Ukrainian drinks tea.
+    ukrainian_index = find_house_with_color(houses, "")
+    while True:
+        ukrainian_index = (ukrainian_index + 1) % len(houses)
+        if houses[ukrainian_index].drink == "tea":
+            break
+    houses[ukrainian_index].nationality = "Ukrainian"
+    houses[ukrainian_index].drink = "tea"
+
+    # The Green house is immediately to the left of the White house.
+    white_index = find_house_with_color(houses, "white")
+    green_index = white_index - 1
+    houses[green_index].color = "green"
+
+    # The person who smokes Bluemasters drinks beer.
+    bluemasters_index = find_house_with_color(houses, "")
+    while True:
+        bluemasters_index = (bluemasters_index + 1) % len(houses)
+        if houses[bluemasters_index].brand == "Bluemasters":
+            break
+    houses[bluemasters_index].drink = "beer"
+    houses[bluemasters_index].brand = "Bluemasters"
+
+    # The Norwegian lives next to the first house on the left.
+    norwegian_index = find_house_with_color(houses, "")
+    while True:
+        norwegian_index = (norwegian_index - 1) % len(houses)
+        if norwegian_index == 0:
+            break
+    houses[norwegian_index].nationality = "Norwegian"
+
+    # The yellow house is next to the blue house.
+    yellow_index = find_house_with_color(houses, "blue") + 1
+    houses[yellow_index].color = "yellow"
+
+    # The Chesterfield smoker lives in the house next to the house with the fox.
+    fox_index = find_house_with_color(houses, "")
+    while True:
+        fox_index = (fox_index + 1) % len(houses)
+        if houses[fox_index].pet == "fox":
+            break
+    chesterfield_index = fox_index + 1
+    houses[chesterfield_index].brand = "Chesterfield"
+
+    # The horse is kept in the second house on the left.
+    horse_index = find_house_with_color(h
+---

@@ -1,0 +1,46 @@
+method: on_llm_end [2023-09-04 20:01:01]
+llm_output: null
+prompt:
+import math
+
+def label(colors):
+    # Convert each color to its numerical equivalent
+    values = []
+    for color in colors:
+        if color == 'black':
+            values.append(0)
+        elif color == 'brown':
+            values.append(1)
+        elif color == 'red':
+            values.append(2)
+        elif color == 'orange':
+            values.append(3)
+        elif color == 'yellow':
+            values.append(4)
+        elif color == 'green':
+            values.append(5)
+        elif color == 'blue':
+            values.append(6)
+        elif color == 'violet':
+            values.append(7)
+        elif color == 'grey':
+            values.append(8)
+        else:
+            values.append(9)
+    
+    # Calculate the resistance value
+    resistance = int(''.join([str(x) for x in values]))
+    
+    # Determine the metric prefix based on the number of leading zeros
+    num_zeros = len(values) - 2
+    if num_zeros > 0:
+        prefixes = ['', 'kilo', 'mega', 'giga']
+        prefix = prefixes[num_zeros // 3]
+    else:
+        prefix = ''
+    
+    # Return the formatted label
+    return f"{resistance} {prefix}ohms"
+
+
+---

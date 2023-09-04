@@ -1,0 +1,383 @@
+method: on_llm_start [2023-09-04 16:57:06]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+### User Message
+Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+
+### Assistant
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+
+### User Message
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+
+### Assistant
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+
+### User Message
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+
+### Assistant
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+
+
+### User Message
+# Instructions
+
+Implement a RESTful API for tracking IOUs.
+
+Four roommates have a habit of borrowing money from each other frequently, and have trouble remembering who owes whom, and how much.
+
+Your task is to implement a simple [RESTful API][restful-wikipedia] that receives [IOU][iou]s as POST requests, and can deliver specified summary information via GET requests.
+
+## API Specification
+
+### User object
+
+```json
+{
+  "name": "Adam",
+  "owes": {
+    "Bob": 12.0,
+    "Chuck": 4.0,
+    "Dan": 9.5
+  },
+  "owed_by": {
+    "Bob": 6.5,
+    "Dan": 2.75,
+  },
+  "balance": "<(total owed by other users) - (total owed to other users)>"
+}
+```
+
+### Methods
+
+| Description | HTTP Method | URL | Payload Format | Response w/o Payload | Response w/ Payload |
+| --- | --- | --- | --- | --- | --- |
+| List of user information | GET | /users | `{"users":["Adam","Bob"]}` | `{"users":<List of all User objects>}` | `{"users":<List of User objects for <users> (sorted by name)}` |
+| Create user | POST | /add | `{"user":<name of new user (unique)>}` | N/A | `<User object for new user>` |
+| Create IOU | POST | /iou | `{"lender":<name of lender>,"borrower":<name of borrower>,"amount":5.25}` | N/A | `{"users":<updated User objects for <lender> and <borrower> (sorted by name)>}` |
+
+## Other Resources
+
+- [REST API Tutorial][restfulapi]
+- Example RESTful APIs
+  - [GitHub][github-rest]
+  - [Reddit][reddit-rest]
+
+[restful-wikipedia]: https://en.wikipedia.org/wiki/Representational_state_transfer
+[iou]: https://en.wikipedia.org/wiki/IOU
+[github-rest]: https://developer.github.com/v3/
+[reddit-rest]: https://www.reddit.com/dev/api/
+[restfulapi]: https://restfulapi.net/
+
+####
+
+Use the above instructions to modify the supplied files: rest_api.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: rest_api.py
+```python
+
+```
+
+
+### Assistant
+Filepath: rest_api.py
+```python
+import json
+from operator import itemgetter
+
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = {} if not database else database
+
+    def _update_user(self, action, data):
+        user = data['user']
+        if 'amount' in data:
+            amount = float(data['amount'])
+        else:
+            amount = None
+
+        if user not in self.database:
+            self.database[user] = {'owes': {}, 'owed_by': {}}
+
+        if action == 'create_user':
+            return
+
+        target_user = data['target_user']
+
+        if action == 'add':
+            if target_user not in self.database:
+                self.database[target_user] = {'owes': {}, 'owed_by': {}}
+
+            self.database[target_user]['owes'][user] = amount
+            self.database[user]['owed_by'][target_user] = amount
+        elif action == 'iou':
+            del self.database[user]['owed_by'][target_user]
+            del self.database[target_user]['owes'][user]
+
+    def get(self, url, payload=None):
+        parts = url.split('/')
+        action = parts[1]
+        data = json.loads(payload) if payload else {}
+
+        if len(parts) > 2:
+            data['user'] = parts[2]
+
+        if len(parts) > 3:
+            data['target_user'] = parts[3]
+
+        if len(parts) > 4:
+            data['amount'] = parts[4]
+
+        response = []
+        if action == 'users':
+            sorted_keys = sorted(self.database.keys(), key=itemgetter())
+            if 'users' in data:
+                filtered_keys = [key for key in sorted_keys if key in data['users']]
+                for key in filtered_keys:
+                    response.append({"name": key, **self.database[key]})
+            else:
+                for key in sorted_keys:
+                    response.append({"name": key, **self.database[key]})
+        else:
+            self._update_user(action, data)
+            response = list(filter(lambda u: u['name'] != data['user'], map(lambda k: {"name": k, **self.database[k]}, self.database)))
+
+        return json.dumps({"users": response})
+
+    def post(self, url, payload=None):
+        parts = url.split('/')
+        action = parts[1]
+        data = json.loads(payload) if payload else {}
+
+        if len(parts) > 2:
+            data['user'] = parts[2]
+
+        if len(parts) > 3:
+            data['target_user'] = parts[3]
+
+        if len(parts) > 4:
+            data['amount'] = parts[4]
+
+        self._update_user(action, data)
+
+        response = list(filter(lambda u: u['name'] != data['user'], map(lambda k: {"name": k, **self.database[k]}, self.database)))
+        return json.dumps({"users": response})
+
+```
+
+
+### User Message
+EEEEEEEEE
+====
+ERROR: test_add_user (rest_api_test.RestApiTest.test_add_user)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 26, in test_add_user
+    response = api.post("/add", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 77, in post
+    self._update_user(action, data)
+  File "rest-api/rest_api.py", line 21, in _update_user
+    target_user = data['target_user']
+                  ~~~~^^^^^^^^^^^^^^^
+KeyError: 'target_user'
+
+====
+ERROR: test_borrower_has_negative_balance (rest_api_test.RestApiTest.test_borrower_has_negative_balance)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 73, in test_borrower_has_negative_balance
+    response = api.post("/iou", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 77, in post
+    self._update_user(action, data)
+  File "rest-api/rest_api.py", line 9, in _update_user
+    user = data['user']
+           ~~~~^^^^^^^^
+KeyError: 'user'
+
+====
+ERROR: test_both_users_have_0_balance (rest_api_test.RestApiTest.test_both_users_have_0_balance)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 54, in test_both_users_have_0_balance
+    response = api.post("/iou", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rest-api/rest_api.py", line 77, in post
+    self._update_user(action, data)
+  File "rest-api/rest_api.py", line 9, in _update_user
+    user = data['user']
+           ~~~~^^^^^^^^
+KeyError: 'user'
+
+====
+ERROR: test_get_single_user (rest_api_test.RestApiTest.test_get_single_user)
+----
+Traceback (most recent call last):
+  File "rest-api/rest_api_test.py", line 39, in test_get_single_user
+    response = api.get("/users", payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in rest_api.py to resolve the errors.
+
+Filepath: rest_api.py
+```python
+import json
+from operator import itemgetter
+
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = {} if not database else database
+
+    def _update_user(self, action, data):
+        user = data['user']
+        if 'amount' in data:
+            amount = float(data['amount'])
+        else:
+            amount = None
+
+        if user not in self.database:
+            self.database[user] = {'owes': {}, 'owed_by': {}}
+
+        if action == 'create_user':
+            return
+
+        target_user = data['target_user']
+
+        if action == 'add':
+            if target_user not in self.database:
+                self.database[target_user] = {'owes': {}, 'owed_by': {}}
+
+            self.database[target_user]['owes'][user] = amount
+            self.database[user]['owed_by'][target_user] = amount
+        elif action == 'iou':
+            del self.database[user]['owed_by'][target_user]
+            del self.database[target_user]['owes'][user]
+
+    def get(self, url, payload=None):
+        parts = url.split('/')
+        action = parts[1]
+        data = json.loads(payload) if payload else {}
+
+        if len(parts) > 2:
+            data['user'] = parts[2]
+
+        if len(parts) > 3:
+            data['target_user'] = parts[3]
+
+        if len(parts) > 4:
+            data['amount'] = parts[4]
+
+        response = []
+        if action == 'users':
+            sorted_keys = sorted(self.database.keys(), key=itemgetter())
+            if 'users' in data:
+                filtered_keys = [key for key in sorted_keys if key in data['users']]
+                for key in filtered_keys:
+                    response.append({"name": key, **self.database[key]})
+            else:
+                for key in sorted_keys:
+                    response.append({"name": key, **self.database[key]})
+        else:
+            self._update_user(action, data)
+            response = list(filter(lambda u: u['name'] != data['user'], map(lambda k: {"name": k, **self.database[k]}, self.database)))
+
+        return json.dumps({"users": response})
+
+    def post(self, url, payload=None):
+        parts = url.split('/')
+        action = parts[1]
+        data = json.loads(payload) if payload else {}
+
+        if len(parts) > 2:
+            data['user'] = parts[2]
+
+        if len(parts) > 3:
+            data['target_user'] = parts[3]
+
+        if len(parts) > 4:
+            data['amount'] = parts[4]
+
+        self._update_user(action, data)
+
+        response = list(filter(lambda u: u['name'] != data['user'], map(lambda k: {"name": k, **self.database[k]}, self.database)))
+        return json.dumps({"users": response})
+
+```
+
+
+### Assistant
+Filepath: rest_api.py
+```python
+
+

@@ -1,0 +1,30 @@
+method: on_llm_end [2023-09-04 14:28:58]
+llm_output: null
+prompt:
+import math
+
+class SpaceAge:
+    PLANETS = {
+        'Mercury': 0.2408467,
+        'Venus': 0.61519726,
+        'Earth': 1.0,
+        'Mars': 1.8808158,
+        'Jupiter': 11.862615,
+        'Saturn': 29.447498,
+        'Uranus': 84.016846,
+        'Neptune': 164.79132
+    }
+    
+    def __init__(self, seconds):
+        self.seconds = seconds
+        
+    def on_planet(self, planet):
+        if planet not in self.PLANETS:
+            raise ValueError('Invalid planet name')
+            
+        earth_orbits = self.seconds / 31557600
+        planet_orbits = earth_orbits / self.PLANETS[planet]
+        planet_years = round(planet_orbits, 2)
+        return f"{planet} years: {planet_years}"
+
+---

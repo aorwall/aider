@@ -1,0 +1,29 @@
+method: on_llm_end [2023-09-04 15:18:08]
+llm_output: null
+prompt:
+from typing import NamedTuple
+
+class Point(NamedTuple):
+    x: int
+    y: int
+
+
+class WordSearch:
+    def __init__(self, puzzle: str):
+        self.rows = puzzle.split('\n')
+
+    def search(self, word: str) -> tuple[Point, Point]:
+        for row_num, row in enumerate(self.rows):
+            if word in row:
+                start_col = row.index(word)
+                end_col = start_col + len(word) - 1
+                
+                start_point = Point(start_col, row_num)
+                end_point = Point(end_col, row_num)
+                
+                return (start_point, end_point)
+        
+        raise ValueError(f"{word} not found")
+
+
+---

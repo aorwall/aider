@@ -1,0 +1,60 @@
+method: on_llm_end [2023-09-04 14:01:42]
+llm_output: null
+prompt:
+import collections
+from typing import Union
+
+class BufferFullException(BufferError):
+    """Exception raised when CircularBuffer is full.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class BufferEmptyException(BufferError):
+    """Exception raised when CircularBuffer is empty.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class CircularBuffer:
+    def __init__(self, capacity):
+        self._capacity = capacity
+        self._deque = collections.deque([], maxlen=capacity)
+
+    @property
+    def capacity(self):
+        return self._capacity
+
+    @property
+    def size(self):
+        return len(self._deque)
+
+    def read(self):
+        try:
+            return self._deque.popleft()
+        except IndexError:
+            raise BufferEmptyException("Circular buffer is empty.")
+
+    def write(self, data):
+        if self.size == self.capacity:
+            raise BufferFullException("Circular buffer is full.")
+        self._deque.append(data)
+
+    def overwrite(self, data):
+        if self.size < self.capacity:
+            self._deque.append(data)
+        else:
+            self._deque[0] = data
+
+    def clear(self):
+        self._deque.clear()
+
+---

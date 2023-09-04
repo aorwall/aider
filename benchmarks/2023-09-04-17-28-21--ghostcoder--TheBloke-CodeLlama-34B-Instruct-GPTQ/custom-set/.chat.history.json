@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate a custom set type.\n\nSometimes it is necessary to define a custom data structure of some type, like a set.\nIn this exercise you will define your own set.\nHow it works internally doesn't matter, as long as it behaves like a set of unique elements.\n\n####\n\nUse the above instructions to modify the supplied files: custom_set.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import Any\n\nclass CustomSet:\n    def __init__(self, elements=None):\n        # Initialize empty list to store elements\n        self._elements = []\n\n        # If elements argument is passed, add them to the set\n        if elements is not None:\n            for element in elements:\n                self.add(element)\n\n    def isempty(self) -> bool:\n        \"\"\"Return True if the set contains no elements.\"\"\"\n        return len(self._elements) == 0\n\n    def __contains__(self, element: Any) -> bool:\n        \"\"\"Return True if the element is in the set.\"\"\"\n        return element in self._elements\n\n    def issubset(self, other: \"CustomSet\") -> bool:\n        \"\"\"Return True if every element in the set is also in other.\"\"\"\n        return all(elem in other for elem in self._elements)\n\n    def isdisjoint(self, other: \"CustomSet\") -> bool:\n        \"\"\"Return True if there are no common elements between the sets.\"\"\"\n        return not (self & other).isempty()\n\n    def __eq__(self, other: object) -> bool:\n        \"\"\"Return True if the sets contain the same elements.\"\"\"\n        return self._elements == getattr(other, \"_elements\", [])\n\n    def add(self, element: Any) -> None:\n        \"\"\"Add an element to the set.\"\"\"\n        if element not in self._elements:\n            self._elements.append(element)\n\n    def intersection(self, other: \"CustomSet\") -> \"CustomSet\":\n        \"\"\"Return a new set containing only the common elements.\"\"\"\n        return CustomSet([elem for elem in self._elements if elem in other])\n\n    def __sub__(self, other: \"CustomSet\") -> \"CustomSet\":\n        \"\"\"Return a new set containing only the elements in the left operand but not in the right operand.\"\"\"\n        return CustomSet([elem for elem in self._elements if elem not in other])\n\n    def __add__(self, other: \"CustomSet\") -> \"CustomSet\":\n        \"\"\"Return a new set containing all elements from both sets.\"\"\"\n        return CustomSet(self._elements + other._elements)\n",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".F....F..E.......E.......EE...FE...F..\n====\nERROR: test_empty_set_is_disjoint_with_non_empty_set (custom_set_test.CustomSetTest.test_empty_set_is_disjoint_with_non_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 71, in test_empty_set_is_disjoint_with_non_empty_set\n    self.assertIs(set1.isdisjoint(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 27, in isdisjoint\n    return not (self & other).isempty()\n                ~~~~~^~~~~~~\nTypeError: unsupported operand type(s) for &: 'CustomSet' and 'CustomSet'\n\n====\nERROR: test_non_empty_set_is_disjoint_with_empty_set (custom_set_test.CustomSetTest.test_non_empty_set_is_disjoint_with_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 76, in test_non_empty_set_is_disjoint_with_empty_set\n    self.assertIs(set1.isdisjoint(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 27, in isdisjoint\n    return not (self & other).isempty()\n                ~~~~~^~~~~~~\nTypeError: unsupported operand type(s) for &: 'CustomSet' and 'CustomSet'\n\n====\nERROR: test_sets_are_disjoint_if_they_share_no_elements (custom_set_test.CustomSetTest.test_sets_are_disjoint_if_they_share_no_elements)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 86, in test_sets_are_disjoint_if_they_share_no_elements\n    self.assertIs(set1.isdisjoint(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 27, in isdisjoint\n    return not (self & other).isempty()\n                ~~~~~^~~~~~~\nTypeError: unsupported operand type(s) for &: 'CustomSet' and 'CustomSet'\n\n====\nERROR: test_sets_are_not_disjoint_if_they_share_an_element (custom_set_test.CustomSetTest.test_sets_are_not_disjoint_if_they_share_an_element)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 81, in test_sets_are_not_disjoint_if_they_share_an_element\n    self.assertIs(set1.isdisjoint(set2), False)\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 27, in isdisjoint\n    return not (self & other).isempty()\n                ~~~~~^~~~~~~\nTypeError: unsupported operand type(s) for &: 'CustomSet' and 'CustomSet'\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in custom_set.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import Any\n\nclass CustomSet:\n    def __init__(self, elements=None):\n        # Initialize empty list to store elements\n        self._elements = []\n\n        # If elements argument is passed, add them to the set\n        if elements is not None:\n            for element in elements:\n                self.add(element)\n\n    def isempty(self) -> bool:\n        \"\"\"Return True if the set contains no elements.\"\"\"\n        return len(self._elements) == 0\n\n    def __contains__(self, element: Any) -> bool:\n        \"\"\"Return True if the element is in the set.\"\"\"\n        return element in self._elements\n\n    def issubset(self, other: \"CustomSet\") -> bool:\n        \"\"\"Return True if every element in the set is also in other.\"\"\"\n        return all(elem in other for elem in self._elements)\n\n    def isdisjoint(self, other: \"CustomSet\") -> bool:\n        \"\"\"Return True if there are no common elements between the sets.\"\"\"\n        return not any(elem in other for elem in self._elements)\n\n    def __eq__(self, other: object) -> bool:\n        \"\"\"Return True if the sets contain the same elements.\"\"\"\n        return self._elements == getattr(other, \"_elements\", [])\n\n    def add(self, element: Any) -> None:\n        \"\"\"Add an element to the set.\"\"\"\n        if element not in self._elements:\n            self._elements.append(element)\n\n    def intersection(self, other: \"CustomSet\") -> \"CustomSet\":\n        \"\"\"Return a new set containing only the common elements.\"\"\"\n        return CustomSet([elem for elem in self._elements if elem in other])\n\n    def __sub__(self, other: \"CustomSet\") -> \"CustomSet\":\n        \"\"\"Return a new set containing only the elements in the left operand but not in the right operand.\"\"\"\n        return CustomSet([elem for elem in self._elements if elem not in other])\n\n    def __add__(self, other: \"CustomSet\") -> \"CustomSet\":\n        \"\"\"Return a new set containing all elements from both sets.\"\"\"\n        return CustomSet(self._elements + other._elements)\n",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

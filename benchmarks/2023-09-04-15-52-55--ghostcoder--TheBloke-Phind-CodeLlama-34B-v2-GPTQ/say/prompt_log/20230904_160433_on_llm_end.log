@@ -1,0 +1,53 @@
+method: on_llm_end [2023-09-04 16:04:33]
+llm_output: null
+prompt:
+def say(number):
+    def group_digits(num):
+        chunks = []
+        digits = str(num)
+        for i in range((len(digits) - 1) // 3, -1, -1):
+            chunks.append(digits[i * 3 : i * 3 + 3])
+        return ','.join(reversed(chunks))
+
+    ONES = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+    TEENS = [None, 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']
+    TENS = [None, '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety']
+    THOUSANDS = [None, 'thousand', 'million', 'billion', 'trillion']
+
+    if not (0 <= number < 10 ** 12):
+        raise ValueError('Number out of range')
+
+    level = 0
+    chunks = []
+    while number > 0:
+        thousand = number % 1000
+        number //= 1000
+        if thousand == 0 and level == 0:
+            continue
+        chunks.append(_process_group(level, thousand))
+        level += 1
+    return ' '.join(reversed(chunks)).strip()
+
+def _process_group(level, num):
+    ones = num % 10
+    tens = num % 100 // 10
+    teens = num % 1000 // 100
+    hundreds = num // 1000
+    parts = []
+    if hundreds > 0:
+        parts.append(f"{ONES[hundreds]} hundred")
+    if teens > 0:
+        parts.append(TEENS[teens])
+    elif tens > 0 or ones > 0:
+        if tens > 0:
+            parts.append(TENS[tens])
+        if ones > 0:
+            parts.append(ONES[ones])
+    else:
+        parts.append(THOUSANDS[level])
+    return '-'.join(parts).replace('-', '')
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
+---

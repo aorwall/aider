@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nConvert a phrase to its acronym.\n\nTechies love their TLA (Three Letter Acronyms)!\n\nHelp generate some jargon by writing a program that converts a long name like Portable Network Graphics to its acronym (PNG).\n\nPunctuation is handled as follows: hyphens are word separators (like whitespace); all other punctuation can be removed from the input.\n\nFor example:\n\n|Input|Output|\n|-|-|\n|As Soon As Possible|ASAP|\n|Liquid-crystal display|LCD|\n|Thank George It's Friday!|TGIF|\n\n####\n\nUse the above instructions to modify the supplied files: acronym.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "acronym.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef abbreviate(phrase):\n    words = re.findall(r\"[a-zA-Z]+\", phrase)\n    acronym = \"\".join([word[0].upper() for word in words])\n    return acronym\n\n# Test cases\nprint(abbreviate(\"As Soon As Possible\")) # ASAP\nprint(abbreviate(\"Liquid-crystal display\")) # LCD\nprint(abbreviate(\"Thank George It's Friday!\")) # TGIF",
+        "language": "python",
+        "file_path": "acronym.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".F.......\n====\nFAIL: test_apostrophes (acronym_test.AcronymTest.test_apostrophes)\n----\nTraceback (most recent call last):\n  File \"acronym/acronym_test.py\", line 40, in test_apostrophes\n    self.assertEqual(abbreviate(\"Halley's Comet\"), \"HC\")\nAssertionError: 'HSC' != 'HC'\n- HSC\n?  -\n+ HC\n\n\n----\n\n\nFAILED (failures=1)\nASAP\nLCD\nTGISF\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in acronym.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "acronym.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef abbreviate(phrase):\n    words = re.findall(r\"[a-zA-Z']+\", phrase)\n    acronym = \"\".join([word[0].upper() for word in words if not word[-1]==\"'\"])\n    return acronym\n\n# Test cases\nprint(abbreviate(\"As Soon As Possible\")) # ASAP\nprint(abbreviate(\"Liquid-crystal display\")) # LCD\nprint(abbreviate(\"Thank George It's Friday!\")) # TGIF",
+        "language": "python",
+        "file_path": "acronym.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

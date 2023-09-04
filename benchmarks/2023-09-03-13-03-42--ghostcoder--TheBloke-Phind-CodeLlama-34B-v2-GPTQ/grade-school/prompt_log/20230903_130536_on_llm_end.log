@@ -1,0 +1,47 @@
+method: on_llm_end [2023-09-03 13:05:36]
+llm_output: null
+prompt:
+Here is how I would approach updating the given `grade_school.py`:
+
+Firstly, we need some data structures to hold the information about the students and their corresponding grades. For this, we can use dictionaries where the keys represent the grades and values represent lists of student names. To ensure that each student is unique and has not been added more than once to a grade or the roster, we can use sets.
+
+Then, we can go ahead and implement the methods according to the provided specifications. Here's my proposed implementation:
+
+```python
+class School:
+    def __init__(self):
+        self._grades = {}
+        self._students = set()
+
+    def add_student(self, name, grade):
+        if name in self._students:
+            return f"Error! {name} is already in the roster."
+            
+        if grade in self._grades:
+            self._grades[grade].append(name)
+        else:
+            self._grades[grade] = [name]
+        
+        self._students.add(name)
+        return f"OK. Added {name} to grade {grade}."
+
+    def roster(self, grade):
+        if grade not in self._grades:
+            return f"No students in grade {grade} yet."
+        
+        students = ', '.join(sorted(self._grades[grade]))
+        return f"Students in grade {grade}: {students}"
+    
+    def grade(self, grade_number):
+        if grade_number not in self._grades:
+            return "No students enrolled in that grade."
+        
+        students = ', '.join(sorted(self._grades[grade_number]))
+        return f"{students} in grade {grade_number}. "
+
+    def added(self):
+        total_added = len(self._students)
+        return f"Total students added so far: {total_added}."
+```
+This implementation ensures that each method performs its intended functionality while also maintaining the conditions specified in the problem statement.
+---

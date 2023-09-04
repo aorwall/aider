@@ -1,0 +1,18 @@
+method: on_llm_end [2023-09-04 15:19:12]
+llm_output: null
+prompt:
+from collections import Counter
+
+def find_anagrams(word, candidates):
+    target = Counter(word)
+    
+    def is_anagram(candidate):
+        if len(target) != len(candidate):
+            return False
+        
+        candidate_counter = Counter(candidate)
+        return all([k in candidate_counter and v <= candidate_counter[k] for k, v in target.items()])
+
+    return [candidate for candidate in candidates if is_anagram(candidate)]
+
+---

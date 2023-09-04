@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate a custom set type.\n\nSometimes it is necessary to define a custom data structure of some type, like a set.\nIn this exercise you will define your own set.\nHow it works internally doesn't matter, as long as it behaves like a set of unique elements.\n\n####\n\nUse the above instructions to modify the supplied files: custom_set.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class CustomSet:\n    def __init__(self, elements=None):\n        if elements is None:\n            self._elements = []\n        else:\n            self._elements = list(elements)\n\n    def isempty(self):\n        return len(self._elements) == 0\n\n    def __contains__(self, element):\n        return element in self._elements\n\n    def issubset(self, other):\n        return all([item in other for item in self._elements])\n\n    def isdisjoint(self, other):\n        return not bool(set(other).intersection(self._elements))\n\n    def __eq__(self, other):\n        return sorted(self._elements) == sorted(other)\n\n    def add(self, element):\n        if element not in self._elements:\n            self._elements.append(element)\n\n    def intersection(self, other):\n        return [value for value in self._elements if value in other]\n\n    def __sub__(self, other):\n        return [value for value in self._elements if value not in other]\n\n    def __add__(self, other):\n        return [value for value in self._elements] + [value for value in other if value not in self._elements]\n",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEE......EEE.....E.E....EEEE..EEEEEE..\n====\nERROR: test_add_to_empty_set (custom_set_test.CustomSetTest.test_add_to_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 122, in test_add_to_empty_set\n    self.assertEqual(sut, expected)\n  File \"/usr/lib/python3.11/unittest/case.py\", line 873, in assertEqual\n    assertion_func(first, second, msg=msg)\n  File \"/usr/lib/python3.11/unittest/case.py\", line 863, in _baseAssertEqual\n    if not first == second:\n           ^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 21, in __eq__\n    return sorted(self._elements) == sorted(other)\n                                     ^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\nERROR: test_add_to_non_empty_set (custom_set_test.CustomSetTest.test_add_to_non_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 128, in test_add_to_non_empty_set\n    self.assertEqual(sut, expected)\n  File \"/usr/lib/python3.11/unittest/case.py\", line 873, in assertEqual\n    assertion_func(first, second, msg=msg)\n  File \"/usr/lib/python3.11/unittest/case.py\", line 863, in _baseAssertEqual\n    if not first == second:\n           ^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 21, in __eq__\n    return sorted(self._elements) == sorted(other)\n                                     ^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\nERROR: test_adding_an_existing_element_does_not_change_the_set (custom_set_test.CustomSetTest.test_adding_an_existing_element_does_not_change_the_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 134, in test_adding_an_existing_element_does_not_change_the_set\n    self.assertEqual(sut, expected)\n  File \"/usr/lib/python3.11/unittest/case.py\", line 873, in assertEqual\n    assertion_func(first, second, msg=msg)\n  File \"/usr/lib/python3.11/unittest/case.py\", line 863, in _baseAssertEqual\n    if not first == second:\n           ^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 21, in __eq__\n    return sorted(self._elements) == sorted(other)\n                                     ^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in custom_set.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import List, Union\n\nclass CustomSet:\n    def __init__(self, elements: Union[List[int], set]=None):\n        if elements is None:\n            self._elements = set()\n        elif type(elements) is set:\n            self._elements = elements\n        else:\n            self._elements = set(elements)\n\n    def isempty(self) -> bool:\n        return len(self._elements) == 0\n\n    def __contains__(self, element: int) -> bool:\n        return element in self._elements\n\n    def issubset(self, other: 'CustomSet') -> bool:\n        return all([item in other for item in self._elements])\n\n    def isdisjoint(self, other: 'CustomSet') -> bool:\n        return not bool(self._elements.intersection(other._elements))\n\n    def __eq__(self, other: 'CustomSet') -> bool:\n        return self._elements == other._elements\n\n    def add(self, element: int):\n        if element not in self._elements:\n            self._elements.add(element)\n\n    def intersection(self, other: 'CustomSet'):\n        return self._elements.intersection(other._elements)\n\n    def __sub__(self, other: 'CustomSet'):\n        return self._elements - other._elements\n\n    def __add__(self, other: 'CustomSet'):\n        new_set = self._elements.copy()\n        new_set.update(other._elements)\n        return new_set\n",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

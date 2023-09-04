@@ -1,0 +1,27 @@
+method: on_llm_end [2023-09-04 16:29:35]
+llm_output: null
+prompt:
+def annotate(minefield):
+    rows = len(minefield)
+    cols = len(minefield[0])
+    
+    directions = [(0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1)]
+    
+    res = []
+    for r in range(rows):
+        row = []
+        for c in range(cols):
+            if minefield[r][c] != "*":
+                count = 0
+                for dir in directions:
+                    nr, nc = r + dir[0], c + dir[1]
+                    if 0 <= nr < rows and 0 <= nc < cols and minefield[nr][nc] == "*":
+                        count += 1
+                row.append(str(count) if count > 0 else "*")
+            else:
+                row.append(minefield[r][c])
+        res.append("".join(row))
+        
+    return "\n".join(res)
+
+---

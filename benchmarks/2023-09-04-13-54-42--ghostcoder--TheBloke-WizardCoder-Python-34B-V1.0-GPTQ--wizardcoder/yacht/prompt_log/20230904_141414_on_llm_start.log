@@ -1,0 +1,302 @@
+method: on_llm_start [2023-09-04 14:14:14]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+The dice game [Yacht][yacht] is from the same family as Poker Dice, Generala and particularly Yahtzee, of which it is a precursor.
+In the game, five dice are rolled and the result can be entered in any of twelve categories.
+The score of a throw of the dice depends on category chosen.
+
+## Scores in Yacht
+
+| Category | Score | Description | Example |
+| -------- | ----- | ----------- | ------- |
+| Ones | 1 × number of ones | Any combination | 1 1 1 4 5 scores 3 |
+| Twos | 2 × number of twos | Any combination | 2 2 3 4 5 scores 4 |
+| Threes | 3 × number of threes | Any combination | 3 3 3 3 3 scores 15 |
+| Fours | 4 × number of fours | Any combination | 1 2 3 3 5 scores 0 |
+| Fives | 5 × number of fives| Any combination | 5 1 5 2 5 scores 15 |
+| Sixes | 6 × number of sixes | Any combination | 2 3 4 5 6 scores 6 |
+| Full House | Total of the dice | Three of one number and two of another | 3 3 3 5 5 scores 19 |
+| Four of a Kind | Total of the four dice | At least four dice showing the same face | 4 4 4 4 6 scores 16 |
+| Little Straight |  30 points | 1-2-3-4-5 | 1 2 3 4 5 scores 30 |
+| Big Straight | 30 points | 2-3-4-5-6 | 2 3 4 5 6 scores 30 |
+| Choice | Sum of the dice | Any combination | 2 3 3 4 6 scores 18 |
+| Yacht | 50 points | All five dice showing the same face | 4 4 4 4 4 scores 50 |
+
+If the dice do not satisfy the requirements of a category, the score is zero.
+If, for example, *Four Of A Kind* is entered in the *Yacht* category, zero points are scored.
+A *Yacht* scores zero if entered in the *Full House* category.
+
+## Task
+
+Given a list of values for five dice and a category, your solution should return the score of the dice for that category.
+If the dice do not satisfy the requirements of the category your solution should return 0.
+You can assume that five values will always be presented, and the value of each will be between one and six inclusively.
+You should not assume that the dice are ordered.
+
+[yacht]: https://en.wikipedia.org/wiki/Yacht_(dice_game)
+
+####
+
+Use the above instructions to modify the supplied files: yacht.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: yacht.py
+```python
+
+```
+
+### Response:
+Filepath: yacht.py
+```python
+# Score categories.
+# Change the values as you see fit.
+YACHT = "YACHT"
+ONES = "ONES"
+TWOS = "TWOS"
+THREES = "THREES"
+FOURS = "FOURS"
+FIVES = "FIVES"
+SIXES = "SIXES"
+FULL_HOUSE = "FULL_HOUSE"
+FOUR_OF_A_KIND = "FOUR_OF_A_KIND"
+LITTLE_STRAIGHT = "LITTLE_STRAIGHT"
+BIG_STRAIGHT = "BIG_STRAIGHT"
+CHOICE = "CHOICE"
+
+
+def score(dice, category):
+    # Check for invalid input
+    if len(dice) != 5 or not all(isinstance(x, int) and x >= 1 and x <= 6 for x in dice):
+        raise ValueError("Invalid input")
+
+    # Calculate score based on category
+    if category == ONES:
+        return sum(v for v in dice if v == 1)
+    elif category == TWOS:
+        return sum(v for v in dice if v == 2) * 2
+    elif category == THREES:
+        return sum(v for v in dice if v == 3) * 3
+    elif category == FOURS:
+        return sum(v for v in dice if v == 4) * 4
+    elif category == FIVES:
+        return sum(v for v in dice if v == 5) * 5
+    elif category == SIXES:
+        return sum(v for v in dice if v == 6) * 6
+    elif category == FULL_HOUSE:
+        counts = Counter(dice)
+        if len(counts) == 2 and (max(counts.values()) == 2 or max(counts.values()) == 3):
+            return sum(dice)
+        else:
+            return 0
+    elif category == FOUR_OF_A_KIND:
+        counts = Counter(dice)
+        if len(counts) == 1 or (len(counts) == 2 and min(counts.values()) == 1):
+            return counts.most_common()[0][0] * 4
+        else:
+            return 0
+    elif category == LITTLE_STRAIGHT:
+        sorted_dice = sorted(set(dice))
+        return 30 if sorted_dice == [1, 2, 3, 4, 5] else 0
+    elif category == BIG_STRAIGHT:
+        sorted_dice = sorted(set(dice))
+        return 30 if sorted_dice == [2, 3, 4, 5, 6] else 0
+    elif category == CHOICE:
+        return sum(dice)
+    elif category == YACHT:
+        counts = Counter(dice)
+        return 50 if len(counts) == 1 else 0
+    else:
+        raise ValueError("Invalid category")
+
+```
+
+### Instruction:
+...F.EEFEEE......E..FEFE.EFE.
+====
+ERROR: test_four_of_a_kind (yacht_test.YachtTest.test_four_of_a_kind)
+----
+Traceback (most recent call last):
+  File "yacht/yacht_test.py", line 59, in test_four_of_a_kind
+    self.assertEqual(yacht.score([6, 6, 4, 6, 6], yacht.FOUR_OF_A_KIND), 24)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "yacht/yacht.py", line 42, in score
+    counts = Counter(dice)
+             ^^^^^^^
+NameError: name 'Counter' is not defined
+
+====
+ERROR: test_four_of_a_kind_is_not_a_full_house (yacht_test.YachtTest.test_four_of_a_kind_is_not_a_full_house)
+----
+Traceback (most recent call last):
+  File "yacht/yacht_test.py", line 53, in test_four_of_a_kind_is_not_a_full_house
+    self.assertEqual(yacht.score([1, 4, 4, 4, 4], yacht.FULL_HOUSE), 0)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "yacht/yacht.py", line 36, in score
+    counts = Counter(dice)
+             ^^^^^^^
+NameError: name 'Counter' is not defined
+
+====
+ERROR: test_full_house_is_not_four_of_a_kind (yacht_test.YachtTest.test_full_house_is_not_four_of_a_kind)
+----
+Traceback (most recent call last):
+  File "yacht/yacht_test.py", line 65, in test_full_house_is_not_four_of_a_kind
+    self.assertEqual(yacht.score([3, 3, 3, 5, 5], yacht.FOUR_OF_A_KIND), 0)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "yacht/yacht.py", line 42, in score
+    counts = Counter(dice)
+             ^^^^^^^
+NameError: name 'Counter' is not defined
+
+====
+ERROR: test_full_house_three_small_two_big (yacht_test.YachtTest.test_full_house_three_small_two_big)
+----
+Traceback (most recent call last):
+  File "yacht/yacht_test.py", line 47, in test_full_house_three_small_two_big
+    self.assertEqual(yacht.score([5, 3, 3, 5, 3], yacht.FULL_HOUSE), 19)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "yacht/yacht.py", line 36, in score
+    counts = Counter(dice)
+             ^^^^^^^
+NameError: name 'Counter' is not defined
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in yacht.py to resolve the errors.
+
+Filepath: yacht.py
+```python
+# Score categories.
+# Change the values as you see fit.
+YACHT = "YACHT"
+ONES = "ONES"
+TWOS = "TWOS"
+THREES = "THREES"
+FOURS = "FOURS"
+FIVES = "FIVES"
+SIXES = "SIXES"
+FULL_HOUSE = "FULL_HOUSE"
+FOUR_OF_A_KIND = "FOUR_OF_A_KIND"
+LITTLE_STRAIGHT = "LITTLE_STRAIGHT"
+BIG_STRAIGHT = "BIG_STRAIGHT"
+CHOICE = "CHOICE"
+
+
+def score(dice, category):
+    # Check for invalid input
+    if len(dice) != 5 or not all(isinstance(x, int) and x >= 1 and x <= 6 for x in dice):
+        raise ValueError("Invalid input")
+
+    # Calculate score based on category
+    if category == ONES:
+        return sum(v for v in dice if v == 1)
+    elif category == TWOS:
+        return sum(v for v in dice if v == 2) * 2
+    elif category == THREES:
+        return sum(v for v in dice if v == 3) * 3
+    elif category == FOURS:
+        return sum(v for v in dice if v == 4) * 4
+    elif category == FIVES:
+        return sum(v for v in dice if v == 5) * 5
+    elif category == SIXES:
+        return sum(v for v in dice if v == 6) * 6
+    elif category == FULL_HOUSE:
+        counts = Counter(dice)
+        if len(counts) == 2 and (max(counts.values()) == 2 or max(counts.values()) == 3):
+            return sum(dice)
+        else:
+            return 0
+    elif category == FOUR_OF_A_KIND:
+        counts = Counter(dice)
+        if len(counts) == 1 or (len(counts) == 2 and min(counts.values()) == 1):
+            return counts.most_common()[0][0] * 4
+        else:
+            return 0
+    elif category == LITTLE_STRAIGHT:
+        sorted_dice = sorted(set(dice))
+        return 30 if sorted_dice == [1, 2, 3, 4, 5] else 0
+    elif category == BIG_STRAIGHT:
+        sorted_dice = sorted(set(dice))
+        return 30 if sorted_dice == [2, 3, 4, 5, 6] else 0
+    elif category == CHOICE:
+        return sum(dice)
+    elif category == YACHT:
+        counts = Counter(dice)
+        return 50 if len(counts) == 1 else 0
+    else:
+        raise ValueError("Invalid category")
+
+```
+
+
+### Response:
+Filepath: yacht.py
+```python
+
+

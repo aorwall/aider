@@ -1,0 +1,26 @@
+method: on_llm_end [2023-09-04 15:56:23]
+llm_output: null
+prompt:
+import re
+
+def decode(rle_string):
+    pattern = r'\d+[\w\s]+|(\D)'
+    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])
+
+def encode(original_string):
+    encoded_string = ""
+    current_char = original_string[0]
+    counter = 1
+    
+    for char in original_string[1:]:
+        if char == current_char:
+            counter += 1
+        else:
+            encoded_string += str(counter) + current_char
+            current_char = char
+            counter = 1
+            
+    encoded_string += str(counter) + current_char
+    return encoded_string
+
+---

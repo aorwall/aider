@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate a custom set type.\n\nSometimes it is necessary to define a custom data structure of some type, like a set.\nIn this exercise you will define your own set.\nHow it works internally doesn't matter, as long as it behaves like a set of unique elements.\n\n####\n\nUse the above instructions to modify the supplied files: custom_set.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import Any\n\nclass CustomSet:\n    def __init__(self, elements=None):\n        if not elements:\n            self._elements = set()\n        else:\n            self._elements = set(elements)\n\n    def isempty(self):\n        return len(self._elements) == 0\n\n    def __contains__(self, element: Any) -> bool:\n        return element in self._elements\n\n    def issubset(self, other: 'CustomSet') -> bool:\n        return all([elem in other for elem in self])\n\n    def isdisjoint(self, other: 'CustomSet') -> bool:\n        return not any([elem in other for elem in self])\n\n    def __eq__(self, other: object) -> bool:\n        if not isinstance(other, CustomSet):\n            raise TypeError('Can only compare two instances of CustomSet')\n        return self._elements == other._elements\n\n    def add(self, element: Any) -> None:\n        self._elements.add(element)\n\n    def intersection(self, other: 'CustomSet') -> 'CustomSet':\n        return CustomSet(self._elements & other._elements)\n\n    def __sub__(self, other: 'CustomSet') -> 'CustomSet':\n        return CustomSet(self._elements - other._elements)\n\n    def __add__(self, other: 'CustomSet') -> 'CustomSet':\n        return CustomSet(self._elements | other._elements)\n",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".......EEE.......EE..EEE.EE....E......\n====\nERROR: test_empty_set_is_a_subset_of_another_empty_set (custom_set_test.CustomSetTest.test_empty_set_is_a_subset_of_another_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 36, in test_empty_set_is_a_subset_of_another_empty_set\n    self.assertIs(set1.issubset(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 17, in issubset\n    return all([elem in other for elem in self])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\nERROR: test_empty_set_is_a_subset_of_non_empty_set (custom_set_test.CustomSetTest.test_empty_set_is_a_subset_of_non_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 41, in test_empty_set_is_a_subset_of_non_empty_set\n    self.assertIs(set1.issubset(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 17, in issubset\n    return all([elem in other for elem in self])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\nERROR: test_empty_set_is_disjoint_with_non_empty_set (custom_set_test.CustomSetTest.test_empty_set_is_disjoint_with_non_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 71, in test_empty_set_is_disjoint_with_non_empty_set\n    self.assertIs(set1.isdisjoint(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 20, in isdisjoint\n    return not any([elem in other for elem in self])\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\nERROR: test_non_empty_set_is_disjoint_with_empty_set (custom_set_test.CustomSetTest.test_non_empty_set_is_disjoint_with_empty_set)\n----\nTraceback (most recent call last):\n  File \"custom-set/custom_set_test.py\", line 76, in test_non_empty_set_is_disjoint_with_empty_set\n    self.assertIs(set1.isdisjoint(set2), True)\n                  ^^^^^^^^^^^^^^^^^^^^^\n  File \"custom-set/custom_set.py\", line 20, in isdisjoint\n    return not any([elem in other for elem in self])\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: 'CustomSet' object is not iterable\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in custom_set.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import Any\n\nclass CustomSet:\n    def __init__(self, elements=None):\n        if not elements:\n            self._elements = set()\n        else:\n            self._elements = set(elements)\n\n    def isempty(self):\n        return len(self._elements) == 0\n\n    def __iter__(self):\n        yield from self._elements\n\n    def __contains__(self, element: Any) -> bool:\n        return element in self._elements\n\n    def issubset(self, other: 'CustomSet') -> bool:\n        return all([elem in other for elem in self])\n\n    def isdisjoint(self, other: 'CustomSet') -> bool:\n        return not any([elem in other for elem in self])\n\n    def __eq__(self, other: object) -> bool:\n        if not isinstance(other, CustomSet):\n            raise TypeError('Can only compare two instances of CustomSet')\n        return self._elements == other._elements\n\n    def add(self, element: Any) -> None:\n        self._elements.add(element)\n\n    def intersection(self, other: 'CustomSet') -> 'CustomSet':\n        return CustomSet(self._elements & other._elements)\n\n    def __sub__(self, other: 'CustomSet') -> 'CustomSet':\n        return CustomSet(self._elements - other._elements)\n\n    def __add__(self, other: 'CustomSet') -> 'CustomSet':\n        return CustomSet(self._elements | other._elements)\n",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

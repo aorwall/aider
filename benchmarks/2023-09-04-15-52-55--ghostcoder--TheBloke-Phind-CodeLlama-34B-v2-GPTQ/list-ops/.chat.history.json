@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement basic list operations.\n\nIn functional languages list operations like `length`, `map`, and `reduce` are very common.\nImplement a series of basic list operations, without using existing functions.\n\nThe precise number and names of the operations to be implemented will be track dependent to avoid conflicts with existing names, but the general operations you will implement include:\n\n- `append` (*given two lists, add all items in the second list to the end of the first list*);\n- `concatenate` (*given a series of lists, combine all items in all lists into one flattened list*);\n- `filter` (*given a predicate and a list, return the list of all items for which `predicate(item)` is True*);\n- `length` (*given a list, return the total number of items within it*);\n- `map` (*given a function and a list, return the list of the results of applying `function(item)` on all items*);\n- `foldl` (*given a function, a list, and initial accumulator, fold (reduce) each item into the accumulator from the left*);\n- `foldr` (*given a function, a list, and an initial accumulator, fold (reduce) each item into the accumulator from the right*);\n- `reverse` (*given a list, return a list with all the original items, but in reversed order*).\n\nNote, the ordering in which arguments are passed to the fold functions (`foldl`, `foldr`) is significant.\n\n####\n\nUse the above instructions to modify the supplied files: list_ops.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "list_ops.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def append(list1, list2):\n    return list1 + list2\n\n\ndef concat(lists):\n    result = []\n    for lst in lists:\n        result += lst\n    return result\n\n\ndef filter(function, _list):\n    result = []\n    for item in _list:\n        if function(item):\n            result.append(item)\n    return result\n\n\ndef length(_list):\n    count = 0\n    for _ in _list:\n        count += 1\n    return count\n\n\ndef map(function, _list):\n    result = []\n    for item in _list:\n        result.append(function(item))\n    return result\n\n\ndef foldl(function, _list, initial):\n    for item in _list:\n        initial = function(initial, item)\n    return initial\n\n\ndef foldr(function, _list, initial):\n    for item in reversed(_list):\n        initial = function(item, initial)\n    return initial\n\n\ndef reverse(_list):\n    return _list[::-1]\n\n\ndef filter(function, list):\n    pass\n\n\ndef length(list):\n    pass\n\n\ndef map(function, list):\n    pass\n\n\ndef foldl(function, list, initial):\n    pass\n\n\ndef foldr(function, list, initial):\n    pass\n\n\ndef reverse(list):\n    pass\n",
+        "language": "python",
+        "file_path": "list_ops.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".......FFFFFFFFFFFFFFFFF\n====\nFAIL: test_filter_empty_list (list_ops_test.ListOpsTest.test_filter_empty_list)\n----\nTraceback (most recent call last):\n  File \"list-ops/list_ops_test.py\", line 45, in test_filter_empty_list\n    self.assertEqual(list_ops_filter(lambda x: x % 2 == 1, []), [])\nAssertionError: None != []\n\n====\nFAIL: test_filter_non_empty_list (list_ops_test.ListOpsTest.test_filter_non_empty_list)\n----\nTraceback (most recent call last):\n  File \"list-ops/list_ops_test.py\", line 48, in test_filter_non_empty_list\n    self.assertEqual(list_ops_filter(lambda x: x % 2 == 1, [1, 2, 3, 5]), [1, 3, 5])\nAssertionError: None != [1, 3, 5]\n\n====\nFAIL: test_foldl_direction_dependent_function_applied_to_non_empty_list (list_ops_test.ListOpsTest.test_foldl_direction_dependent_function_applied_to_non_empty_list)\n----\nTraceback (most recent call last):\n  File \"list-ops/list_ops_test.py\", line 69, in test_foldl_direction_dependent_function_applied_to_non_empty_list\n    self.assertEqual(foldl(lambda acc, el: el / acc, [1, 2, 3, 4], 24), 64)\nAssertionError: None != 64\n\n====\nFAIL: test_foldl_direction_independent_function_applied_to_non_empty_list (list_ops_test.ListOpsTest.test_foldl_direction_independent_function_applied_to_non_empty_list)\n----\nTraceback (most recent call last):\n  File \"list-ops/list_ops_test.py\", line 66, in test_foldl_direction_independent_function_applied_to_non_empty_list\n    self.assertEqual(foldl(lambda acc, el: el + acc, [1, 2, 3, 4], 5), 15)\nAssertionError: None != 15\n\n====\nFAIL: test_foldl_empty_list (list_ops_test.ListOpsTest.test_foldl_empty_list)\n----\nTraceback (most recent call last):\n  File \"list-ops/list_ops_test.py\", line 63, in test_foldl_empty_list\n    self.assertEqual(foldl(lambda acc, el: el * acc, [], 2), 2)\nAssertionError: None != 2\n\n====\nFAIL: test_foldr_direction_dependent_function_applied_to_non_empty_list (list_ops_test.ListOpsTest.test_foldr_direction_dependent_function_applied_to_non_empty_list)\n----\nTraceback (most recent call last):\n  File \"list-ops/list_ops_test.py\", line 78, in test_foldr_direction_dependent_function_applied_to_non_empty_list\n    self.assertEqual(foldr(lambda acc, el: el / acc, [1, 2, 3, 4], 24), 9)\nAssertionError: None != 9\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in list_ops.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "list_ops.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def append(list1, list2):\n    return list1 + list2\n\n\ndef concat(lists):\n    result = []\n    for lst in lists:\n        result += lst\n    return result\n\n\ndef filter(function, _list):\n    result = []\n    for item in _list:\n        if function(item):\n            result.append(item)\n    return result\n\n\ndef length(_list):\n    count = 0\n    for _ in _list:\n        count += 1\n    return count\n\n\ndef map(function, _list):\n    result = []\n    for item in _list:\n        result.append(function(item))\n    return result\n\n\ndef foldl(function, _list, initial):\n    for item in _list:\n        initial = function(initial, item)\n    return initial\n\n\ndef foldr(function, _list, initial):\n    for item in reversed(_list):\n        initial = function(item, initial)\n    return initial\n\n\ndef reverse(_list):\n    return _list[::-1]\n\n\ndef filter(function, list):\n    pass\n\n\ndef length(list):\n    pass\n\n\ndef map(function, list):\n    pass\n\n\ndef foldl(function, list, initial):\n    pass\n\n\ndef foldr(function, list, initial):\n    pass\n\n\ndef reverse(list):\n    pass\n",
+        "language": "python",
+        "file_path": "list_ops.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement run-length encoding and decoding.\n\nRun-length encoding (RLE) is a simple form of data compression, where runs (consecutive data elements) are replaced by just one data value and count.\n\nFor example we can represent the original 53 characters with only 13.\n\n```text\n\"WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB\"  ->  \"12WB12W3B24WB\"\n```\n\nRLE allows the original data to be perfectly reconstructed from the compressed data, which makes it a lossless data compression.\n\n```text\n\"AABCCCDEEEE\"  ->  \"2AB3CD4E\"  ->  \"AABCCCDEEEE\"\n```\n\nFor simplicity, you can assume that the unencoded string will only contain the letters A through Z (either lower or upper case) and whitespace.\nThis way data to be encoded will never contain any numbers and numbers inside data to be decoded always represent the count for the following character.\n\n####\n\nUse the above instructions to modify the supplied files: run_length_encoding.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef decode(string):\n    # Split the input string into a list of substrings using regex\n    substrings = re.split('(\\d+)', string)\n\n    # Initialize an empty output string\n    output = ''\n\n    # Iterate over the substrings\n    for substring in substrings:\n        # Check if the current substring is a digit\n        if substring.isdigit():\n            # If it is, convert it to an integer and repeat the previous substring that many times\n            output += substring * int(substring)\n        else:\n            # Otherwise, append the substring to the output without modification\n            output += substring\n\n    return output\n\ndef encode(string):\n    # Initialize an empty output string\n    output = ''\n\n    # Get the length of the input string\n    length = len(string)\n\n    # Initialize variables to keep track of the current count and the previous character\n    count = 0\n    prev_char = None\n\n    # Iterate over the characters in the input string\n    for char in string:\n        # Check if the current character is the same as the previous character\n        if char != prev_char:\n            # If it isn't, reset the count to 1\n            count = 1\n        else:\n            # Otherwise, increment the count\n            count += 1\n\n        # Set the previous character to the current character\n        prev_char = char\n\n        # Add the current character and count to the output string\n        output += f'{count}{char}'\n\n    return output\n",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".FF.FF.FFFFFF\n====\nFAIL: test_decode_lowercase_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_lowercase_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 54, in test_decode_lowercase_string\n    self.assertMultiLineEqual(decode(\"2a3b4c\"), \"aabbbcccc\")\nAssertionError: '22a333b4444c' != 'aabbbcccc'\n- 22a333b4444c\n+ aabbbcccc\n\n\n====\nFAIL: test_decode_multiple_whitespace_mixed_in_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_multiple_whitespace_mixed_in_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 51, in test_decode_multiple_whitespace_mixed_in_string\n    self.assertMultiLineEqual(decode(\"2 hs2q q2w2 \"), \"  hsqq qww  \")\nAssertionError: '22 hs22q q22w22 ' != '  hsqq qww  '\n- 22 hs22q q22w22 \n+   hsqq qww  \n\n\n====\nFAIL: test_decode_single_characters_with_repeated_characters (run_length_encoding_test.RunLengthEncodingTest.test_decode_single_characters_with_repeated_characters)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 45, in test_decode_single_characters_with_repeated_characters\n    self.assertMultiLineEqual(\nAssertionError: '121212121212121212121212WB121212121212121[60 chars]24WB' != 'WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB'\n- 121212121212121212121212WB121212121212121212121212W333B242424242424242424242424242424242424242424242424WB\n+ WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB\n\n\n====\nFAIL: test_decode_string_with_no_single_characters (run_length_encoding_test.RunLengthEncodingTest.test_decode_string_with_no_single_characters)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 42, in test_decode_string_with_no_single_characters\n    self.assertMultiLineEqual(decode(\"2A3B4C\"), \"AABBBCCCC\")\nAssertionError: '22A333B4444C' != 'AABBBCCCC'\n- 22A333B4444C\n+ AABBBCCCC\n\n\n====\nFAIL: test_encode_followed_by_decode_gives_original_string (run_length_encoding_test.RunLengthEncodingTest.test_encode_followed_by_decode_gives_original_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 57, in test_encode_followed_by_decode_gives_original_string\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in run_length_encoding.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef decode(string):\n    # Split the input string into a list of substrings using regex\n    substrings = re.split('(\\d+)', string)\n\n    # Initialize an empty output string\n    output = ''\n\n    # Iterate over the substrings\n    for substring in substrings:\n        # Check if the current substring is a digit\n        if substring.isdigit():\n            # If it is, convert it to an integer and repeat the previous substring that many times\n            output += substring * int(substring)\n        else:\n            # Otherwise, append the substring to the output without modification\n            output += substring\n\n    return output\n\ndef encode(string):\n    # Initialize an empty output string\n    output = ''\n\n    # Get the length of the input string\n    length = len(string)\n\n    # Initialize variables to keep track of the current count and the previous character\n    count = 0\n    prev_char = None\n\n    # Iterate over the characters in the input string\n    for char in string:\n        # Check if the current character is the same as the previous character\n        if char != prev_char:\n            # If it isn't, reset the count to 1\n            count = 1\n        else:\n            # Otherwise, increment the count\n            count += 1\n\n        # Set the previous character to the current character\n        prev_char = char\n\n        # Add the current character and count to the output string\n        output += f'{count}{char}'\n\n    return output\n",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

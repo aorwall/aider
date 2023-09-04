@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nManage robot factory settings.\n\nWhen a robot comes off the factory floor, it has no name.\n\nThe first time you turn on a robot, a random name is generated in the format of two uppercase letters followed by three digits, such as RX837 or BC811.\n\nEvery once in a while we need to reset a robot to its factory settings, which means that its name gets wiped.\nThe next time you ask, that robot will respond with a new random name.\n\nThe names must be random: they should not follow a predictable sequence.\nUsing random names means a risk of collisions.\nYour solution must ensure that every existing robot has a unique name.\n\n####\n\nUse the above instructions to modify the supplied files: robot_name.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import random\nimport string\n\nclass Robot:\n    def __init__(self):\n        self._name = None\n\n    def get_name(self):\n        if not self._name:\n            self._generate_new_name()\n        return self._name\n\n    def _generate_new_name(self):\n        letters = string.ascii_uppercase\n        numbers = string.digits\n        self._name = ''.join([random.choice(letters) for _ in range(2)] + [random.choice(numbers) for _ in range(3)])\n\n    def reset_factory_settings(self):\n        self._name = None\n",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEE\n====\nERROR: test_different_robots_have_different_names (robot_name_test.RobotNameTest.test_different_robots_have_different_names)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 25, in test_different_robots_have_different_names\n    Robot().name,\n    ^^^^^^^^^^^^\nAttributeError: 'Robot' object has no attribute 'name'\n\n====\nERROR: test_has_name (robot_name_test.RobotNameTest.test_has_name)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 16, in test_has_name\n    self.assertRegex(Robot().name, self.name_re)\n                     ^^^^^^^^^^^^\nAttributeError: 'Robot' object has no attribute 'name'\n\n====\nERROR: test_name_sticks (robot_name_test.RobotNameTest.test_name_sticks)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 20, in test_name_sticks\n    robot.name\nAttributeError: 'Robot' object has no attribute 'name'\n\n====\nERROR: test_reset_name (robot_name_test.RobotNameTest.test_reset_name)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 38, in test_reset_name\n    name = robot.name\n           ^^^^^^^^^^\nAttributeError: 'Robot' object has no attribute 'name'\n\n----\n\n\nFAILED (errors=4)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in robot_name.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import random\nimport string\n\nclass Robot:\n    def __init__(self):\n        self._name = None\n\n    @property\n    def name(self):\n        if not self._name:\n            self._generate_new_name()\n        return self._name\n\n    def _generate_new_name(self):\n        letters = string.ascii_uppercase\n        numbers = string.digits\n        self._name = ''.join([random.choice(letters) for _ in range(2)] + [random.choice(numbers) for _ in range(3)])\n\n    def reset_factory_settings(self):\n        self._name = None\n",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

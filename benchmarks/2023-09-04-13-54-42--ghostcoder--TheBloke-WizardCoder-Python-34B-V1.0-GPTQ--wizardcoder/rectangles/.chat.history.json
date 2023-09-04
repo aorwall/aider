@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCount the rectangles in an ASCII diagram like the one below.\n\n```text\n   +--+\n  ++  |\n+-++--+\n|  |  |\n+--+--+\n```\n\nThe above diagram contains these 6 rectangles:\n\n```text\n\n\n+-----+\n|     |\n+-----+\n```\n\n```text\n   +--+\n   |  |\n   |  |\n   |  |\n   +--+\n```\n\n```text\n   +--+\n   |  |\n   +--+\n\n\n```\n\n```text\n\n\n   +--+\n   |  |\n   +--+\n```\n\n```text\n\n\n+--+\n|  |\n+--+\n```\n\n```text\n\n  ++\n  ++\n\n\n```\n\nYou may assume that the input is always a proper rectangle (i.e. the length of every line equals the length of the first line).\n\n####\n\nUse the above instructions to modify the supplied files: rectangles.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "rectangles.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom typing import List\n\ndef count_rectangles(string: str) -> int:\n    pattern = r\"(?:\\+-+)+\\+\" # Matches top border of a rectangle\n    matches = list(re.finditer(pattern, string))\n    if not matches:\n        return 0\n\n    max_match = max(matches, key=lambda m: m.end())\n    start_index = max_match.start()\n    end_index = max_match.end() - 1\n\n    while end_index < len(string) and string[end_index].isalpha():\n        end_index += 1\n\n    lines = [line.strip() for line in string[start_index:end_index].split(\"\\n\")]\n    height = len(lines)\n    width = max([len(line) for line in lines])\n\n    num_horizontal_borders = sum(1 for c in string[:start_index] if c == \"+\")\n    num_vertical_borders = sum(1 for line in lines if line[0] == \"|\" and line[-1] == \"|\")\n\n    total_area = num_horizontal_borders * num_vertical_borders\n    single_rectangle_area = height * width\n\n    return total_area // single_rectangle_area\n\ndef rectangles(strings: List[str]) -> int:\n    return sum(count_rectangles(string) for string in strings)",
+        "language": "python",
+        "file_path": "rectangles.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFF...FFFFFFF\n====\nFAIL: test_1x1_square_is_counted (rectangles_test.RectanglesTest.test_1x1_square_is_counted)\n----\nTraceback (most recent call last):\n  File \"rectangles/rectangles_test.py\", line 38, in test_1x1_square_is_counted\n    self.assertEqual(rectangles([\"++\", \"++\"]), 1)\nAssertionError: 0 != 1\n\n====\nFAIL: test_corner_is_required_for_a_rectangle_to_be_complete (rectangles_test.RectanglesTest.test_corner_is_required_for_a_rectangle_to_be_complete)\n----\nTraceback (most recent call last):\n  File \"rectangles/rectangles_test.py\", line 58, in test_corner_is_required_for_a_rectangle_to_be_complete\n    self.assertEqual(\nAssertionError: 0 != 2\n\n====\nFAIL: test_five_rectangles_with_shared_parts (rectangles_test.RectanglesTest.test_five_rectangles_with_shared_parts)\n----\nTraceback (most recent call last):\n  File \"rectangles/rectangles_test.py\", line 29, in test_five_rectangles_with_shared_parts\n    self.assertEqual(rectangles([\"  +-+\", \"  | |\", \"+-+-+\", \"| | |\", \"+-+-+\"]), 5)\nAssertionError: 0 != 5\n\n====\nFAIL: test_large_input_with_many_rectangles (rectangles_test.RectanglesTest.test_large_input_with_many_rectangles)\n----\nTraceback (most recent call last):\n  File \"rectangles/rectangles_test.py\", line 72, in test_large_input_with_many_rectangles\n    self.assertEqual(\nAssertionError: 0 != 60\n\n====\nFAIL: test_one_rectangle (rectangles_test.RectanglesTest.test_one_rectangle)\n----\nTraceback (most recent call last):\n  File \"rectangles/rectangles_test.py\", line 23, in test_one_rectangle\n    self.assertEqual(rectangles([\"+-+\", \"| |\", \"+-+\"]), 1)\nAssertionError: 0 != 1\n\n====\nFAIL: test_only_complete_rectangles_are_counted (rectangles_test.RectanglesTest.test_only_complete_rectangles_are_counted)\n----\nTraceback (most recent call last):\n  File \"rectangles/rectangles_test.py\", line 41, in test_only_complete_rectangles_are_counted\n    self.assertEqual(rectangles([\"  +-+\", \"    |\", \"+-+-+\", \"| | -\", \"+-+-+\"]), 1)\nAssertionError: 0 != 1\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in rectangles.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "rectangles.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom typing import List\n\ndef count_rectangles(string: str) -> int:\n    pattern = r\"(?:\\+-+)+\\+\" # Matches top border of a rectangle\n    matches = list(re.finditer(pattern, string))\n    if not matches:\n        return 0\n\n    max_match = max(matches, key=lambda m: m.end())\n    start_index = max_match.start()\n    end_index = max_match.end() - 1\n\n    while end_index < len(string) and string[end_index].isalpha():\n        end_index += 1\n\n    lines = [line.strip() for line in string[start_index:end_index].split(\"\\n\")]\n    height = len(lines)\n    width = max([len(line) for line in lines])\n\n    num_horizontal_borders = sum(1 for c in string[:start_index] if c == \"+\")\n    num_vertical_borders = sum(1 for line in lines if line[0] == \"|\" and line[-1] == \"|\")\n\n    total_area = num_horizontal_borders * num_vertical_borders\n    single_rectangle_area = height * width\n\n    return total_area // single_rectangle_area\n\ndef rectangles(strings: List[str]) -> int:\n    return sum(count_rectangles(string) for string in strings)",
+        "language": "python",
+        "file_path": "rectangles.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

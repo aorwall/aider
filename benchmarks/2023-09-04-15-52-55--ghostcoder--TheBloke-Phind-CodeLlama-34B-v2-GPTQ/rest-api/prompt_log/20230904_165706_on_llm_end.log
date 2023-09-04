@@ -1,0 +1,85 @@
+method: on_llm_end [2023-09-04 16:57:06]
+llm_output: null
+prompt:
+import json
+from operator import itemgetter
+
+class RestAPI:
+    def __init__(self, database=None):
+        self.database = {} if not database else database
+
+    def _update_user(self, action, data):
+        user = data['user']
+        if 'amount' in data:
+            amount = float(data['amount'])
+        else:
+            amount = None
+        
+        if user not in self.database:
+            self.database[user] = {'owes': {}, 'owed_by': {}}
+        
+        if action == 'create_user':
+            return
+        
+        target_user = data['target_user']
+            
+        if action == 'add':
+            if target_user not in self.database:
+                self.database[target_user] = {'owes': {}, 'owed_by': {}}
+                
+            self.database[target_user]['owes'][user] = amount
+            self.database[user]['owed_by'][target_user] = amount
+        elif action == 'iou':
+            del self.database[user]['owed_by'][target_user]
+            del self.database[target_user]['owes'][user]
+
+    def get(self, url, payload=None):
+        parts = url.split('/')
+        action = parts[1]
+        data = json.loads(payload) if payload else {}
+
+        if len(parts) > 2:
+            data['user'] = parts[2]
+        
+        if len(parts) > 3:
+            data['target_user'] = parts[3]
+        
+        if len(parts) > 4:
+            data['amount'] = parts[4]
+        
+        response = []
+        if action == 'users':
+            sorted_keys = sorted(self.database.keys(), key=itemgetter())
+            if 'users' in data:
+                filtered_keys = [key for key in sorted_keys if key in data['users']]
+                for key in filtered_keys:
+                    response.append({"name": key, **self.database[key]})
+            else:
+                for key in sorted_keys:
+                    response.append({"name": key, **self.database[key]})
+        else:
+            self._update_user(action, data)
+            response = list(filter(lambda u: u['name'] != data['user'], map(lambda k: {"name": k, **self.database[k]}, self.database)))
+
+        return json.dumps({"users": response})
+
+    def post(self, url, payload=None):
+        parts = url.split('/')
+        action = parts[1]
+        data = json.loads(payload) if payload else {}
+
+        if len(parts) > 2:
+            data['user'] = parts[2]
+        
+        if len(parts) > 3:
+            data['target_user'] = parts[3]
+        
+        if len(parts) > 4:
+            data['amount'] = parts[4]
+        
+        self._update_user(action, data)
+
+        response = list(filter(lambda u: u['name'] != data['user'], map(lambda k: {"name": k, **self.database[k]}, self.database)))
+        return json.dumps({"users": response})
+
+---

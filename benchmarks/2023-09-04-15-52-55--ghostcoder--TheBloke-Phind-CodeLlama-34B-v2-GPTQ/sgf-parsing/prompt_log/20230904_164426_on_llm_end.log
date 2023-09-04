@@ -1,0 +1,52 @@
+method: on_llm_end [2023-09-04 16:44:26]
+llm_output: null
+prompt:
+import re
+from collections import deque
+
+class SgfTree:
+    # ... (keep constructor and equality methods unchanged)
+
+    @staticmethod
+    def _parse_node(stream):
+        properties = {}
+        while stream[0].isupper():
+            match = re.match(r"(\w+)\[(.+?)\]", stream.popleft())
+            if not match:
+                raise ValueError("property without values")
+            name, values = match.groups()
+            properties[name] = tuple(values.split(']['))
+        return properties
+
+    @staticmethod
+    def _parse_variation(stream):
+        node = SgfTree._parse_node(stream)
+        children = []
+        while stream and stream[0] == '(':
+            stream.popleft()
+            children.append(SgfTree._parse_tree(stream))
+        if stream:
+            stream.popleft()  # pop ')' closing current variation
+        return SgfTree(node, children)
+
+    @staticmethod
+    def _parse_tree(stream):
+        if stream[0] != ';':
+            raise ValueError("tree missing")
+        stream.popleft()
+        root = SgfTree._parse_node(stream)
+        variations = []
+        while stream and stream[0] == '(':
+            variations.append(SgfTree._parse_variation(stream))
+        if not variations:
+            raise ValueError("tree with no nodes")
+        return SgfTree(root, variations)
+
+    @classmethod
+    def parse(cls, input_string):
+        input_string += '\n'   # ensure well formed
+        stream = deque(re.findall(r'\w|\W', input_string))
+        return cls._parse_tree(stream)
+
+
+---

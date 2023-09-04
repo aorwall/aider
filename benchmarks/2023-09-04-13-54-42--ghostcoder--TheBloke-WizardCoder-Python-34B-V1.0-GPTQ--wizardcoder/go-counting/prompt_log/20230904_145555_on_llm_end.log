@@ -1,0 +1,101 @@
+method: on_llm_end [2023-09-04 14:55:55]
+llm_output: null
+prompt:
+from typing import List, Tuple, Set
+
+class Board:
+    """Count territories of each player in a Go game
+
+    Args:
+        board (List[str]): A two-dimensional Go board
+    """
+
+    def __init__(self, board: List[List[str]]):
+        self._board = board
+        self._rows = len(board)
+        self._cols = len(board[0])
+        
+    def _valid_coordinates(self, x: int, y: int) -> bool:
+        if not (0 <= x < self._cols and 0 <= y < self._rows):
+            return False
+        return True
+    
+    def _territory_owner(self, x: int, y: int) -> str:
+        if not self._valid_coordinates(x, y):
+            raise ValueError("Invalid coordinate")
+            
+        stone = self._board[y][x]
+        if stone == 'W':
+            return 'W'
+        elif stone == 'B':
+            return 'B'
+        else:
+            return ''
+        
+    def _find_reachable_empty_spaces(self, x: int, y: int, visited: Set[Tuple[int]]) -> Set[Tuple[int]]:
+        if not self._valid_coordinates(x, y) or (x, y) in visited:
+            return set()
+         
+        if self._board[y][x] != '.':
+            return set()
+        
+        visited.add((x, y))
+        reachable_empty_spaces = {(x, y)}
+        
+        # Check top, bottom, left, right neighbors
+        for dx, dy in [(0, -1), (-1, 0), (0, 1), (1, 0)]:
+            new_x, new_y = x + dx, y + dy
+            reachable_empty_spaces |= self._find_reachable_empty_spaces(new_x, new_y, visited)
+        
+        return reachable_empty_spaces
+    
+    def territory(self, x: int, y: int) -> Tuple[str, Set[Tuple[int]]]:
+        """Find the owner and the territories given a coordinate on
+           the board
+
+        Args:
+            x (int): Column on the board
+            y (int): Row on the board
+
+        Returns:
+            (str, set): A tuple, the first element being the owner
+                        of that area.  One of "W", "B", "".  The
+                        second being a set of coordinates, representing
+                        the owner's territories.
+        """
+        if not self._valid_coordinates(x, y):
+            raise ValueError("Invalid coordinate")
+        
+        owner = self._territory_owner(x, y)
+        visited = set()
+        territories = self._find_reachable_empty_spaces(x, y, visited)
+        
+        return owner, territories
+    
+    def territories(self) -> Dict[str, Set[Tuple[int]]]:
+        """Find the owners and the territories of the whole board
+
+        Args:
+            none
+
+        Returns:
+            dict(str, set): A dictionary whose key being the owner
+                        , i.e. "W", "B", "".  The value being a set
+                        of coordinates owned by the owner.
+        """
+        visited = set()
+        owners = {'W': set(), 'B': set()}
+        
+        for x in range(self._cols):
+            for y in range(self._rows):
+                if (x, y) in visited:
+                    continue
+                
+                owner = self._territory_owner(x, y)
+                if owner:
+                    territories = self._find_reachable_empty_spaces(x, y, visited)
+                    owners[owner] |= territories
+        
+        return owners
+
+---

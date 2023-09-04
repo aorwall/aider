@@ -1,0 +1,173 @@
+method: on_llm_start [2023-09-04 17:56:26]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+[INST]Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+[/INST] Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+[/INST] Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+[/INST] Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+<</SYS>>
+# Instructions
+
+Take a nested list and return a single flattened list with all values except nil/null.
+
+The challenge is to write a function that accepts an arbitrarily-deep nested list-like structure and returns a flattened structure without any nil/null values.
+
+For example:
+
+input: [1,[2,3,null,4],[null],5]
+
+output: [1,2,3,4,5]
+
+####
+
+Use the above instructions to modify the supplied files: flatten_array.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: flatten_array.py
+```python
+
+```
+[/INST] Filepath: flatten_array.py
+```python
+def flatten(iterable):
+    flat_list = []
+    for element in iterable:
+        if hasattr(element, '__iter__') and not isinstance(element, str):
+            flat_list += flatten(element)
+        else:
+            flat_list.append(element)
+    return flat_list
+
+```
+</s>
+<s>[INST].F.FFF....F
+====
+FAIL: test_6_level_nest_list_with_null_values (flatten_array_test.FlattenArrayTest.test_6_level_nest_list_with_null_values)
+----
+Traceback (most recent call last):
+  File "flatten-array/flatten_array_test.py", line 65, in test_6_level_nest_list_with_null_values
+    self.assertEqual(flatten(inputs), expected)
+AssertionError: Lists differ: [0, 2, 2, 3, 8, 100, None, None, -2] != [0, 2, 2, 3, 8, 100, -2]
+
+First differing element 6:
+None
+-2
+
+First list contains 2 additional elements.
+First extra element 7:
+None
+
+- [0, 2, 2, 3, 8, 100, None, None, -2]
+?                      ------------
+
++ [0, 2, 2, 3, 8, 100, -2]
+
+====
+FAIL: test_all_values_in_nested_list_are_null (flatten_array_test.FlattenArrayTest.test_all_values_in_nested_list_are_null)
+----
+Traceback (most recent call last):
+  File "flatten-array/flatten_array_test.py", line 70, in test_all_values_in_nested_list_are_null
+    self.assertEqual(flatten(inputs), expected)
+AssertionError: Lists differ: [None, None, None, None, None, None, None, None] != []
+
+First list contains 8 additional elements.
+First extra element 0:
+None
+
+- [None, None, None, None, None, None, None, None]
++ []
+
+====
+FAIL: test_consecutive_null_values_at_the_front_of_the_list_are_omitted_from_the_final_result (flatten_array_test.FlattenArrayTest.test_consecutive_null_values_at_the_front_of_the_list_are_omitted_from_the_final_result)
+----
+Traceback (most recent call last):
+  File "flatten-array/flatten_array_test.py", line 53, in test_consecutive_null_values_at_the_front_of_the_list_are_omitted_from_the_final_result
+    self.assertEqual(flatten(inputs), expected)
+AssertionError: Lists differ: [None, None, 3] != [3]
+
+First differing element 0:
+None
+3
+
+First list contains 2 additional elements.
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in flatten_array.py to resolve the errors.
+
+Filepath: flatten_array.py
+```python
+def flatten(iterable):
+    flat_list = []
+    for element in iterable:
+        if hasattr(element, '__iter__') and not isinstance(element, str):
+            flat_list += flatten(element)
+        else:
+            flat_list.append(element)
+    return flat_list
+
+```
+[/INST]Filepath: flatten_array.py
+```python
+
+

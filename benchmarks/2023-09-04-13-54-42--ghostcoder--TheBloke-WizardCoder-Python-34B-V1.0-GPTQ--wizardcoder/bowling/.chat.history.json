@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nScore a bowling game.\n\nBowling is a game where players roll a heavy ball to knock down pins arranged in a triangle.\nWrite code to keep track of the score of a game of bowling.\n\n## Scoring Bowling\n\nThe game consists of 10 frames.\nA frame is composed of one or two ball throws with 10 pins standing at frame initialization.\nThere are three cases for the tabulation of a frame.\n\n- An open frame is where a score of less than 10 is recorded for the frame.\n  In this case the score for the frame is the number of pins knocked down.\n\n- A spare is where all ten pins are knocked down by the second throw.\n  The total value of a spare is 10 plus the number of pins knocked down in their next throw.\n\n- A strike is where all ten pins are knocked down by the first throw.\n  The total value of a strike is 10 plus the number of pins knocked down in the next two throws.\n  If a strike is immediately followed by a second strike, then the value of the first strike cannot be determined until the ball is thrown one more time.\n\nHere is a three frame example:\n\n| Frame 1         | Frame 2       | Frame 3                |\n| :-------------: |:-------------:| :---------------------:|\n| X (strike)      | 5/ (spare)    | 9 0 (open frame)       |\n\nFrame 1 is (10 + 5 + 5) = 20\n\nFrame 2 is (5 + 5 + 9) = 19\n\nFrame 3 is (9 + 0) = 9\n\nThis means the current running total is 48.\n\nThe tenth frame in the game is a special case.\nIf someone throws a spare or a strike then they get one or two fill balls respectively.\nFill balls exist to calculate the total of the 10th frame.\nScoring a strike or spare on the fill ball does not give the player more fill balls.\nThe total value of the 10th frame is the total number of pins knocked down.\n\nFor a tenth frame of X1/ (strike and a spare), the total value is 20.\n\nFor a tenth frame of XXX (three strikes), the total value is 30.\n\n## Requirements\n\nWrite code to keep track of the score of a game of bowling.\nIt should support two operations:\n\n- `roll(pins : int)` is called each time the player rolls a ball.\n  The argument is the number of pins knocked down.\n- `score() : int` is called only at the very end of the game.\n  It returns the total score for that game.\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" an error when the scoring or playing rules are not followed. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# example when a bonus is attempted with an open frame\nraise IndexError(\"cannot throw bonus with an open tenth frame\")\n\n# example when fill balls are invalid\nraise ValueError(\"invalid fill balls\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: bowling.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "bowling.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import sys\nfrom typing import List\n\nclass BowlingGame:\n    def __init__(self):\n        self.frames = []\n        self.bonus_attempts = []\n\n    def _is_valid_frame(self, index: int) -> bool:\n        return len(self.frames[index]) <= 2\n\n    def _calculate_frame_value(self, index: int) -> int:\n        frame = self.frames[index]\n        frame_total = sum(frame)\n\n        if frame_total > 10:\n            raise ValueError(\"Invalid pins count.\")\n\n        if frame_total == 10:\n            # Strike\n            if index < 9:\n                next_frame = self._get_next_frame(index)\n                if len(next_frame) != 1:\n                    raise IndexError(\"Cannot throw bonus with an open tenth frame\")\n                else:\n                    return 10 + next_frame[0][0]\n            elif index == 9:\n                if len(self.bonus_attempts) == 0:\n                    return 10\n                else:\n                    return 10 + self.bonus_attempts[-1]\n            else:\n                return 10\n        elif frame_total == 1:\n            # Spare\n            if index < 9:\n                next_frame = self._get_next_frame(index)\n                if len(next_frame) != 1:\n                    raise ValueError(\"Invalid fill balls\")\n                else:\n                    return 10 + next_frame[0][0]\n            elif index == 9:\n                if len(self.bonus_attempts) == 0:\n                    return 10\n                else:\n                    return 10 + self.bonus_attempts[-1]\n            else:\n                return 10\n        else:\n            # Open frame\n            if index < 9:\n                return frame_total\n            elif index == 9:\n                if len(self.bonus_attempts) == 0:\n                    return frame_total\n                else:\n                    return frame_total + self.bonus_attempts[-1]\n            else:\n                return frame_total\n\n    def _get_next_frame(self, index: int) -> List[List[int]]:\n        if index >= 9:\n            return []\n\n        next_frame = self.frames[index+1]\n        while len(next_frame) < 2 and index < 9:\n            index += 1\n            next_frame = self.frames[index]\n\n        return next_frame\n\n    def roll(self, pins: int):\n        if pins < 0 or pins > 10:\n            raise ValueError(\"Invalid pins count.\")\n\n        if len(self.frames) < 10:\n            self.frames.append([pins])\n        else:\n            if not self._is_valid_frame(-1):\n                raise IndexError(\"Cannot throw bonus with an open tenth frame\")\n\n            if len(self.bonus_attempts) < 2:\n                self.bonus_attempts.append(pins)\n            else:\n                self.frames[-1].append(pins)\n\n    def score(self) -> int:\n        total_score = 0\n        for i in range(len(self.frames)):\n            total_score += self._calculate_frame_value(i)\n\n        return total_score\n\ndef main():\n    game = BowlingGame()\n\n    try:\n        args = [int(x) for x in sys.argv[1:]]\n        for arg in args:\n            game.roll(arg)\n\n        print(game.score())\n    except ValueError as e:\n        print(f\"Error: {e}\")\n    except IndexError as e:\n        print(f\"Error: {e}\")\n\nif __name__ == \"__main__\":\n    main()\n",
+        "language": "python",
+        "file_path": "bowling.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".EEEEEEFFEEEEEEEEEEEEE.EEEEEEEF\n====\nERROR: test_a_spare_followed_by_zeros_is_worth_ten_points (bowling_test.BowlingTest.test_a_spare_followed_by_zeros_is_worth_ten_points)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 31, in test_a_spare_followed_by_zeros_is_worth_ten_points\n    game = self.roll_new_game(rolls)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"bowling/bowling_test.py\", line 16, in roll_new_game\n    game.roll(roll)\n  File \"bowling/bowling.py\", line 80, in roll\n    raise IndexError(\"Cannot throw bonus with an open tenth frame\")\nIndexError: Cannot throw bonus with an open tenth frame\n\n====\nERROR: test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once (bowling_test.BowlingTest.test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 46, in test_a_spare_in_the_last_frame_gets_a_one_roll_bonus_that_is_counted_once\n    game = self.roll_new_game(rolls)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"bowling/bowling_test.py\", line 16, in roll_new_game\n    game.roll(roll)\n  File \"bowling/bowling.py\", line 80, in roll\n    raise IndexError(\"Cannot throw bonus with an open tenth frame\")\nIndexError: Cannot throw bonus with an open tenth frame\n\n====\nERROR: test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll (bowling_test.BowlingTest.test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 51, in test_a_strike_earns_ten_points_in_a_frame_with_a_single_roll\n    game = self.roll_new_game(rolls)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"bowling/bowling_test.py\", line 16, in roll_new_game\n    game.roll(roll)\n  File \"bowling/bowling.py\", line 80, in roll\n    raise IndexError(\"Cannot throw bonus with an open tenth frame\")\nIndexError: Cannot throw bonus with an open tenth frame\n\n====\nERROR: test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once (bowling_test.BowlingTest.test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once)\n----\nTraceback (most recent call last):\n  File \"bowling/bowling_test.py\", line 70, in test_a_strike_in_the_last_frame_gets_a_two_roll_bonus_that_is_counted_once\n    game = self.roll_new_game(rolls)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"bowling/bowling_test.py\", line 16, in roll_new_game\n    game.roll(roll)\n  File \"bowling/bowling.py\", line 80, in roll\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in bowling.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "bowling.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import sys\nfrom typing import List\n\nclass BowlingGame:\n    def __init__(self):\n        self.frames = []\n        self.bonus_attempts = []\n\n    def _is_valid_frame(self, index: int) -> bool:\n        return len(self.frames[index]) <= 2\n\n    def _calculate_frame_value(self, index: int) -> int:\n        frame = self.frames[index]\n        frame_total = sum(frame)\n\n        if frame_total > 10:\n            raise ValueError(\"Invalid pins count.\")\n\n        if frame_total == 10:\n            # Strike\n            if index < 9:\n                next_frame = self._get_next_frame(index)\n                if len(next_frame) != 1:\n                    raise IndexError(\"Cannot throw bonus with an open tenth frame\")\n                else:\n                    return 10 + next_frame[0][0]\n            elif index == 9:\n                if len(self.bonus_attempts) == 0:\n                    return 10\n                else:\n                    return 10 + self.bonus_attempts[-1]\n            else:\n                return 10\n        elif frame_total == 1:\n            # Spare\n            if index < 9:\n                next_frame = self._get_next_frame(index)\n                if len(next_frame) != 1:\n                    raise ValueError(\"Invalid fill balls\")\n                else:\n                    return 10 + next_frame[0][0]\n            elif index == 9:\n                if len(self.bonus_attempts) == 0:\n                    return 10\n                else:\n                    return 10 + self.bonus_attempts[-1]\n            else:\n                return 10\n        else:\n            # Open frame\n            if index < 9:\n                return frame_total\n            elif index == 9:\n                if len(self.bonus_attempts) == 0:\n                    return frame_total\n                else:\n                    return frame_total + self.bonus_attempts[-1]\n            else:\n                return frame_total\n\n    def _get_next_frame(self, index: int) -> List[List[int]]:\n        if index >= 9:\n            return []\n\n        next_frame = self.frames[index+1]\n        while len(next_frame) < 2 and index < 9:\n            index += 1\n            next_frame = self.frames[index]\n\n        return next_frame\n\n    def roll(self, pins: int):\n        if pins < 0 or pins > 10:\n            raise ValueError(\"Invalid pins count.\")\n\n        if len(self.frames) < 10:\n            self.frames.append([pins])\n        else:\n            if not self._is_valid_frame(-1):\n                raise IndexError(\"Cannot throw bonus with an open tenth frame\")\n\n            if len(self.bonus_attempts) < 2:\n                self.bonus_attempts.append(pins)\n            else:\n                self.frames[-1].append(pins)\n\n    def score(self) -> int:\n        total_score = 0\n        for i in range(len(self.frames)):\n            total_score += self._calculate_frame_value(i)\n\n        return total_score\n\ndef main():\n    game = BowlingGame()\n\n    try:\n        args = [int(x) for x in sys.argv[1:]]\n        for arg in args:\n            game.roll(arg)\n\n        print(game.score())\n    except ValueError as e:\n        print(f\"Error: {e}\")\n    except IndexError as e:\n        print(f\"Error: {e}\")\n\nif __name__ == \"__main__\":\n    main()\n",
+        "language": "python",
+        "file_path": "bowling.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

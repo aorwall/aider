@@ -1,0 +1,197 @@
+method: on_llm_start [2023-09-04 17:28:34]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+[INST]Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+[/INST] Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+[/INST] Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+[/INST] Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+<</SYS>>
+# Instructions
+
+In this exercise, let's try to solve a classic problem.
+
+Bob is a thief.
+After months of careful planning, he finally manages to crack the security systems of a high-class apartment.
+
+In front of him are many items, each with a value (v) and weight (w).
+Bob, of course, wants to maximize the total value he can get; he would gladly take all of the items if he could.
+However, to his horror, he realizes that the knapsack he carries with him can only hold so much weight (W).
+
+Given a knapsack with a specific carrying capacity (W), help Bob determine the maximum value he can get from the items in the house.
+Note that Bob can take only one of each item.
+
+All values given will be strictly positive.
+Items will be represented as a list of pairs, `wi` and `vi`, where the first element `wi` is the weight of the *i*th item and `vi` is the value for that item.
+
+For example:
+
+Items: [
+  { "weight": 5, "value": 10 },
+  { "weight": 4, "value": 40 },
+  { "weight": 6, "value": 30 },
+  { "weight": 4, "value": 50 }
+]
+
+Knapsack Limit: 10
+
+For the above, the first item has weight 5 and value 10, the second item has weight 4 and value 40, and so on.
+
+In this example, Bob should take the second and fourth item to maximize his value, which, in this case, is 90.
+He cannot get more than 90 as his knapsack has a weight limit of 10.
+
+####
+
+Use the above instructions to modify the supplied files: knapsack.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: knapsack.py
+```python
+
+```
+[/INST] Filepath: knapsack.py
+```python
+def maximum_value(maximum_weight, items):
+    # Initialize variables
+    max_val = 0
+    current_weight = 0
+    taken = [False] * len(items)
+
+    # Sort items by value per weight ratio
+    sorted_items = sorted(items, key=lambda x: x['value'] / x['weight'], reverse=True)
+
+    # Loop through sorted items and check if they fit in the knapsack
+    for i in range(len(sorted_items)):
+        item = sorted_items[i]
+        if current_weight + item['weight'] <= maximum_weight:
+            # Add item to knapsack
+            taken[i] = True
+            max_val += item['value']
+            current_weight += item['weight']
+
+    # Return maximum value
+    return max_val
+
+```
+</s>
+<s>[INST]FF..F..
+====
+FAIL: test_15_items (knapsack_test.KnapsackTest.test_15_items)
+----
+Traceback (most recent call last):
+  File "knapsack/knapsack_test.py", line 82, in test_15_items
+    self.assertEqual(
+AssertionError: 1441 != 1458
+
+====
+FAIL: test_8_items (knapsack_test.KnapsackTest.test_8_items)
+----
+Traceback (most recent call last):
+  File "knapsack/knapsack_test.py", line 64, in test_8_items
+    self.assertEqual(
+AssertionError: 858 != 900
+
+====
+FAIL: test_five_items_cannot_be_greedy_by_weight (knapsack_test.KnapsackTest.test_five_items_cannot_be_greedy_by_weight)
+----
+Traceback (most recent call last):
+  File "knapsack/knapsack_test.py", line 20, in test_five_items_cannot_be_greedy_by_weight
+    self.assertEqual(
+AssertionError: 20 != 21
+
+----
+
+
+FAILED (failures=3)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in knapsack.py to resolve the errors.
+
+Filepath: knapsack.py
+```python
+def maximum_value(maximum_weight, items):
+    # Initialize variables
+    max_val = 0
+    current_weight = 0
+    taken = [False] * len(items)
+
+    # Sort items by value per weight ratio
+    sorted_items = sorted(items, key=lambda x: x['value'] / x['weight'], reverse=True)
+
+    # Loop through sorted items and check if they fit in the knapsack
+    for i in range(len(sorted_items)):
+        item = sorted_items[i]
+        if current_weight + item['weight'] <= maximum_weight:
+            # Add item to knapsack
+            taken[i] = True
+            max_val += item['value']
+            current_weight += item['weight']
+
+    # Return maximum value
+    return max_val
+
+```
+[/INST]Filepath: knapsack.py
+```python
+
+

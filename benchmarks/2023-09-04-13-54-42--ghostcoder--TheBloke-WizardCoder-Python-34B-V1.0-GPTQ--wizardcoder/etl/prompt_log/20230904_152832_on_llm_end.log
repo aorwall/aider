@@ -1,0 +1,24 @@
+method: on_llm_end [2023-09-04 15:28:32]
+llm_output: null
+prompt:
+LEGACY_DATA = {
+    1: ["A", "E", "I", "O", "U", "L", "N", "R", "S", "T"],
+    2: ["D", "G"],
+    3: ["B", "C", "M", "P"],
+    4: ["F", "H", "V", "W", "Y"],
+    5: ["K"],
+    8: ["J", "X"],
+    10: ["Q", "Z"]
+}
+
+NEW_DATA = {}
+for value, letters in LEGACY_DATA.items():
+    for letter in letters:
+        NEW_DATA[letter.lower()] = value
+
+def transform(legacy_data):
+    if legacy_data not in LEGACY_DATA:
+        raise ValueError("Invalid input")
+    return [NEW_DATA[letter.lower()] for letter in LEGACY_DATA[legacy_data]]
+
+---

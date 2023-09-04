@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou are starting a secret coding club with some friends and friends-of-friends.\nNot everyone knows each other, so you and your friends have decided to create a secret handshake that you can use to recognize that someone is a member.\nYou don't want anyone who isn't in the know to be able to crack the code.\n\nYou've designed the code so that one person says a number between 1 and 31, and the other person turns it into a series of actions.\n# Instructions\n\nYour task is to convert a number between 1 and 31 to a sequence of actions in the secret handshake.\n\nThe sequence of actions is chosen by looking at the rightmost five digits of the number once it's been converted to binary.\nStart at the right-most digit and move left.\n\nThe actions for each number place are:\n\n```plaintext\n00001 = wink\n00010 = double blink\n00100 = close your eyes\n01000 = jump\n10000 = Reverse the order of the operations in the secret handshake.\n```\n\nLet's use the number `9` as an example:\n\n- 9 in binary is `1001`.\n- The digit that is farthest to the right is 1, so the first action is `wink`.\n- Going left, the next digit is 0, so there is no double-blink.\n- Going left again, the next digit is 0, so you leave your eyes open.\n- Going left again, the next digit is 1, so you jump.\n\nThat was the last digit, so the final code is:\n\n```plaintext\nwink, jump\n```\n\nGiven the number 26, which is `11010` in binary, we get the following actions:\n\n- double blink\n- jump\n- reverse actions\n\nThe secret handshake for 26 is therefore:\n\n```plaintext\njump, double blink\n```\n\n~~~~exercism/note\nIf you aren't sure what binary is or how it works, check out [this binary tutorial][intro-to-binary].\n\n[intro-to-binary]: https://medium.com/basecs/bits-bytes-building-with-binary-13cb4289aafa\n~~~~\nTo keep things simple (and to let you focus on the important part of this exercise), your function will receive its inputs as binary strings:\n\n```\n>>> commands(\"00011\")\n[\"wink\", \"double blink\"]\n```\n\n####\n\nUse the above instructions to modify the supplied files: secret_handshake.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "secret_handshake.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def commands(binary_str):\n    actions = {\n        1: 'wink',\n        2: 'double blink',\n        4: 'close your eyes',\n        8: 'jump',\n        16: 'Reverse the order of the operations in the secret handshake.'\n    }\n\n    binary_list = list(map(int, binary_str))\n    binary_list.reverse()\n\n    result = []\n    for index, value in enumerate(binary_list):\n        if value != 0:\n            result.append(actions[2**index])\n\n    return result\n",
+        "language": "python",
+        "file_path": "secret_handshake.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "......FFFF.\n====\nFAIL: test_reverse_all_possible_actions (secret_handshake_test.SecretHandshakeTest.test_reverse_all_possible_actions)\n----\nTraceback (most recent call last):\n  File \"secret-handshake/secret_handshake_test.py\", line 43, in test_reverse_all_possible_actions\n    self.assertEqual(\nAssertionError: Lists differ: ['wink', 'double blink', 'close your eyes',[67 chars]ke.'] != ['jump', 'close your eyes', 'double blink', 'wink']\n\nFirst differing element 0:\n'wink'\n'jump'\n\nFirst list contains 1 additional elements.\nFirst extra element 4:\n'Reverse the order of the operations in the secret handshake.'\n\n+ ['jump', 'close your eyes', 'double blink', 'wink']\n- ['wink',\n-  'double blink',\n-  'close your eyes',\n-  'jump',\n-  'Reverse the order of the operations in the secret handshake.']\n\n====\nFAIL: test_reverse_two_actions (secret_handshake_test.SecretHandshakeTest.test_reverse_two_actions)\n----\nTraceback (most recent call last):\n  File \"secret-handshake/secret_handshake_test.py\", line 29, in test_reverse_two_actions\n    self.assertEqual(commands(\"10011\"), [\"double blink\", \"wink\"])\nAssertionError: Lists differ: ['wink', 'double blink', 'Reverse the order[40 chars]ke.'] != ['double blink', 'wink']\n\nFirst differing element 0:\n'wink'\n'double blink'\n\nFirst list contains 1 additional elements.\nFirst extra element 2:\n'Reverse the order of the operations in the secret handshake.'\n\n- ['wink',\n-  'double blink',\n? ^\n\n+ ['double blink', 'wink']\n? ^               ++++++++\n\n-  'Reverse the order of the operations in the secret handshake.']\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in secret_handshake.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "secret_handshake.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def commands(binary_str):\n    actions = {\n        1: 'wink',\n        2: 'double blink',\n        4: 'close your eyes',\n        8: 'jump',\n        16: 'Reverse the order of the operations in the secret handshake.'\n    }\n\n    binary_list = list(map(int, binary_str))\n\n    # Reversed the input string before processing it\n    if len(binary_str) == 5 and int(binary_str[-1]):\n        binary_list.reverse()\n\n    result = []\n    for index, value in enumerate(binary_list):\n        if value != 0:\n            action = actions[2**index]\n\n            # Check if reverse operation is required\n            if action == 'Reverse the order of the operations in the secret handshake.':\n                result.reverse()\n            else:\n                result.append(action)\n\n    return result\n",
+        "language": "python",
+        "file_path": "secret_handshake.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

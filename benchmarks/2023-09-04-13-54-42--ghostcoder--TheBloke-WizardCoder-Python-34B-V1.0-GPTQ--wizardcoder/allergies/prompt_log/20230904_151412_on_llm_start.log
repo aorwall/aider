@@ -1,0 +1,226 @@
+method: on_llm_start [2023-09-04 15:14:12]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Given a person's allergy score, determine whether or not they're allergic to a given item, and their full list of allergies.
+
+An allergy test produces a single numeric score which contains the information about all the allergies the person has (that they were tested for).
+
+The list of items (and their value) that were tested are:
+
+- eggs (1)
+- peanuts (2)
+- shellfish (4)
+- strawberries (8)
+- tomatoes (16)
+- chocolate (32)
+- pollen (64)
+- cats (128)
+
+So if Tom is allergic to peanuts and chocolate, he gets a score of 34.
+
+Now, given just that score of 34, your program should be able to say:
+
+- Whether Tom is allergic to any one of those allergens listed above.
+- All the allergens Tom is allergic to.
+
+Note: a given score may include allergens **not** listed above (i.e.  allergens that score 256, 512, 1024, etc.).
+Your program should ignore those components of the score.
+For example, if the allergy score is 257, your program should only report the eggs (1) allergy.
+
+####
+
+Use the above instructions to modify the supplied files: allergies.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: allergies.py
+```python
+
+```
+
+### Response:
+Filepath: allergies.py
+```python
+class Allergies:
+
+    ALLERGENS = {
+        1: 'eggs',
+        2: 'peanuts',
+        4: 'shellfish',
+        8: 'strawberries',
+        16: 'tomatoes',
+        32: 'chocolate',
+        64: 'pollen',
+        128: 'cats'
+    }
+
+    def __init__(self, score):
+        self.score = score
+
+    def allergic_to(self, item):
+        allergen_value = self.ALLERGENS.get(item)
+        if allergen_value is None:
+            raise ValueError('Invalid allergen')
+        return bool(self.score & allergen_value)
+
+    @property
+    def lst(self):
+        return [allergen for key, allergen in self.ALLERGENS.items() if self.allergic_to(key)]
+
+```
+
+### Instruction:
+EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+====
+ERROR: test_allergic_only_to_cats (allergies_test.AllergiesTest.test_allergic_only_to_cats)
+----
+Traceback (most recent call last):
+  File "allergies/allergies_test.py", line 122, in test_allergic_only_to_cats
+    self.assertIs(Allergies(128).allergic_to("cats"), True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "allergies/allergies.py", line 20, in allergic_to
+    raise ValueError('Invalid allergen')
+ValueError: Invalid allergen
+
+====
+ERROR: test_allergic_only_to_chocolate (allergies_test.AllergiesTest.test_allergic_only_to_chocolate)
+----
+Traceback (most recent call last):
+  File "allergies/allergies_test.py", line 92, in test_allergic_only_to_chocolate
+    self.assertIs(Allergies(32).allergic_to("chocolate"), True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "allergies/allergies.py", line 20, in allergic_to
+    raise ValueError('Invalid allergen')
+ValueError: Invalid allergen
+
+====
+ERROR: test_allergic_only_to_eggs (allergies_test.AllergiesTest.test_allergic_only_to_eggs)
+----
+Traceback (most recent call last):
+  File "allergies/allergies_test.py", line 17, in test_allergic_only_to_eggs
+    self.assertIs(Allergies(1).allergic_to("eggs"), True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "allergies/allergies.py", line 20, in allergic_to
+    raise ValueError('Invalid allergen')
+ValueError: Invalid allergen
+
+====
+ERROR: test_allergic_only_to_peanuts (allergies_test.AllergiesTest.test_allergic_only_to_peanuts)
+----
+Traceback (most recent call last):
+  File "allergies/allergies_test.py", line 32, in test_allergic_only_to_peanuts
+    self.assertIs(Allergies(2).allergic_to("peanuts"), True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "allergies/allergies.py", line 20, in allergic_to
+    raise ValueError('Invalid allergen')
+ValueError: Invalid allergen
+
+====
+ERROR: test_allergic_only_to_pollen (allergies_test.AllergiesTest.test_allergic_only_to_pollen)
+----
+Traceback (most recent call last):
+  File "allergies/allergies_test.py", line 107, in test_allergic_only_to_pollen
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in allergies.py to resolve the errors.
+
+Filepath: allergies.py
+```python
+class Allergies:
+
+    ALLERGENS = {
+        1: 'eggs',
+        2: 'peanuts',
+        4: 'shellfish',
+        8: 'strawberries',
+        16: 'tomatoes',
+        32: 'chocolate',
+        64: 'pollen',
+        128: 'cats'
+    }
+
+    def __init__(self, score):
+        self.score = score
+
+    def allergic_to(self, item):
+        allergen_value = self.ALLERGENS.get(item)
+        if allergen_value is None:
+            raise ValueError('Invalid allergen')
+        return bool(self.score & allergen_value)
+
+    @property
+    def lst(self):
+        return [allergen for key, allergen in self.ALLERGENS.items() if self.allergic_to(key)]
+
+```
+
+
+### Response:
+Filepath: allergies.py
+```python
+
+

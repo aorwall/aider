@@ -1,0 +1,76 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou are working on a project to develop a train scheduling system for a busy railway network.\n\nYou've been asked to develop a prototype for the train routes in the scheduling system.\nEach route consists of a sequence of train stations that a given train stops at.\n# Instructions\n\nYour team has decided to use a doubly linked list to represent each train route in the schedule.\nEach station along the train's route will be represented by a node in the linked list.\n\nYou don't need to worry about arrival and departure times at the stations.\nEach station will simply be represented by a number.\n\nRoutes can be extended, adding stations to the beginning or end of a route.\nThey can also be shortened by removing stations from the beginning or the end of a route.\n\nSometimes a station gets closed down, and in that case the station needs to be removed from the route, even if it is not at the beginning or end of the route.\n\nThe size of a route is measured not by how far the train travels, but by how many stations it stops at.\n\n~~~~exercism/note\nThe linked list is a fundamental data structure in computer science, often used in the implementation of other data structures.\nAs the name suggests, it is a list of nodes that are linked together.\nIt is a list of \"nodes\", where each node links to its neighbor or neighbors.\nIn a **singly linked list** each node links only to the node that follows it.\nIn a **doubly linked list** each node links to both the node that comes before, as well as the node that comes after.\n\nIf you want to dig deeper into linked lists, check out [this article][intro-linked-list] that explains it using nice drawings.\n\n[intro-linked-list]: https://medium.com/basecs/whats-a-linked-list-anyway-part-1-d8b7e6508b9d\n~~~~\n# Instructions append\n\n## How this Exercise is Structured in Python\n\nWhile linked lists can be implemented in a variety of ways with a variety of underlying data structures, we ask here that you implement your linked list in an OOP fashion.\n\nIn the stub file, you will see the start of a `Node` class, as well as a `LinkedList` class.\nYour `Node` class should keep track of its value, as well as which other nodes preceed or follow.\nYour `push`, `pop`, `shift`, `unshift`, and the special method for `len` should be implemented in the `LinkedList` class.\nYou might also find it useful to implement a special `iter` method for iteration.\n\nUnlike the core exercise, we will be testing error conditions by calling `pop` and `shift` on empty `LinkedLists`, so you will need to `raise` errors appropriately.\n\nFinally, we would like you to implement `delete` in addition to the methods outlined above.\n`delete` will take one argument, which is the value to be removed from the linked list.\nIf the value appears more than once, only the **first** occurrence should be removed.\n\n<br>\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception][raising]. When you do this, you should always include a **meaningful error message** to indicate what the source of the error is.\nThis makes your code more readable and helps significantly with debugging.\nFor situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types][error types], but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement][raise] to \"throw\" a `ValueError` when a node value being `delete()`-ed is not found in the linked list.\nAdditionally, an `IndexError` should be thrown if there are no nodes left to `pop()`.\nThe tests will only pass if you both `raise` these `exceptions` and include messages with them.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# When the value passed to `delete()` is not found.\nif not found:\n    raise ValueError(\"Value not found\")\n\n```\n\nTo raise an `IndexError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# When pop() is called and there are no nodes left in the linked list\nif self.length == 0:\n    raise IndexError(\"List is empty\")\n\n```\n\n\n## Special Methods in Python\n\nThe tests for this exercise will also be calling `len()` on your `LinkedList`.\nIn order for `len()` to work, you will need to create a `__len__` special method.\nFor details on implementing special or \"dunder\" methods in Python, see [Python Docs: Basic Object Customization][basic customization] and [Python Docs: object.__len__(self)][__len__].\n\nWe also recommend creating a special [`__iter__`][__iter__] method to help with iterating over your linked list.\n\n<br>\n\n[__iter__]: https://docs.python.org/3/reference/datamodel.html#object.__iter__\n[__len__]: https://docs.python.org/3/reference/datamodel.html#object.__len__\n[basic customization]: https://docs.python.org/3/reference/datamodel.html#basic-customization\n[error types]: https://docs.python.org/3/library/exceptions.html#base-classes\n[raise]: https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement\n[raising]: https://docs.python.org/3/tutorial/errors.html#raising-exceptions\n\n####\n\nUse the above instructions to modify the supplied files: linked_list.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "linked_list.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: linked_list.py\n```python\nclass Node:\n    def __init__(self, value, succeeding=None, previous=None):\n        self.value = value\n        self.previous = previous\n        self.next = succeeding\n\n    def get(self):\n        return self.value\n\n    def set(self, new_val):\n        self.value = new_val\n\n    def getNext(self):\n        return self.next\n\n    def getPrev(self):\n        return self.previous\n\n    def setNext(self, next_node):\n        self.next = next_node\n\n    def setPrev(self, prev_node):\n        self.previous = prev_node\n\n\nclass LinkedList:\n    def __init__(self):\n        self._head = None\n        self._tail = None\n        self._size = 0\n\n    # O(1) time | O(1) space\n    def addFirst(self, val):\n        new_node = Node(val)\n        if self._head is None:\n            self._head = new_node\n            self._tail = new_node\n        else:\n            new_node.setNext(self._head)\n            self._head.setPrev(new_node)\n            self._head = new_node\n        self._size += 1\n\n    # O(n) time | O(1) space\n    def removeLast(self):\n        if self._tail is None:\n            raise IndexError('Cannot remove last element from empty list')\n        elif self._tail == self._head:\n            self._removeHead()\n        else:\n            old_last = self._tail\n            self._tail = old_last.getPrev()\n            self._tail.setNext(None)\n            old_last.setPrev(None)\n            del old_last\n            self._size -= 1\n\n    # O(1) time | O(1) space\n    def peekFirst(self):\n        if self._head is None:\n            raise IndexError('Cannot peek first element from empty list')\n        return self._head.get()\n\n    # O(n) time | O(1) space\n    def reverse(self):\n        current = self._head\n        while current != None:\n            temp = current.getNext()\n            current.setNext(current.getPrev())\n            current.setPrev(temp)\n            current = temp\n        temp = self._head\n        self._head = self._tail\n        self._tail = temp\n\n    # O(1) time | O(1) space\n    def _removeHead(self):\n        head = self._head\n        self._head = self._head.getNext()\n        if self._head is not None:\n            self._head.setPrev(None)\n        head.setNext(None)\n        del head\n        self._size -= 1\n\n    # O(1) time | O(1) space\n    def size(self):\n        return self._size\n\n    # O(1) time | O(1) space\n    def contains(self, target):\n        current = self._head\n        while current != None:\n            if current.get() == target:\n                return True\n            current = current.getNext()\n        return False\n\n    # O(n) time | O(1) space\n    def delete(self, index):\n        if index >= self._size or index < 0:\n            raise IndexError('Index {} out of bounds'.format(index))\n        if index == 0:\n            self._removeHead()\n        elif index == (self._size - 1):\n            self._removeTail()\n        else:\n            current = self._head\n            i = 0\n            while i < index:\n                current = current.getNext()\n                i += 1\n            current.getPrev().setNext(current.getNext())\n            current.getNext().setPrev(current.getPrev())\n            current.setPrev(None)\n            current.setNext(None)\n            del current\n            self._size -= 1\n\n    # O(1) time | O(1) space\n    def _removeTail(self):\n        tail = self._tail\n        self._tail = self._tail.getPrev()\n        if self._tail is not None:\n            self._tail.setNext(None)```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEEEEEEEEEEEEEEEEEEEEE\n====\nERROR: test_can_return_with_pop_and_then_raise_an_error_if_empty (linked_list_test.LinkedListTest.test_can_return_with_pop_and_then_raise_an_error_if_empty)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/linked-list/linked_list_test.py\", line 176, in test_can_return_with_pop_and_then_raise_an_error_if_empty\n    lst.push(1)\n    ^^^^^^^^\nAttributeError: 'LinkedList' object has no attribute 'push'\n\n====\nERROR: test_can_return_with_shift_and_then_raise_an_error_if_empty (linked_list_test.LinkedListTest.test_can_return_with_shift_and_then_raise_an_error_if_empty)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/linked-list/linked_list_test.py\", line 194, in test_can_return_with_shift_and_then_raise_an_error_if_empty\n    lst.push(1)\n    ^^^^^^^^\nAttributeError: 'LinkedList' object has no attribute 'push'\n\n====\nERROR: test_count_a_list_with_items (linked_list_test.LinkedListTest.test_count_a_list_with_items)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/linked-list/linked_list_test.py\", line 63, in test_count_a_list_with_items\n    lst.push(37)\n    ^^^^^^^^\nAttributeError: 'LinkedList' object has no attribute 'push'\n\n====\nERROR: test_count_an_empty_list (linked_list_test.LinkedListTest.test_count_an_empty_list)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/linked-list/linked_list_test.py\", line 59, in test_count_an_empty_list\n    self.assertEqual(len(lst), 0)\n                     ^^^^^^^^\nTypeError: object of type 'LinkedList' has no len()\n\n====\nERROR: test_count_is_correct_after_mutation (linked_list_test.LinkedListTest.test_count_is_correct_after_mutation)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/linked-list/linked_list_test.py\", line 69, in test_count_is_correct_after_mutation\n    lst.push(31)\n    ^^^^^^^^\nAttributeError: 'LinkedList' object has no attribute 'push'\n\n====\nERROR: test_deletes_only_the_first_occurrence (linked_list_test.LinkedListTest.test_deletes_only_the_first_occurrence)\n----\nTraceback (most recent call last):\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in linked_list.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "linked_list.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class Node:\n    def __init__(self, value, succeeding=None, previous=None):\n        self.value = value\n        self.succeeding = succeeding\n        self.previous = previous\n\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n        self.tail = None\n\n    def push(self, value):\n        node = Node(value, self.head)\n        self.head = node\n        return node\n\n    def pop(self):\n        if self.head == None:\n            raise IndexError(\"Cannot pop from an empty list\")\n        else:\n            popped_node = self.head\n            self.head = self.head.succeeding\n            return popped_node\n\n    def shift(self):\n        if self.head == None:\n            raise IndexError(\"Cannot shift from an empty list\")\n        else:\n            shifted_node = self.head\n            self.head = self.head.succeeding\n            return shifted_node\n\n    def unshift(self, value):\n        node = Node(value, self.head)\n        self.head = node\n        return node\n\n    def count(self):\n        counter = 0\n        curr_node = self.head\n        while curr_node != None:\n            counter += 1\n            curr_node = curr_node.succeeding\n        return counter\n\n    def delete(self, value):\n        curr_node = self.head\n        prev_node = None\n        found = False\n        while curr_node != None and not found:\n            if curr_node.value == value:\n                found = True\n            else:\n                prev_node = curr_node\n                curr_node = curr_node.succeeding\n        if found:\n            if prev_node == None:\n                self.head = curr_node.succeeding\n            else:\n                prev_node.succeeding = curr_node.succeeding\n            return True\n        else:\n            return False\n\n    def reverse(self):\n        curr_node = self.head\n        next_node = None\n        prev_node = None\n        while curr_node != None:\n            next_node = curr_node.succeeding\n            curr_node.succeeding = prev_node\n            prev_node = curr_node\n            curr_node = next_node\n        self.head = prev_node\n\n    def display(self):\n        values = []\n        curr_node = self.head\n        while curr_node != None:\n            values.append(curr_node.value)\n            curr_node = curr_node.succeeding\n        print(values)\n",
+        "language": "python",
+        "file_path": "linked_list.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

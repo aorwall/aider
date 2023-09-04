@@ -1,0 +1,19 @@
+method: on_llm_end [2023-09-04 17:04:13]
+llm_output: null
+prompt:
+def is_valid(isbn):
+    # Remove dashes from the input
+    isbn = isbn.replace('-', '')
+    
+    # Check if the last character is 'X', convert it to 10 if so
+    last_char = isbn[-1].upper()
+    if last_char == 'X':
+        isbn = isbn[:-1] + '10'
+        
+    # Calculate the checksum
+    checksum = sum((i+1)*int(digit) for i, digit in enumerate(isbn)) % 11
+    
+    # The ISBN is valid iff the checksum equals 0
+    return checksum == 0
+
+---

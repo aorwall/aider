@@ -1,0 +1,26 @@
+method: on_llm_end [2023-09-03 13:08:03]
+llm_output: null
+prompt:
+Here's how you can fix the `IndexError` issue in your `get_winner()` method:
+
+Replace this block of code:
+
+```python
+for i in range(len(self.rows)):
+    ...
+    for j in range(-3, 4):
+        col += self.rows[i+j][j]
+```
+
+With this corrected version:
+
+```python
+for i in range(len(self.rows)):
+    ...
+    for j in range(-3, 4):
+        if 0 <= i+j < len(self.rows) and 0 <= j < len(self.rows[0]):
+            col += self.rows[i+j][j]
+```
+
+This will ensure that we don't try to access an element outside our matrix when calculating the vertical lines.
+---

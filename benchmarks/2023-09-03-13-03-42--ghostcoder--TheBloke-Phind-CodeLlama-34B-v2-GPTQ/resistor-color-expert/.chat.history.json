@@ -1,0 +1,97 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "resistor_color_expert.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Introduction\n\nIf you want to build something using a Raspberry Pi, you'll probably use _resistors_.\nLike the previous `Resistor Color Duo` and `Resistor Color Trio` exercises, you will be translating resistor color bands to human-readable labels.\n\n- Each resistor has a resistance value.\n- Resistors are small - so small in fact that if you printed the resistance value on them, it would be hard to read.\n  To get around this problem, manufacturers print color-coded bands onto the resistors to denote their resistance values.\n- Each band acts as a digit of a number.\n  For example, if they printed a brown band (value 1) followed by a green band (value 5), it would translate to the number 15.\n# Instructions\n\nIn this exercise, you are going to create a helpful program so that you don't have to remember the values of the bands.\nThe program will take 1, 4, or 5 colors as input, and outputs the correct value, in ohms.\nThe color bands are encoded as follows:\n\n- Black: 0\n- Brown: 1\n- Red: 2\n- Orange: 3\n- Yellow: 4\n- Green: 5\n- Blue: 6\n- Violet: 7\n- Grey: 8\n- White: 9\n\nIn `resistor-color trio` you decoded the first three colors.\nFor instance: orange-orange-brown translated to the main value `330`.\nIn this exercise you will need to add _tolerance_ to the mix.\nTolerance is the maximum amount that a value can be above or below the main value.\nFor example, if the last band is green, the maximum tolerance will be \u00b10.5%.\n\nThe tolerance band will have one of these values:\n\n- Grey - 0.05%\n- Violet - 0.1%\n- Blue - 0.25%\n- Green - 0.5%\n- Brown - 1%\n- Red - 2%\n- Gold - 5%\n- Silver - 10%\n\nThe four-band resistor is built up like this:\n\n| Band_1  | Band_2  | Band_3     | band_4    |\n| ------- | ------- | ---------- | --------- |\n| Value_1 | Value_2 | Multiplier | Tolerance |\n\nMeaning\n\n- orange-orange-brown-green would be 330 ohms with a \u00b10.5% tolerance.\n- orange-orange-red-grey would be 3300 ohms with \u00b10.05% tolerance.\n\nThe difference between a four and five-band resistor is that the five-band resistor has an extra band to indicate a more precise value.\n\n| Band_1  | Band_2  | Band_3  | Band_4     | band_5    |\n| ------- | ------- | ------- | ---------- | --------- |\n| Value_1 | Value_2 | Value_3 | Multiplier | Tolerance |\n\nMeaning\n\n- orange-orange-orange-black-green would be 333 ohms with a \u00b10.5% tolerance.\n- orange-red-orange-blue-violet would be 323M ohms with a \u00b10.10 tolerance.\n\nThere are also one band resistors.\nOne band resistors only have the color black with a value of 0.\n\nThis exercise is about translating the resistor band colors into a label:\n\n\"... ohms ...%\"\n\nSo an input of \"orange\", \"orange\", \"black, green\" should return:\n\n\"33 ohms \u00b10.5%\"\n\nWhen there are more than a thousand ohms, we say \"kiloohms\".\n That's similar to saying \"kilometer\" for 1000 meters, and \"kilograms\" for 1000 grams.\n\nSo an input of \"orange\", \"orange\", \"orange\", grey should return:\n\n\"33 kiloohms \u00b10.05%\"\n\nWhen there are more than a million ohms, we say \"megaohms\".\n\nSo an input of \"orange\", \"orange\", \"orange\", \"red\" should return:\n\n\"33 megaohms \u00b12%\"\n\n####\n\nUse the above instructions to modify the supplied files: resistor_color_expert.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here is how you could solve this problem using Python:",
+        "need_input": false
+      },
+      {
+        "type": "code",
+        "content": "COLOR_CODES = {\n    'black': 0,\n    'brown': 1,\n    'red': 2,\n    'orange': 3,\n    'yellow': 4,\n    'green': 5,\n    'blue': 6,\n    'violet': 7,\n    'gray': 8,\n    'white': 9\n}\n\nTOLERANCE_CODES = {\n    'gold': 5,\n    'silver': 10,\n    'none': None\n}\n\ndef decode_resistor(colors):\n    multipliers = {'red': 10**4, 'blue': 10**5, 'violet': 10**6, 'gray': 10**7, 'white': 10**8, 'gold': 10**9, 'silver': 10**10}\n    value = COLOR_CODES[colors[0]] * 10 + COLOR_CODES[colors[1]]\n    ohm_value = value * multipliers[colors[-2]]\n    tolerance = TOLERANCE_CODES.get(colors[-1], 0)\n    unit = ''\n    if ohm_value >= 1000:\n        unit = 'kilo'\n        ohm_value /= 1000\n    if ohm_value >= 1000:\n        unit = 'mega'\n        ohm_value /= 1000\n        \n    tolerance_str = f\"{tolerance}%\" if tolerance else \"\"\n    return f\"{int(round(ohm_value))} {unit}ohms {tolerance_str}\"\n\nclass ResistorColorExpert:\n    def __init__(self):\n        pass\n\n    @staticmethod\n    def ohms(colors):\n        return decode_resistor(colors)",
+        "language": "python"
+      },
+      {
+        "type": "text",
+        "text": "You can then test your code with some assert statements:",
+        "need_input": false
+      },
+      {
+        "type": "code",
+        "content": "if __name__ == '__main__':\n    expert = ResistorColorExpert()\n    assert expert.ohms(['orange', 'orange', 'black']) == \"33 ohms\"\n    assert expert.ohms(['orange', 'orange', 'orange', 'red']) == \"33 kohms\"\n    assert expert.ohms(['orange', 'orange', 'orange', 'violet']) == \"33 MOhms\"\n    assert expert.ohms(['orange', 'orange', 'orange', 'white']) == \"33 GOhms\"\n    assert expert.ohms(['orange', 'orange', 'orange', 'gold']) == \"33 MOhms 5%\"\n    assert expert.ohms(['orange', 'orange', 'orange', 'silver']) == \"33 KOOhms 10%\"",
+        "language": "python"
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "resistor_color_expert.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "FFFFFFFFFF\n====\nFAIL: test_blue_grey_brown_and_violet (resistor_color_expert_test.ResistorColorExpertTest.test_blue_grey_brown_and_violet)\n----\nTraceback (most recent call last):\n  File \"resistor-color-expert/resistor_color_expert_test.py\", line 15, in test_blue_grey_brown_and_violet\n    self.assertEqual(resistor_label([\"blue\", \"grey\", \"brown\", \"violet\"]), \"680 ohms \u00b10.1%\")\nAssertionError: None != '680 ohms \u00b10.1%'\n\n====\nFAIL: test_blue_grey_white_red_and_brown (resistor_color_expert_test.ResistorColorExpertTest.test_blue_grey_white_red_and_brown)\n----\nTraceback (most recent call last):\n  File \"resistor-color-expert/resistor_color_expert_test.py\", line 39, in test_blue_grey_white_red_and_brown\n    self.assertEqual(\nAssertionError: None != '6.89 kiloohms \u00b11%'\n\n====\nFAIL: test_brown_red_orange_green_and_blue (resistor_color_expert_test.ResistorColorExpertTest.test_brown_red_orange_green_and_blue)\n----\nTraceback (most recent call last):\n  File \"resistor-color-expert/resistor_color_expert_test.py\", line 49, in test_brown_red_orange_green_and_blue\n    self.assertEqual(\nAssertionError: None != '12.3 megaohms \u00b10.25%'\n\n====\nFAIL: test_green_brown_orange_and_grey (resistor_color_expert_test.ResistorColorExpertTest.test_green_brown_orange_and_grey)\n----\nTraceback (most recent call last):\n  File \"resistor-color-expert/resistor_color_expert_test.py\", line 21, in test_green_brown_orange_and_grey\n    self.assertEqual(\nAssertionError: None != '51 kiloohms \u00b10.05%'\n\n====\nFAIL: test_one_black_band (resistor_color_expert_test.ResistorColorExpertTest.test_one_black_band)\n----\nTraceback (most recent call last):\n  File \"resistor-color-expert/resistor_color_expert_test.py\", line 26, in test_one_black_band\n    self.assertEqual(resistor_label([\"black\"]), \"0 ohms\")\nAssertionError: None != '0 ohms'\n\n====\nFAIL: test_orange_orange_black_and_red (resistor_color_expert_test.ResistorColorExpertTest.test_orange_orange_black_and_red)\n----\nTraceback (most recent call last):\n  File \"resistor-color-expert/resistor_color_expert_test.py\", line 12, in test_orange_orange_black_and_red\n    self.assertEqual(resistor_label([\"orange\", \"orange\", \"black\", \"red\"]), \"33 ohms \u00b12%\")\nAssertionError: None != '33 ohms \u00b12%'\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in resistor_color_expert.py to resolve the errors.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here is a simple solution for this problem using Python programming language:\n\nIn your `resistor_color_expert.py` file you should define the function as follows:",
+        "need_input": false
+      },
+      {
+        "type": "code",
+        "content": "def resistor_value(colors):\n    color_dict = {\n        \"black\": 0, \"brown\": 1, \"red\": 2, \"orange\": 3, \"yellow\": 4,\n        \"green\": 5, \"blue\": 6, \"violet\": 7, \"gray\": 8, \"white\": 9\n    }\n    \n    value = \"\"\n    multiplier = 0\n    tolerance = 0\n    \n    if colors[0] in [\"gold\",\"silver\"]:\n        value += str(color_dict[colors[1]])\n        value += str(color_dict[colors[2]])\n        \n        if colors[0]==\"gold\":\n            multiplier=1\n        else:\n            multiplier=0.1\n            \n        tolerance=5\n    elif len(colors)>3 and colors[-1]==\"gold\" or colors[-1]==\"silver\":\n        value += str(color_dict[colors[0]]*10+color_dict[colors[1]])\n        multiplier = color_dict[colors[2]]\n        \n        if colors[-1]==\"gold\":\n            multiplier+=1\n        else:\n            multiplier+=0.1\n        \n        tolerance=20\n    else:\n        value += str(color_dict[colors[0]]*10+color_dict[colors[1]])\n        multiplier = color_dict[colors[2]]\n        tolerance=25\n    \n    return \"{0} {1}Ohms {2}%\".format(float(value)*pow(10,multiplier),(\"kilo\",\"mega\")[int(multiplier/3)-1],tolerance)",
+        "language": "python"
+      },
+      {
+        "type": "text",
+        "text": "This function uses dictionaries to map the colors to their corresponding values. It checks first three bands of resistance value, then multiplier and at last the tolerance band. According to the given conditions it forms the label for resistors.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

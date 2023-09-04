@@ -1,0 +1,53 @@
+method: on_llm_end [2023-09-04 16:06:53]
+llm_output: null
+prompt:
+class BufferFullException(BufferError):
+    """Exception raised when CircularBuffer is full.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class BufferEmptyException(BufferError):
+    """Exception raised when CircularBuffer is empty.
+
+    message: explanation of the error.
+
+    """
+    def __init__(self, message):
+        super().__init__(message)
+
+
+from collections import deque
+
+
+class CircularBuffer:
+    def __init__(self, capacity):
+        self._capacity = capacity
+        self._data = deque()
+
+    def read(self):
+        if len(self._data) == 0:
+            raise BufferEmptyException("No data to read.")
+        return self._data.popleft()
+
+    def write(self, data):
+        if len(self._data) >= self._capacity:
+            raise BufferFullException("Circular buffer is full.")
+        self._data.append(data)
+
+    def overwrite(self, data):
+        if len(self._data) < self._capacity:
+            self.write(data)
+        else:
+            self._data.popleft()
+            self._data.append(data)
+
+    def clear(self):
+        while len(self._data) > 0:
+            self._data.popleft()
+
+---

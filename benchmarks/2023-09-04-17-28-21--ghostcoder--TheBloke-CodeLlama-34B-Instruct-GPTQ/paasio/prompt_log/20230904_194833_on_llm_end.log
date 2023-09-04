@@ -1,0 +1,48 @@
+method: on_llm_end [2023-09-04 19:48:33]
+llm_output: null
+prompt:
+import io
+from contextlib import contextmanager
+
+@contextmanager
+def metered_socket(socket):
+    # Implementation details here
+    yield None
+
+class MeteredFile(io.BufferedRandom):
+    def __init__(self, fp, mode='r', buffering=-1, encoding=None, errors=None, newline=None, line_buffering=False, write_through=False):
+        super().__init__(fp, mode, buffering, encoding, errors, newline, line_buffering, write_through)
+        self._read_bytes = 0
+        self._read_ops = 0
+        self._write_bytes = 0
+        self._write_ops = 0
+    
+    def _read(self, size=-1):
+        chunk = super()._read(size)
+        self._read_bytes += len(chunk)
+        self._read_ops += 1
+        return chunk
+    
+    def _write(self, data):
+        written = super()._write(data)
+        self._write_bytes += written
+        self._write_ops += 1
+        return written
+    
+    @property
+    def read_bytes(self):
+        return self._read_bytes
+    
+    @property
+    def read_ops(self):
+        return self._read_ops
+    
+    @property
+    def write_bytes(self):
+        return self._write_bytes
+    
+    @property
+    def write_ops(self):
+        return self._write_ops
+
+---

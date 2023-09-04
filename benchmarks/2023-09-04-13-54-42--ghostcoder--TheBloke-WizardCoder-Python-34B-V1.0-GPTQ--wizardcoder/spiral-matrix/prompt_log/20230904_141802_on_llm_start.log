@@ -1,0 +1,180 @@
+method: on_llm_start [2023-09-04 14:18:02]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Given the size, return a square matrix of numbers in spiral order.
+
+The matrix should be filled with natural numbers, starting from 1 in the top-left corner, increasing in an inward, clockwise spiral order, like these examples:
+
+## Examples
+
+### Spiral matrix of size 3
+
+```text
+1 2 3
+8 9 4
+7 6 5
+```
+
+### Spiral matrix of size 4
+
+```text
+ 1  2  3 4
+12 13 14 5
+11 16 15 6
+10  9  8 7
+```
+
+####
+
+Use the above instructions to modify the supplied files: spiral_matrix.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: spiral_matrix.py
+```python
+
+```
+
+### Response:
+Filepath: spiral_matrix.py
+```python
+from itertools import cycle
+
+def spiral_matrix(size):
+    if not (isinstance(size, int) and size > 0):
+        raise ValueError("Size must be a positive integer")
+
+    matrix = [[0] * size for _ in range(size)]
+    directions = cycle([(0, -1), (-1, 0), (0, 1), (1, 0)])
+    x, y = 0, 0
+    direction = next(directions)
+    value = 1
+
+    while True:
+        dx, dy = direction
+
+        if 0 <= x + dx < size and 0 <= y + dy < size and matrix[y + dy][x + dx] == 0:
+            x += dx
+            y += dy
+            matrix[y][x] = value
+            value += 1
+
+            if value > size ** 2:
+                break
+
+        else:
+            direction = next(directions)
+
+    return matrix
+
+```
+
+### Instruction:
+Tests timed out!
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in spiral_matrix.py to resolve the errors.
+
+Filepath: spiral_matrix.py
+```python
+from itertools import cycle
+
+def spiral_matrix(size):
+    if not (isinstance(size, int) and size > 0):
+        raise ValueError("Size must be a positive integer")
+
+    matrix = [[0] * size for _ in range(size)]
+    directions = cycle([(0, -1), (-1, 0), (0, 1), (1, 0)])
+    x, y = 0, 0
+    direction = next(directions)
+    value = 1
+
+    while True:
+        dx, dy = direction
+
+        if 0 <= x + dx < size and 0 <= y + dy < size and matrix[y + dy][x + dx] == 0:
+            x += dx
+            y += dy
+            matrix[y][x] = value
+            value += 1
+
+            if value > size ** 2:
+                break
+
+        else:
+            direction = next(directions)
+
+    return matrix
+
+```
+
+
+### Response:
+Filepath: spiral_matrix.py
+```python
+
+

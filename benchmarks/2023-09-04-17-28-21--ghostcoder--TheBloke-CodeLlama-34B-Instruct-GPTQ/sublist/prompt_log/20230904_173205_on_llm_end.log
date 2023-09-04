@@ -1,0 +1,93 @@
+method: on_llm_end [2023-09-04 17:32:05]
+llm_output: null
+prompt:
+import unittest
+
+
+"""
+This exercise stub and the test suite contain several enumerated constants.
+
+Enumerated constants can be done with a NAME assigned to an arbitrary,
+but unique value. An integer is traditionally used because it’s memory
+efficient.
+It is a common practice to export both constants and functions that work with
+those constants (ex. the constants in the os, subprocess and re modules).
+
+You can learn more here: https://en.wikipedia.org/wiki/Enumerated_type
+"""
+
+# Possible sublist categories.
+# Change the values as you see fit.
+SUBLIST = "sublist"
+SUPERLIST = "superlist"
+EQUAL = "equal"
+UNEQUAL = "unequal"
+
+
+def sublist(list_one, list_two):
+    """
+    Return whether list_one is a sublist of list_two, a superlist of list_two,
+    equal to list_two, or neither.
+
+    Args:
+      list_one: The first list to compare.
+      list_two: The second list to compare.
+
+    Returns:
+      SUBLIST if list_one is a sublist of list_two; SUPERLIST if list_one is a
+          superlist of list_two; EQUAL if list_one is equal to list_two; or UNEQUAL
+          otherwise.
+    """
+    # Check for equality
+    if list_one == list_two:
+        return EQUAL
+    
+    # Check for sublist
+    if all(elem in list_two for elem in list_one):
+        return SUBLIST
+    
+    # Check for superlist
+    if all(elem in list_one for elem in list_two):
+        return SUPERLIST
+    
+    # Neither a sublist nor a superlist
+    return UNEQUAL
+
+
+class SublistTest(unittest.TestCase):
+    def test_empty_lists(self):
+        self.assertEqual(sublist([], []), EQUAL)
+
+    def test_empty_list_within_nonempty_list(self):
+        self.assertEqual(sublist([], [1]), SUBLIST)
+
+    def test_nonempty_list_contains_empty_list(self):
+        self.assertEqual(sublist([1], []), SUPERLIST)
+
+    def test_list_equals_itself(self):
+        self.assertEqual(sublist([1, 2, 3], [1, 2, 3]), EQUAL)
+
+    def test_different_lists(self):
+        self.assertEqual(sublist([1, 2, 3], [2, 3, 4]), UNEQUAL)
+
+    def test_false_start(self):
+        self.assertEqual(sublist([1, 2, 5], [0, 1, 2, 3, 1, 2, 5, 6]), SUBLIST)
+
+    def test_consecutive(self):
+        self.assertEqual(sublist([1, 1, 2], [0, 1, 1, 1, 2, 1, 2]), SUBLIST)
+
+    def test_sublist_at_start(self):
+        self.assertEqual(sublist([0, 1, 2], [0, 1, 2, 3, 4, 5]), SUBLIST)
+
+    def test_sublist_in_middle(self):
+        self.assertEqual(sublist([2, 3, 4], [0, 1, 2, 3, 4, 5]), SUBLIST)
+
+    def test_sublist_at_end(self):
+        self.assertEqual(sublist([3, 4, 5], [0, 1, 2, 3, 4, 5]), SUBLIST)
+
+    def test_at_start_of_superlist(self):
+        self.assertEqual(sublist([0, 1, 2, 3, 4, 5], [0, 1, 2]), SUPERLIST)
+
+    def test_in_middle_of_superlist(self):
+        self.assertEqual(sublist([0, 1, 2, 3, 4, 5], [2, 3]), SUPERLIST
+---

@@ -1,0 +1,222 @@
+method: on_llm_start [2023-09-04 14:48:47]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Given a string representing a matrix of numbers, return the rows and columns of that matrix.
+
+So given a string with embedded newlines like:
+
+```text
+9 8 7
+5 3 2
+6 6 7
+```
+
+representing this matrix:
+
+```text
+    1  2  3
+  |---------
+1 | 9  8  7
+2 | 5  3  2
+3 | 6  6  7
+```
+
+your code should be able to spit out:
+
+- A list of the rows, reading each row left-to-right while moving top-to-bottom across the rows,
+- A list of the columns, reading each column top-to-bottom while moving from left-to-right.
+
+The rows for our example matrix:
+
+- 9, 8, 7
+- 5, 3, 2
+- 6, 6, 7
+
+And its columns:
+
+- 9, 5, 6
+- 8, 3, 6
+- 7, 2, 7
+# Instructions append
+
+In this exercise you're going to create a **class**.  _Don't worry, it's not as complicated as you think!_ 
+
+-   [**A First Look at Classes**](https://docs.python.org/3/tutorial/classes.html#a-first-look-at-classes) from the Python 3 documentation. 
+-   [**How to Define a Class in Python**](https://realpython.com/python3-object-oriented-programming/#how-to-define-a-class-in-python) from the Real Python website.  
+-   [**Data Structures in Python**](https://docs.python.org/3/tutorial/datastructures.html) from the Python 3 documentation.
+
+####
+
+Use the above instructions to modify the supplied files: matrix.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: matrix.py
+```python
+
+```
+
+### Response:
+Filepath: matrix.py
+```python
+class Matrix:
+    def __init__(self, matrix_string):
+        self._matrix = [[int(num) for num in row.split()] for row in matrix_string.strip().split('
+')]
+
+    def row(self, index):
+        if index < 0 or index >= len(self._matrix):
+            raise IndexError('Row index out of range')
+        return self._matrix[index]
+
+    def column(self, index):
+        if index < 0 or index >= len(self._matrix[0]):
+            raise IndexError('Column index out of range')
+        return [row[index] for row in self._matrix]
+
+```
+
+### Instruction:
+EEEEEFEE
+====
+ERROR: test_can_extract_column (matrix_test.MatrixTest.test_can_extract_column)
+----
+Traceback (most recent call last):
+  File "matrix/matrix_test.py", line 35, in test_can_extract_column
+    self.assertEqual(matrix.column(3), [3, 6, 9])
+                     ^^^^^^^^^^^^^^^^
+  File "matrix/matrix.py", line 12, in column
+    raise IndexError('Column index out of range')
+IndexError: Column index out of range
+
+====
+ERROR: test_can_extract_column_from_non_square_matrix_with_no_corresponding_row (matrix_test.MatrixTest.test_can_extract_column_from_non_square_matrix_with_no_corresponding_row)
+----
+Traceback (most recent call last):
+  File "matrix/matrix_test.py", line 39, in test_can_extract_column_from_non_square_matrix_with_no_corresponding_row
+    self.assertEqual(matrix.column(4), [4, 8, 6])
+                     ^^^^^^^^^^^^^^^^
+  File "matrix/matrix.py", line 12, in column
+    raise IndexError('Column index out of range')
+IndexError: Column index out of range
+
+====
+ERROR: test_can_extract_row (matrix_test.MatrixTest.test_can_extract_row)
+----
+Traceback (most recent call last):
+  File "matrix/matrix_test.py", line 19, in test_can_extract_row
+    self.assertEqual(matrix.row(2), [3, 4])
+                     ^^^^^^^^^^^^^
+  File "matrix/matrix.py", line 7, in row
+    raise IndexError('Row index out of range')
+IndexError: Row index out of range
+
+====
+ERROR: test_can_extract_row_from_non_square_matrix_with_no_corresponding_column (matrix_test.MatrixTest.test_can_extract_row_from_non_square_matrix_with_no_corresponding_column)
+----
+Traceback (most recent call last):
+  File "matrix/matrix_test.py", line 27, in test_can_extract_row_from_non_square_matrix_with_no_corresponding_column
+    self.assertEqual(matrix.row(4), [8, 7, 6])
+                     ^^^^^^^^^^^^^
+  File "matrix/matrix.py", line 7, in row
+    raise IndexError('Row index out of range')
+IndexError: Row index out of range
+
+====
+ERROR: test_extract_column_from_one_number_matrix (matrix_test.MatrixTest.test_extract_column_from_one_number_matrix)
+----
+Traceback (most recent call last):
+  File "matrix/matrix_test.py", line 31, in test_extract_column_from_one_number_matrix
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in matrix.py to resolve the errors.
+
+Filepath: matrix.py
+```python
+class Matrix:
+    def __init__(self, matrix_string):
+        self._matrix = [[int(num) for num in row.split()] for row in matrix_string.strip().split('
+')]
+
+    def row(self, index):
+        if index < 0 or index >= len(self._matrix):
+            raise IndexError('Row index out of range')
+        return self._matrix[index]
+
+    def column(self, index):
+        if index < 0 or index >= len(self._matrix[0]):
+            raise IndexError('Column index out of range')
+        return [row[index] for row in self._matrix]
+
+```
+
+
+### Response:
+Filepath: matrix.py
+```python
+
+

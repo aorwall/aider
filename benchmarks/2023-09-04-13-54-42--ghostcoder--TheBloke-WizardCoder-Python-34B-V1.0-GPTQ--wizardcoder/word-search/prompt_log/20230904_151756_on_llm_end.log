@@ -1,0 +1,68 @@
+method: on_llm_end [2023-09-04 15:17:56]
+llm_output: null
+prompt:
+from typing import List, Tuple
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
+
+class WordSearch:
+    def __init__(self, puzzle: str):
+        self.puzzle = [list(row) for row in puzzle.split("\n")]
+
+    def _find_word(self, word: str, start: Point, direction: Tuple[int, int]) -> bool:
+        current_point = start
+        for char in word:
+            if not (0 <= current_point.x < len(self.puzzle) and 0 <= current_point.y < len(self.puzzle[current_point.x])):
+                return False
+            if self.puzzle[current_point.x][current_point.y] != char:
+                return False
+            current_point = Point(current_point.x + direction[0], current_point.y + direction[1])
+        return True
+
+    def _get_starting_points(self, word: str) -> List[Point]:
+        starting_points = []
+        for i, row in enumerate(self.puzzle):
+            for j, char in enumerate(row):
+                if char == word[0]:
+                    for direction in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+                        if self._find_word(word, Point(i, j), direction):
+                            starting_points.append((Point(i, j), direction))
+        return starting_points
+
+    def search(self, word: str) -> List[Tuple[Point, Point]]:
+        starting_points = self._get_starting_points(word)
+        locations = []
+        for point, direction in starting_points:
+            end_point = Point(point.x + (len(word) - 1) * direction[0], point.y + (len(word) - 1) * direction[1])
+            locations.append((point, end_point))
+        return locations
+
+
+if __name__ == "__main__":
+    puzzle = """
+    jefblpepre
+    camdcimgtc
+    oivokprjsm
+    pbwasqroua
+    rixilelhrs
+    wolcqlirpc
+    screeaumgr
+    alxhpburyi
+    jalycalmp
+    clojurermt
+    """
+
+    ws = WordSearch(puzzle)
+    print(ws.search("clojure")) # [(Point(8, 9), Point(8, 6))]
+    
+---

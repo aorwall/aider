@@ -1,0 +1,129 @@
+method: on_llm_end [2023-09-04 19:29:37]
+llm_output: null
+prompt:
+class Node:
+    def __init__(self, value, succeeding=None, previous=None):
+        self.value = value
+        self.previous = previous
+        self.next = succeeding
+
+    def get(self):
+        return self.value
+
+    def set(self, new_val):
+        self.value = new_val
+
+    def getNext(self):
+        return self.next
+
+    def getPrev(self):
+        return self.previous
+
+    def setNext(self, next_node):
+        self.next = next_node
+
+    def setPrev(self, prev_node):
+        self.previous = prev_node
+
+
+class LinkedList:
+    def __init__(self):
+        self._head = None
+        self._tail = None
+        self._size = 0
+
+    # O(1) time | O(1) space
+    def addFirst(self, val):
+        new_node = Node(val)
+        if self._head is None:
+            self._head = new_node
+            self._tail = new_node
+        else:
+            new_node.setNext(self._head)
+            self._head.setPrev(new_node)
+            self._head = new_node
+        self._size += 1
+
+    # O(n) time | O(1) space
+    def removeLast(self):
+        if self._tail is None:
+            raise IndexError('Cannot remove last element from empty list')
+        elif self._tail == self._head:
+            self._removeHead()
+        else:
+            old_last = self._tail
+            self._tail = old_last.getPrev()
+            self._tail.setNext(None)
+            old_last.setPrev(None)
+            del old_last
+            self._size -= 1
+
+    # O(1) time | O(1) space
+    def peekFirst(self):
+        if self._head is None:
+            raise IndexError('Cannot peek first element from empty list')
+        return self._head.get()
+
+    # O(n) time | O(1) space
+    def reverse(self):
+        current = self._head
+        while current != None:
+            temp = current.getNext()
+            current.setNext(current.getPrev())
+            current.setPrev(temp)
+            current = temp
+        temp = self._head
+        self._head = self._tail
+        self._tail = temp
+
+    # O(1) time | O(1) space
+    def _removeHead(self):
+        head = self._head
+        self._head = self._head.getNext()
+        if self._head is not None:
+            self._head.setPrev(None)
+        head.setNext(None)
+        del head
+        self._size -= 1
+
+    # O(1) time | O(1) space
+    def size(self):
+        return self._size
+
+    # O(1) time | O(1) space
+    def contains(self, target):
+        current = self._head
+        while current != None:
+            if current.get() == target:
+                return True
+            current = current.getNext()
+        return False
+
+    # O(n) time | O(1) space
+    def delete(self, index):
+        if index >= self._size or index < 0:
+            raise IndexError('Index {} out of bounds'.format(index))
+        if index == 0:
+            self._removeHead()
+        elif index == (self._size - 1):
+            self._removeTail()
+        else:
+            current = self._head
+            i = 0
+            while i < index:
+                current = current.getNext()
+                i += 1
+            current.getPrev().setNext(current.getNext())
+            current.getNext().setPrev(current.getPrev())
+            current.setPrev(None)
+            current.setNext(None)
+            del current
+            self._size -= 1
+
+    # O(1) time | O(1) space
+    def _removeTail(self):
+        tail = self._tail
+        self._tail = self._tail.getPrev()
+        if self._tail is not None:
+            self._tail.setNext(None)
+---

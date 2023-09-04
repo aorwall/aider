@@ -1,0 +1,47 @@
+method: on_llm_end [2023-09-04 16:48:00]
+llm_output: null
+prompt:
+def best_hands(hands):
+    # Define card values
+    card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    
+    # Function to get the highest card value from a hand
+    def high_card(hand):
+        values = sorted([card_values[card[-1]] for card in hand])
+        return values[-1]
+    
+    # Function to check if a hand has a straight (consecutive numbers)
+    def is_straight(ranks):
+        ranks = sorted(ranks)
+        for i in range(len(ranks) - 1):
+            if ranks[i+1] != ranks[i] + 1:
+                return False
+        return True
+    
+    # Function to count the number of each rank in a hand
+    def rank_count(hand):
+        counts = {rank: 0 for rank in card_values.keys()}
+        for card in hand:
+            counts[card[-1]] += 1
+        return counts
+    
+    # Function to determine the type of hand
+    def hand_type(hand):
+        ranks = [card_values[card[-1]] for card in hand]
+        
+        if len(set(ranks)) == 1:
+            return "Straight Flush" if is_straight(ranks) else "Flush"
+            
+        elif is_straight(ranks):
+            return "Straight"
+            
+        else:
+            counts = rank_count(hand)
+            pairs = sum(value > 1 for value in counts.values())
+            return f"{pairs}-Pair" if pairs >= 1 else "High Card"
+    
+    # Determine the best hand
+    best_hand = max(hands, key=lambda x: (high_card(x), hand_type(x)))
+    
+    return best_hand
+---

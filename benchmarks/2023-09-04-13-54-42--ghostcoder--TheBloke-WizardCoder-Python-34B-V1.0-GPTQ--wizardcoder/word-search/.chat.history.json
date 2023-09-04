@@ -1,0 +1,76 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nIn word search puzzles you get a square of letters and have to find specific words in them.\n\nFor example:\n\n```text\njefblpepre\ncamdcimgtc\noivokprjsm\npbwasqroua\nrixilelhrs\nwolcqlirpc\nscreeaumgr\nalxhpburyi\njalaycalmp\nclojurermt\n```\n\nThere are several programming languages hidden in the above square.\n\nWords can be hidden in all kinds of directions: left-to-right, right-to-left, vertical and diagonal.\n\nGiven a puzzle and a list of words return the location of the first and last letter of each word.\n\n####\n\nUse the above instructions to modify the supplied files: word_search.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: word_search.py\n```python\nfrom typing import List, Tuple\n\nclass Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    def __eq__(self, other):\n        return self.x == other.x and self.y == other.y\n\n    def __repr__(self):\n        return f\"({self.x}, {self.y})\"\n\n\nclass WordSearch:\n    def __init__(self, puzzle: str):\n        self.puzzle = [list(row) for row in puzzle.split(\"\\n\")]\n\n    def _find_word(self, word: str, start: Point, direction: Tuple[int, int]) -> bool:\n        current_point = start\n        for char in word:\n            if not (0 <= current_point.x < len(self.puzzle) and 0 <= current_point.y < len(self.puzzle[current_point.x])):\n                return False\n            if self.puzzle[current_point.x][current_point.y] != char:\n                return False\n            current_point = Point(current_point.x + direction[0], current_point.y + direction[1])\n        return True\n\n    def _get_starting_points(self, word: str) -> List[Point]:\n        starting_points = []\n        for i, row in enumerate(self.puzzle):\n            for j, char in enumerate(row):\n                if char == word[0]:\n                    for direction in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:\n                        if self._find_word(word, Point(i, j), direction):\n                            starting_points.append((Point(i, j), direction))\n        return starting_points\n\n    def search(self, word: str) -> List[Tuple[Point, Point]]:\n        starting_points = self._get_starting_points(word)\n        locations = []\n        for point, direction in starting_points:\n            end_point = Point(point.x + (len(word) - 1) * direction[0], point.y + (len(word) - 1) * direction[1])\n            locations.append((point, end_point))\n        return locations\n\n\nif __name__ == \"__main__\":\n    puzzle = \"\"\"\n    jefblpepre\n    camdcimgtc\n    oivokprjsm\n    pbwasqroua\n    rixilelhrs\n    wolcqlirpc\n    screeaumgr\n    alxhpburyi\n    jalycalmp\n    clojurermt\n    \"\"\"\n\n    ws = WordSearch(puzzle)\n    print(ws.search(\"clojure\")) # [(Point(8, 9), Point(8, 6))]\n    ```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".F.FFFFFFFFFFFFFFFFFF...\n====\nFAIL: test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle (word_search_test.WordSearchTest.test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 285, in test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle\n    self.assertEqual(puzzle.search(\"clojure\"), (Point(0, 9), Point(6, 9)))\nAssertionError: None != (<word_search.Point object at 0x7f0a7e4f8[46 chars]950>)\n\n====\nFAIL: test_should_locate_a_different_left_to_right_word (word_search_test.WordSearchTest.test_should_locate_a_different_left_to_right_word)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 30, in test_should_locate_a_different_left_to_right_word\n    self.assertEqual(puzzle.search(\"coffee\"), (Point(0, 0), Point(5, 0)))\nAssertionError: None != (<word_search.Point object at 0x7f0a7e4f8[46 chars]790>)\n\n====\nFAIL: test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid (word_search_test.WordSearchTest.test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 97, in test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid\n    self.assertEqual(puzzle.search(\"fortran\"), (Point(0, 6), Point(6, 6)))\nAssertionError: None != (<word_search.Point object at 0x7f0a7e4f8[46 chars]950>)\n\n====\nFAIL: test_should_locate_a_left_to_right_word_in_ten_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_ten_line_grid)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 61, in test_should_locate_a_left_to_right_word_in_ten_line_grid\n    self.assertEqual(puzzle.search(\"clojure\"), (Point(0, 9), Point(6, 9)))\nAssertionError: None != (<word_search.Point object at 0x7f0a7e4f9[46 chars]d50>)\n\n====\nFAIL: test_should_locate_a_left_to_right_word_in_three_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_three_line_grid)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 44, in test_should_locate_a_left_to_right_word_in_three_line_grid\n    self.assertEqual(puzzle.search(\"clojure\"), (Point(0, 2), Point(6, 2)))\nAssertionError: None != (<word_search.Point object at 0x7f0a7e4f9[46 chars]ed0>)\n\n====\nFAIL: test_should_locate_a_left_to_right_word_in_two_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_two_line_grid)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 40, in test_should_locate_a_left_to_right_word_in_two_line_grid\n    self.assertEqual(puzzle.search(\"clojure\"), (Point(1, 1), Point(7, 1)))\nAssertionError: None != (<word_search.Point object at 0x7f0a7e4fa[46 chars]010>)\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in word_search.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import NamedTuple\n\nclass Point(NamedTuple):\n    x: int\n    y: int\nclass Point:\n    def __init__(self, x, y):\n        self.x = None\n        self.y = None\n\n    def __eq__(self, other):\n        return self.x == other.x and self.y == other.y\n\n\nclass WordSearch:\n    def __init__(self, puzzle: str):\n        self.rows = puzzle.split('\\n')\n\n    def search(self, word: str) -> tuple[Point, Point]:\n        for row_num, row in enumerate(self.rows):\n            if word in row:\n                start_col = row.index(word)\n                end_col = start_col + len(word) - 1\n\n                start_point = Point(start_col, row_num)\n                end_point = Point(end_col, row_num)\n\n                return (start_point, end_point)\n\n        raise ValueError(f\"{word} not found\")\n",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

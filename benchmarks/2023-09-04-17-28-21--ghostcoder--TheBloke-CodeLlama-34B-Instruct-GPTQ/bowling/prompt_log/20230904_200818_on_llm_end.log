@@ -1,0 +1,102 @@
+method: on_llm_end [2023-09-04 20:08:18]
+llm_output: null
+prompt:
+class BowlingGame:
+    def __init__(self):
+        self._bonus_points = {
+            'X': {'first': 10, 'second': 20},
+            '/': {'first': 10}
+        }
+        self._fill_balls = ['X', '-']
+        self._frames = []
+        self._current_frame = None
+        self._total_score = 0
+
+    @property
+    def _is_last_frame(self):
+        return len(self._frames) == 9
+
+    @property
+    def _is_strike(self):
+        return self._current_frame['result'] == 'X'
+
+    @property
+    def _is_spare(self):
+        return self._current_frame['result'] == '/'
+
+    @property
+    def _can_have_bonus(self):
+        return self._current_frame['result'] != ''
+
+    @property
+    def _has_extra_ball(self):
+        return len(self._frames[-1]) > 2
+
+    def _add_to_score(self, points):
+        self._total_score += points
+
+    def _get_bonus_points(self, index=None):
+        if index is None:
+            index = -1
+        result = self._frames[index]['result']
+        try:
+            return self._bonus_points[result][self._frames[index].get('bonus')]
+        except KeyError:
+            return 0
+
+    def _update_bonus(self, index=-1):
+        if self._is_strike:
+            self._frames[index]['bonus'] = 'first'
+        elif self._is_spare:
+            self._frames[index]['bonus'] = 'first'
+            self._frames[index+1]['bonus'] = 'second'
+
+    def _calculate_score(self):
+        for i, frame in enumerate(self._frames[:-1], start=1):
+            if frame['result'] == 'X':
+                self._add_to_score(10 + self._get_bonus_points())
+            else:
+                self._add_to_score(sum([int(x) for x in list(frame['result'])]) + self._get_bonus_points(i))
+
+        last_frame = self._frames[-1]
+        if last_frame['result'] == 'X':
+            self._add_to_score(10 + self._get_bonus_points(-1))
+        elif last_frame['result'] == '/':
+            self._add_to_score(10 + self._get_bonus_points(-1))
+        else:
+            self._add_to_score(sum([int(x) for x in list(last_frame['result'])]))
+
+    def roll(self, pins):
+        if pins < 0:
+            raise ValueError("Negative roll is invalid")
+        if pins > 10:
+            raise ValueError("Pin count exceeds pins on the lane")
+
+        if self._current_frame is None:
+            self._current_frame = {}
+            self._current_frame['result'] = str(pins)
+            self._frames.append(self._current_frame)
+        else:
+            if self._is_last_frame and self._has_extra_ball:
+                raise ValueError("Cannot play more than 10 frames")
+
+            if self._is_strike:
+                self._current_frame['bonus'] = 'first'
+                self._current_frame['result'] = str(pins)
+                self._frames.append(self._current_frame)
+                self._current_frame = {}
+            elif self._is_spare:
+                self._current_frame['bonus'] = 'second'
+                self._current_frame['result'] = str(pins)
+                self._frames.append(self._current_frame)
+                self._current_frame = {}
+            else:
+                self._current_frame['result'] += str(pins)
+
+            if len(list(self._current_frame['result'])) >= 2:
+                self._update_bonus()
+
+    def score(self):
+        if len(self._frames) < 10:
+            raise ValueError("Score cannot be taken
+---

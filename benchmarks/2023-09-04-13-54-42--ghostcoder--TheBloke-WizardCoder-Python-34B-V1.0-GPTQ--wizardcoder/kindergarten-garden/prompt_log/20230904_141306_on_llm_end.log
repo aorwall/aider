@@ -1,0 +1,25 @@
+method: on_llm_end [2023-09-04 14:13:06]
+llm_output: null
+prompt:
+class Garden:
+    def __init__(self, diagram, students=None):
+        self.diagram = diagram.split("\n")
+        self.students = ["Alice", "Bob", "Charlie", "David", "Eve", "Fred", "Ginny", "Harriet", "Ileana", "Joseph", "Kincaid", "Larry"] \
+            if students is None else students
+        
+        # Calculate the number of rows and columns in the diagram
+        self.rows = len(self.diagram)
+        self.cols = len(self.diagram[0])
+    
+    def plants(self, student_name):
+        index = self.students.index(student_name)
+        plants = []
+        for i in range(self.rows):
+            row = self.diagram[i]
+            for j in range(self.cols // 2):
+                pos = (j * 2 + index % 2) * 2
+                plants.append(row[pos:pos+2])
+        return plants
+
+
+---

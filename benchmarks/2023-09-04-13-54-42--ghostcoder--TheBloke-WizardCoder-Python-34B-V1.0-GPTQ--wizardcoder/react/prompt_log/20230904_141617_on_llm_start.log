@@ -1,0 +1,263 @@
+method: on_llm_start [2023-09-04 14:16:17]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Implement a basic reactive system.
+
+Reactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.
+
+Implement a basic reactive system with cells with settable values ("input" cells) and cells with values computed in terms of other cells ("compute" cells).
+Implement updates so that when an input value is changed, values propagate to reach a new stable system state.
+
+In addition, compute cells should allow for registering change notification callbacks.
+Call a cell’s callbacks when the cell’s value in a new stable state has changed from the previous stable state.
+
+####
+
+Use the above instructions to modify the supplied files: react.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: react.py
+```python
+
+```
+
+### Response:
+Filepath: react.py
+```python
+import functools
+
+class InputCell:
+    def __init__(self, initial_value):
+        self._value = initial_value
+        self._observers = []
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if self._value != new_value:
+            old_value = self._value
+            self._value = new_value
+            for observer in self._observers:
+                observer(old_value, new_value)
+
+    def bind_to(self, observer):
+        self._observers.append(observer)
+
+    def unbind_from(self, observer):
+        self._observers.remove(observer)
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self._dependents = {}
+        self._value = None
+        self._compute_function = compute_function
+
+        for input_cell in inputs:
+            input_cell.bind_to(functools.partial(self._update, input_cell))
+
+    def _update(self, changed_input, old_value, new_value):
+        self._recalculate()
+
+    def _recalculate(self):
+        inputs = [input_cell.value for input_cell in self._dependents]
+        self._value = self._compute_function(*inputs)
+
+        for dependent in self._dependents:
+            dependent._update(self, self._value)
+
+    def add_callback(self, callback):
+        if not hasattr(self, '_callbacks'):
+            self._callbacks = []
+        self._callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        if hasattr(self, '_callbacks') and callback in self._callbacks:
+            self._callbacks.remove(callback)
+
+    def connect(self, output):
+        self._dependents[output] = True
+        if output._value is None:
+            output._recalculate()
+
+    def disconnect(self, output):
+        del self._dependents[output]
+
+
+if __name__ == "__main__":
+    # Test cases here
+    
+```
+
+### Instruction:
+E
+====
+ERROR: react_test (unittest.loader._FailedTest.react_test)
+----
+ImportError: Failed to import test module: react_test
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/unittest/loader.py", line 407, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/unittest/loader.py", line 350, in _get_module_from_name
+    __import__(name)
+  File "react/react_test.py", line 8, in <module>
+    from react import (
+  File "react/react.py", line 66
+    
+    ^
+IndentationError: expected an indented block after 'if' statement on line 64
+
+
+----
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in react.py to resolve the errors.
+
+Filepath: react.py
+```python
+import functools
+
+class InputCell:
+    def __init__(self, initial_value):
+        self._value = initial_value
+        self._observers = []
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if self._value != new_value:
+            old_value = self._value
+            self._value = new_value
+            for observer in self._observers:
+                observer(old_value, new_value)
+
+    def bind_to(self, observer):
+        self._observers.append(observer)
+
+    def unbind_from(self, observer):
+        self._observers.remove(observer)
+
+
+class ComputeCell:
+    def __init__(self, inputs, compute_function):
+        self._dependents = {}
+        self._value = None
+        self._compute_function = compute_function
+
+        for input_cell in inputs:
+            input_cell.bind_to(functools.partial(self._update, input_cell))
+
+    def _update(self, changed_input, old_value, new_value):
+        self._recalculate()
+
+    def _recalculate(self):
+        inputs = [input_cell.value for input_cell in self._dependents]
+        self._value = self._compute_function(*inputs)
+
+        for dependent in self._dependents:
+            dependent._update(self, self._value)
+
+    def add_callback(self, callback):
+        if not hasattr(self, '_callbacks'):
+            self._callbacks = []
+        self._callbacks.append(callback)
+
+    def remove_callback(self, callback):
+        if hasattr(self, '_callbacks') and callback in self._callbacks:
+            self._callbacks.remove(callback)
+
+    def connect(self, output):
+        self._dependents[output] = True
+        if output._value is None:
+            output._recalculate()
+
+    def disconnect(self, output):
+        del self._dependents[output]
+
+
+if __name__ == "__main__":
+    # Test cases here
+    
+```
+
+
+### Response:
+Filepath: react.py
+```python
+
+

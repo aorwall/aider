@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate an implementation of the atbash cipher, an ancient encryption system created in the Middle East.\n\nThe Atbash cipher is a simple substitution cipher that relies on transposing all the letters in the alphabet such that the resulting alphabet is backwards.\nThe first letter is replaced with the last letter, the second with the second-last, and so on.\n\nAn Atbash cipher for the Latin alphabet would be as follows:\n\n```text\nPlain:  abcdefghijklmnopqrstuvwxyz\nCipher: zyxwvutsrqponmlkjihgfedcba\n```\n\nIt is a very weak cipher because it only has one possible key, and it is a simple mono-alphabetic substitution cipher.\nHowever, this may not have been an issue in the cipher's time.\n\nCiphertext is written out in groups of fixed length, the traditional group size being 5 letters, leaving numbers unchanged, and punctuation is excluded.\nThis is to make it harder to guess things based on word boundaries.\nAll text will be encoded as lowercase letters.\n\n## Examples\n\n- Encoding `test` gives `gvhg`\n- Encoding `x123 yes` gives `c123b vh`\n- Decoding `gvhg` gives `test`\n- Decoding `gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt` gives `thequickbrownfoxjumpsoverthelazydog`\n\n####\n\nUse the above instructions to modify the supplied files: atbash_cipher.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import string\n\ndef encode(plain_text):\n    # Create a dictionary to map each character to its corresponding encrypted character\n    char_map = {chr(i+97): chr((26 - (i % 26)) + 97) for i in range(26)}\n\n    # Replace each character in the plain text with its encrypted counterpart\n    cipher_text = ''.join([char_map[c] for c in plain_text])\n\n    # Group the characters into blocks of five and separate them by spaces\n    cipher_text = ' '.join([cipher_text[i:i+5] for i in range(0, len(cipher_text), 5)])\n\n    return cipher_text\n\ndef decode(ciphered_text):\n    # Create a dictionary to map each encrypted character to its corresponding decrypted character\n    char_map = {chr((26 - (i % 26)) + 97): chr(i+97) for i in range(26)}\n\n    # Replace each encrypted character in the cipher text with its decrypted counterpart\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n\n    return plain_text\n",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEFEEEFFEEEF\n====\nERROR: test_decode_a_sentence (atbash_cipher_test.AtbashCipherTest.test_decode_a_sentence)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 46, in test_decode_a_sentence\n    decode(\"zmlyh gzxov rhlug vmzhg vkkrm thglm v\"),\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"atbash-cipher/atbash_cipher.py\", line 20, in decode\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"atbash-cipher/atbash_cipher.py\", line 20, in <listcomp>\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n                          ~~~~~~~~^^^\nKeyError: ' '\n\n====\nERROR: test_decode_all_the_letters (atbash_cipher_test.AtbashCipherTest.test_decode_all_the_letters)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 55, in test_decode_all_the_letters\n    decode(\"gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt\"),\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"atbash-cipher/atbash_cipher.py\", line 20, in decode\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"atbash-cipher/atbash_cipher.py\", line 20, in <listcomp>\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n                          ~~~~~~~~^^^\nKeyError: ' '\n\n====\nERROR: test_decode_exercism (atbash_cipher_test.AtbashCipherTest.test_decode_exercism)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 42, in test_decode_exercism\n    self.assertEqual(decode(\"vcvix rhn\"), \"exercism\")\n                     ^^^^^^^^^^^^^^^^^^^\n  File \"atbash-cipher/atbash_cipher.py\", line 20, in decode\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"atbash-cipher/atbash_cipher.py\", line 20, in <listcomp>\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n                          ~~~~~~~~^^^\nKeyError: ' '\n\n====\nERROR: test_decode_numbers (atbash_cipher_test.AtbashCipherTest.test_decode_numbers)\n----\nTraceback (most recent call last):\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in atbash_cipher.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import string\n\ndef encode(plain_text):\n    # Create a dictionary to map each character to its corresponding encrypted character\n    char_map = {chr(i+97): chr((26 - (i % 26)) + 97) for i in range(26)}\n\n    # Replace each character in the plain text with its encrypted counterpart\n    cipher_text = ''.join([char_map[c] for c in plain_text])\n\n    # Group the characters into blocks of five and separate them by spaces\n    cipher_text = ' '.join([cipher_text[i:i+5] for i in range(0, len(cipher_text), 5)])\n\n    return cipher_text\n\ndef decode(ciphered_text):\n    # Create a dictionary to map each encrypted character to its corresponding decrypted character\n    char_map = {chr((26 - (i % 26)) + 97): chr(i+97) for i in range(26)}\n\n    # Replace each encrypted character in the cipher text with its decrypted counterpart\n    plain_text = ''.join([char_map[c] for c in ciphered_text])\n\n    return plain_text\n",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

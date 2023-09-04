@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nAdd the mine counts to a completed Minesweeper board.\n\nMinesweeper is a popular game where the user has to find the mines using numeric hints that indicate how many mines are directly adjacent (horizontally, vertically, diagonally) to a square.\n\nIn this exercise you have to create some code that counts the number of mines adjacent to a given empty square and replaces that square with the count.\n\nThe board is a rectangle composed of blank space (' ') characters.\nA mine is represented by an asterisk (`*`) character.\n\nIf a given space has no adjacent mines at all, leave that square blank.\n\n## Examples\n\nFor example you may receive a 5 x 4 board like this (empty spaces are represented here with the '\u00b7' character for display on screen):\n\n```text\n\u00b7*\u00b7*\u00b7\n\u00b7\u00b7*\u00b7\u00b7\n\u00b7\u00b7*\u00b7\u00b7\n\u00b7\u00b7\u00b7\u00b7\u00b7\n```\n\nAnd your code will transform it into this:\n\n```text\n1*3*1\n13*31\n\u00b72*2\u00b7\n\u00b7111\u00b7\n```\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" a `ValueError` when the `board()` function receives malformed input. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# when the board receives malformed input\nraise ValueError(\"The board is invalid with current input.\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: minesweeper.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "minesweeper.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def annotate(minefield):\n    rows = len(minefield)\n    cols = len(minefield[0])\n\n    def count_adjacent_mines(row, col):\n        count = 0\n\n        for r in range(-1, 2):\n            for c in range(-1, 2):\n                if r == 0 and c == 0:\n                    continue\n\n                new_row = row + r\n                new_col = col + c\n\n                if 0 <= new_row < rows and 0 <= new_col < cols:\n                    if minefield[new_row][new_col] == \"*\":\n                        count += 1\n\n        return count\n\n    annotated_minefield = []\n\n    for row in range(rows):\n        annotated_row = \"\"\n        for col in range(cols):\n            if minefield[row][col] != \" \":\n                annotated_row += str(count_adjacent_mines(row, col))\n            else:\n                annotated_row += \" \"\n        annotated_minefield.append(annotated_row)\n\n    return annotated_minefield\n\n# Test cases\nassert annotate([[\" \", \"*\", \" \", \" \"], [\"*\", \"*\", \"*\", \" \"], [\" \", \"*\", \" \", \" \"]]) \\\n       == [['1', '*', '1', ' '], [' ', '*', ' ', ' '], [' ', '*', ' ', ' ']]\n\nassert annotate([[\" \", \"*\", \" \", \" \", \" \"], [\" \", \"*\", \"*\", \"*\", \" \"], [\" \", \" \", \" \", \"*\", \" \"], [\"*\", \"*\", \"*\", \"*\", \"*\"]]) \\\n       == [['1', '2', '1', ' ', ' '], [' ', '*', '*', '*', ' '], [' ', ' ', ' ', '*', ' '], ['*', '*', '*', '*', '*']]\n\ntry:\n    annotate([[\" \", \"a\", \" \", \" \"], [\"*\", \"*\", \"*\", \" \"], [\" \", \"*\", \" \", \" \"]])\nexcept ValueError as e:\n    assert str(e) == \"Invalid input: board contains non-space and non-asterisk characters.\"\n",
+        "language": "python",
+        "file_path": "minesweeper.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "E\n====\nERROR: minesweeper_test (unittest.loader._FailedTest.minesweeper_test)\n----\nImportError: Failed to import test module: minesweeper_test\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 407, in _find_test_path\n    module = self._get_module_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 350, in _get_module_from_name\n    __import__(name)\n  File \"minesweeper/minesweeper_test.py\", line 7, in <module>\n    from minesweeper import (\n  File \"minesweeper/minesweeper.py\", line 36, in <module>\n    assert annotate([[\" \", \"*\", \" \", \" \"], [\"*\", \"*\", \"*\", \" \"], [\" \", \"*\", \" \", \" \"]]) \\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n\n\n----\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in minesweeper.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "minesweeper.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def annotate(minefield):\n    rows = len(minefield)\n    cols = len(minefield[0])\n\n    def count_adjacent_mines(row, col):\n        count = 0\n\n        for r in range(-1, 2):\n            for c in range(-1, 2):\n                if r == 0 and c == 0:\n                    continue\n\n                new_row = row + r\n                new_col = col + c\n\n                if 0 <= new_row < rows and 0 <= new_col < cols:\n                    if minefield[new_row][new_col] == \"*\":\n                        count += 1\n\n        return count\n\n    annotated_minefield = []\n\n    for row in range(rows):\n        annotated_row = \"\"\n        for col in range(cols):\n            if minefield[row][col] != \" \":\n                annotated_row += str(count_adjacent_mines(row, col))\n            else:\n                annotated_row += \" \"\n        annotated_minefield.append(annotated_row)\n\n    return annotated_minefield\n\n# Test cases\nassert annotate([[\" \", \"*\", \" \", \" \"], [\"*\", \"*\", \"*\", \" \"], [\" \", \"*\", \" \", \" \"]]) \\\n       == [['1', '*', '1', ' '], [' ', '*', ' ', ' '], [' ', '*', ' ', ' ']]\n\nassert annotate([[\" \", \"*\", \" \", \" \", \" \"], [\" \", \"*\", \"*\", \"*\", \" \"], [\" \", \" \", \" \", \"*\", \" \"], [\"*\", \"*\", \"*\", \"*\", \"*\"]]) \\\n       == [['1', '2', '1', ' ', ' '], [' ', '*', '*', '*', ' '], [' ', ' ', ' ', '*', ' '], ['*', '*', '*', '*', '*']]\n\ntry:\n    annotate([[\" \", \"a\", \" \", \" \"], [\"*\", \"*\", \"*\", \" \"], [\" \", \"*\", \" \", \" \"]])\nexcept ValueError as e:\n    assert str(e) == \"Invalid input: board contains non-space and non-asterisk characters.\"\n",
+        "language": "python",
+        "file_path": "minesweeper.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

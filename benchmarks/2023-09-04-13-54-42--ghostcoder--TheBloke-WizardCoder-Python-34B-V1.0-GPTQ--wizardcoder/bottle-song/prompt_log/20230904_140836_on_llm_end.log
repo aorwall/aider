@@ -1,0 +1,28 @@
+method: on_llm_end [2023-09-04 14:08:36]
+llm_output: null
+prompt:
+def recite(start, take=10):
+    lyrics = """Ten green bottles hanging on the wall,
+Ten green bottles hanging on the wall,
+And if one green bottle should accidentally fall,
+There'll be {} green bottles hanging on the wall.
+
+{} green bottles hanging on the wall,
+{} green bottles hanging on the wall,
+And if one green bottle should accidentally fall,
+There'll be {} green bottles hanging on the wall."""
+    
+    output = ""
+    current_bottle = start
+    while take > 0:
+        next_bottle = current_bottle - 1 if current_bottle > 1 else "no"
+        
+        output += lyrics.format(next_bottle, current_bottle, current_bottle, next_bottle)
+        output += "\n\n"
+        
+        current_bottle -= 1
+        take -= 1
+    
+    return output[:-1] # remove last newline character
+
+---

@@ -1,0 +1,78 @@
+method: on_llm_end [2023-09-04 14:46:36]
+llm_output: null
+prompt:
+import re
+from collections import defaultdict
+
+NODE, EDGE, ATTR = range(3)
+
+
+def parse_attributes(line):
+    key_value_pairs = re.findall(r'(\w+)="([^"]*)"', line)
+    return dict(key_value_pairs)
+
+
+class Node:
+    def __init__(self, name, attrs):
+        self.name = name
+        self.attrs = attrs
+
+    def __eq__(self, other):
+        return self.name == other.name and self.attrs == other.attrs
+
+
+class Edge:
+    def __init__(self, src, dst, attrs):
+        self.src = src
+        self.dst = dst
+        self.attrs = attrs
+
+    def __eq__(self, other):
+        return (self.src == other.src and
+                self.dst == other.dst and
+                self.attrs == other.attrs)
+
+
+class Graph:
+    def __init__(self, data=None):
+        self._nodes = []
+        self._edges = []
+        self._attrs = {}
+        
+        if not data:
+            return
+        
+        lines = iter(data.split('\n'))
+        next(lines) # Skip first line containing 'graph {'
+        
+        while True:
+            try:
+                line = next(lines).strip()
+                
+                if line == '}':
+                    break
+                    
+                elif line.startswith('//'):
+                    continue
+                
+                elif line.endswith(';'):
+                    line = line[:-1]
+                    
+                    if line.startswith('node'):
+                        node_name, attrs = re.match(r'node\s*\[(.*)\]\s*(.*)', line).groups()
+                        self._nodes.append(Node(node_name, parse_attributes(attrs)))
+                        
+                    elif line.startswith('edge'):
+                        edge_str = re.search(r'edge\s*\[(.*)\]\s*(.*)', line).group(2)
+                        src, dst = re.match(r'\s*(.*)->(.*)\s*', edge_str).groups()
+                        attrs = parse_attributes(re.sub(r'\s*(.*)->(.*)\s*', '', edge_str))
+                        self._edges.append(Edge(src, dst, attrs))
+                        
+                    else:
+                        key, value = line.split('=')
+                        self._attrs[key.strip()] = value.strip().replace('"', '')
+            
+            except StopIteration:
+                break
+
+---

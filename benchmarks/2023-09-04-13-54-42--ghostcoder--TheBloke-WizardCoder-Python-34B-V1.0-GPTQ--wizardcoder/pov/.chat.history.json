@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nReparent a tree on a selected node.\n\nA [tree][wiki-tree] is a special type of [graph][wiki-graph] where all nodes are connected but there are no cycles.\nThat means, there is exactly one path to get from one node to another for any pair of nodes.\n\nThis exercise is all about re-orientating a tree to see things from a different point of view.\nFor example family trees are usually presented from the ancestor's perspective:\n\n```text\n    +------0------+\n    |      |      |\n  +-1-+  +-2-+  +-3-+\n  |   |  |   |  |   |\n  4   5  6   7  8   9\n```\n\nBut there is no inherent direction in a tree.\nThe same information can be presented from the perspective of any other node in the tree, by pulling it up to the root and dragging its relationships along with it.\nSo the same tree from 6's perspective would look like:\n\n```text\n        6\n        |\n  +-----2-----+\n  |           |\n  7     +-----0-----+\n        |           |\n      +-1-+       +-3-+\n      |   |       |   |\n      4   5       8   9\n```\n\nThis lets us more simply describe the paths between two nodes.\nSo for example the path from 6-9 (which in the first tree goes up to the root and then down to a different leaf node) can be seen to follow the path 6-2-0-3-9.\n\nThis exercise involves taking an input tree and re-orientating it from the point of view of one of the nodes.\n\n[wiki-graph]: https://en.wikipedia.org/wiki/Tree_(graph_theory)\n[wiki-tree]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" multiple `ValueErrors` if the `Tree()` class is passed a tree that cannot be reoriented, or a path cannot be found between a `start node` and an `end node`. The tests will only pass if you both `raise` the `exception` and include a message with it.\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# when a tree cannot be oriented to a new node POV\nraise ValueError(\"Tree could not be reoriented\")\n\n#when a path cannot be found between a start and end node on the tree.\nraise ValueError(\"No path found\")\n```\n####\n\nUse the above instructions to modify the supplied files: pov.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "pov.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import copy\nfrom typing import List\n\nclass NodeNotFoundException(Exception):\n    \"\"\"Raises an exception when a node is not found.\"\"\"\n    pass\n\nclass NotAPathException(Exception):\n    \"\"\"Raises an exception when there is no path between two nodes.\"\"\"\n    pass\n\ndef find_node_index(nodes: List['Node'], target_label: str) -> int:\n    \"\"\"Finds the index of a node with a given label in a list of nodes.\"\"\"\n    for i, node in enumerate(nodes):\n        if node.label == target_label:\n            return i\n    raise NodeNotFoundException(f\"Node with label '{target_label}' was not found.\")\n\ndef find_new_root(tree: 'Tree', old_root_label: str, new_root_label: str) -> 'Tree':\n    \"\"\"Creates a new tree with the specified node as the root.\"\"\"\n    # Find the index of the new root node\n    try:\n        new_root_index = find_node_index(tree.children, new_root_label)\n    except NodeNotFoundException:\n        # If the new root node does not exist in the original tree, create a new node\n        new_root = Node(new_root_label)\n        new_root.add_child(copy.deepcopy(tree))\n        return new_root\n\n    # Create a new tree with the new root node at the top\n    new_tree = Node(new_root_label)\n    new_tree.children = [tree.children[new_root_index]]\n\n    # Remove the new root node from the original tree\n    del tree.children[new_root_index]\n\n    return new_tree\n\ndef find_path(tree: 'Tree', start_label: str, end_label: str) -> List['Node']:\n    \"\"\"Returns the path between two nodes in a tree.\"\"\"\n    current_node = tree\n    path = [current_node]\n\n    while True:\n        found_path = False\n        for child in current_node.children:\n            if child.label == start_label:\n                path.append(child)\n                return path\n            elif child.label != end_label:\n                path.append(child)\n                current_node = child\n                found_path = True\n                break\n        if not found_path:\n            raise NotAPathException(\"No path found.\")\n\nclass Node:\n    def __init__(self, label: str, children: List['Node'] = None):\n        self.label = label\n        self.children = children if children is not None else []\n\n    def add_child(self, child: 'Node'):\n        self.children.append(child)\n\n    def __repr__(self):\n        return f\"<{self.label}: {''.join([str(c) for c in self.children])}>\"\nfrom json import dumps\n\nclass Tree:\n    def __init__(self, label: str, children: List[Node] = None):\n        self.root = Node(label, children)\n\n    @property\n    def label(self):\n        return self.root.label\n\n    @property\n    def children(self):\n        return self.root.children\n\n    def from_pov(self, from_node: str) -> 'Tree':\n        \"\"\"Re-orients the tree to the point of view of a specified node.\"\"\"\n        try:\n            new_root = find_new_root(self.root, self.label, from_node)\n        except NodeNotFoundException as e:\n            raise ValueError(e)\n        except NotAPathException:\n            raise ValueError(\"No path found.\")\n\n        return Tree(new_root.label, new_root.children)\n\n    def path_to(self, from_node: str, to_node: str) -> List[str]:\n        \"\"\"Returns the path between two nodes in the tree.\"\"\"\n        try:\n            path = find_path(self.root, from_node, to_node)\n        except NodeNotFoundException as e:\n            raise ValueError(e)\n        except NotAPathException:\n            raise ValueError(\"No path found.\")\n\n        return [node.label for node in path]\n\n    def __repr__(self):\n        return repr(self.root)\n",
+        "language": "python",
+        "file_path": "pov.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFEFFFFFFFFFF\n====\nERROR: test_can_find_path_to_sibling (pov_test.PovTest.test_can_find_path_to_sibling)\n----\nTraceback (most recent call last):\n  File \"pov/pov.py\", line 96, in path_to\n    path = find_path(self.root, from_node, to_node)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"pov/pov.py\", line 56, in find_path\n    raise NotAPathException(\"No path found.\")\npov.NotAPathException: No path found.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"pov/pov_test.py\", line 108, in test_can_find_path_to_sibling\n    self.assertEqual(tree.path_to(\"x\", \"b\"), expected)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"pov/pov.py\", line 100, in path_to\n    raise ValueError(\"No path found.\")\nValueError: No path found.\n\n====\nFAIL: test_can_find_path_from_nodes_other_than_x (pov_test.PovTest.test_can_find_path_from_nodes_other_than_x)\n----\nTraceback (most recent call last):\n  File \"pov/pov_test.py\", line 139, in test_can_find_path_from_nodes_other_than_x\n    self.assertEqual(tree.path_to(\"a\", \"c\"), expected)\nAssertionError: Lists differ: ['parent', 'a'] != ['a', 'parent', 'c']\n\nFirst differing element 0:\n'parent'\n'a'\n\nSecond list contains 1 additional elements.\nFirst extra element 2:\n'c'\n\n- ['parent', 'a']\n?             ^\n\n+ ['a', 'parent', 'c']\n?  +++++           ^\n\n\n====\nFAIL: test_can_find_path_not_involving_root (pov_test.PovTest.test_can_find_path_not_involving_root)\n----\nTraceback (most recent call last):\n  File \"pov/pov_test.py\", line 134, in test_can_find_path_not_involving_root\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in pov.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "pov.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import unittest\nfrom tree import Tree, Node\n\nclass TestPOV(unittest.TestCase):\n    def test_find_node_index(self):\n        nodes = [Node('a'), Node('b'), Node('c')]\n        self.assertEqual(0, find_node_index(nodes, 'a'))\n        self.assertEqual(1, find_node_index(nodes, 'b'))\n        self.assertEqual(2, find_node_index(nodes, 'c'))\n\n        with self.assertRaises(NodeNotFoundException):\n            find_node_index(nodes, 'd')\n\n    def test_find_new_root(self):\n        tree = Tree('a', [Node('b', [Node('c'), Node('d')]), Node('e', [Node('f')])])\n\n        new_tree = find_new_root(tree, 'a', 'b')\n        self.assertEqual(['b', ['c', 'd']], [new_tree.label, [child.label for child in new_tree.children]])\n\n        new_tree = find_new_root(tree, 'a', 'e')\n        self.assertEqual(['e', ['f']], [new_tree.label, [child.label for child in new_tree.children]])\n\n        with self.assertRaises(NodeNotFoundException):\n            find_new_root(tree, 'a', 'g')\n\n    def test_find_path(self):\n        tree = Tree('a', [Node('b', [Node('c'), Node('d')]), Node('e', [Node('f')])])\n\n        path = find_path(tree.root, 'a', 'c')\n        self.assertEqual(['a', 'b', 'c'], [node.label for node in path])\n\n        path = find_path(tree.root, 'a', 'f')\n        self.assertEqual(['a', 'e', 'f'], [node.label for node in path])\n\n        with self.assertRaises(NotAPathException):\n            find_path(tree.root, 'a', 'z')\n\n    def test_tree_from_pov(self):\n        tree = Tree('a', [Node('b', [Node('c'), Node('d')]), Node('e', [Node('f')])])\n\n        subtree = tree.from_pov('b')\n        self.assertEqual({'b': ['c', 'd']}, {subtree.label: [child.label for child in subtree.children]})\n\n        subtree = tree.from_pov('c')\n        self.assertEqual({'c': [], 'd': []}, {node.label: [child.label for child in node.children] for node in subtree.children})\n\n        with self.assertRaises(ValueError):\n            tree.from_pov('z')\n\n    def test_tree_path_to(self):\n        tree = Tree('a', [Node('b', [Node('c'), Node('d')]), Node('e', [Node('f')])])\n\n        path = tree.path_to('a', 'c')\n        self.assertEqual(['a', 'b', 'c'], path)\n\n        path = tree.path_to('a', 'f')\n        self.assertEqual(['a', 'e', 'f'], path)\n\n        with self.assertRaises(ValueError):\n            tree.path_to('a', 'z')\n\nif __name__ == \"__main__\":\n    unittest.main()",
+        "language": "python",
+        "file_path": "pov.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

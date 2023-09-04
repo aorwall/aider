@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement run-length encoding and decoding.\n\nRun-length encoding (RLE) is a simple form of data compression, where runs (consecutive data elements) are replaced by just one data value and count.\n\nFor example we can represent the original 53 characters with only 13.\n\n```text\n\"WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB\"  ->  \"12WB12W3B24WB\"\n```\n\nRLE allows the original data to be perfectly reconstructed from the compressed data, which makes it a lossless data compression.\n\n```text\n\"AABCCCDEEEE\"  ->  \"2AB3CD4E\"  ->  \"AABCCCDEEEE\"\n```\n\nFor simplicity, you can assume that the unencoded string will only contain the letters A through Z (either lower or upper case) and whitespace.\nThis way data to be encoded will never contain any numbers and numbers inside data to be decoded always represent the count for the following character.\n\n####\n\nUse the above instructions to modify the supplied files: run_length_encoding.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom itertools import groupby\n\ndef decode(string):\n    pattern = r'\\d+|\\D+'\n    matches = re.findall(pattern, string)\n\n    if not matches:\n        raise ValueError('Invalid input')\n\n    decoded = ''\n    for char, count in zip(*([iter(matches)]*2)):\n        decoded += int(count) * char\n\n    return decoded\n\n\ndef encode(string):\n    encoded = ''\n    for char, group in groupby(string):\n        count = len(list(group))\n        if count > 1:\n            encoded += str(count) + char\n        else:\n            encoded += char\n\n    return encoded\n",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEFEE.E.....\n====\nERROR: test_decode_empty_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_empty_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 36, in test_decode_empty_string\n    self.assertMultiLineEqual(decode(\"\"), \"\")\n                              ^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 9, in decode\n    raise ValueError('Invalid input')\nValueError: Invalid input\n\n====\nERROR: test_decode_lowercase_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_lowercase_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 54, in test_decode_lowercase_string\n    self.assertMultiLineEqual(decode(\"2a3b4c\"), \"aabbbcccc\")\n                              ^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 13, in decode\n    decoded += int(count) * char\n               ^^^^^^^^^^\nValueError: invalid literal for int() with base 10: 'a'\n\n====\nERROR: test_decode_multiple_whitespace_mixed_in_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_multiple_whitespace_mixed_in_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 51, in test_decode_multiple_whitespace_mixed_in_string\n    self.assertMultiLineEqual(decode(\"2 hs2q q2w2 \"), \"  hsqq qww  \")\n                              ^^^^^^^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 13, in decode\n    decoded += int(count) * char\n               ^^^^^^^^^^\nValueError: invalid literal for int() with base 10: ' hs'\n\n====\nERROR: test_decode_single_characters_with_repeated_characters (run_length_encoding_test.RunLengthEncodingTest.test_decode_single_characters_with_repeated_characters)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 46, in test_decode_single_characters_with_repeated_characters\n    decode(\"12WB12W3B24WB\"),\n    ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 13, in decode\n    decoded += int(count) * char\n               ^^^^^^^^^^\nValueError: invalid literal for int() with base 10: 'WB'\n\n====\nERROR: test_decode_string_with_no_single_characters (run_length_encoding_test.RunLengthEncodingTest.test_decode_string_with_no_single_characters)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in run_length_encoding.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\nfrom itertools import groupby\n\ndef decode(string):\n    pattern = r'\\d+|\\D+'\n    matches = re.findall(pattern, string)\n\n    if not matches:\n        raise ValueError('Invalid input')\n\n    decoded = ''\n    for char, count in zip(*([iter(matches)]*2)):\n        try:\n            decoded += int(count) * char\n        except ValueError as e:\n            raise ValueError('Invalid input') from e\n\n    return decoded\n\n\ndef encode(string):\n    encoded = ''\n    for char, group in groupby(string):\n        count = len(list(group))\n        if count > 1:\n            encoded += str(count) + char\n        else:\n            encoded += char\n\n    return encoded\n",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,29 @@
+method: on_llm_end [2023-09-04 16:10:29]
+llm_output: null
+prompt:
+def encode(number):
+    result = []
+    while True:
+        byte = number & 0x7f
+        number >>= 7
+        if number != 0:
+            byte |= 0x80
+        result.append(byte)
+        if number == 0:
+            break
+    return result
+
+
+def decode(bytes_):
+    num = 0
+    shift = 0
+    for byte in reversed(bytes_):
+        if byte & 0x80:
+            num += (byte & 0x7f) << shift
+            shift += 7
+        else:
+            num += byte << shift
+            break
+    return num
+
+---

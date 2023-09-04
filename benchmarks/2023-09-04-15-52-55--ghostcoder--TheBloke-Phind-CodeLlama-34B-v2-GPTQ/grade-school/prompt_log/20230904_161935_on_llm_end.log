@@ -1,0 +1,36 @@
+method: on_llm_end [2023-09-04 16:19:35]
+llm_output: null
+prompt:
+class School:
+    def __init__(self):
+        self._students = {}
+        
+    def add_student(self, name, grade):
+        if not name in self._students:
+            self._students[name] = grade
+            
+            return f"OK."
+        else:
+            return f"{name} is already in the roster."
+            
+    def roster(self):
+        roster = []
+        for name, grade in self._students.items():
+            roster.append((grade, name))
+            
+        roster.sort()
+        return ', '.join([name for _, name in roster])
+            
+    def grade(self, grade_number):
+        grade = []
+        for name, g in self._students.items():
+            if g == grade_number:
+                grade.append(name)
+                
+        grade.sort()
+        return ', '.join(grade)
+            
+    def added(self):
+        return len(self._students)
+
+---

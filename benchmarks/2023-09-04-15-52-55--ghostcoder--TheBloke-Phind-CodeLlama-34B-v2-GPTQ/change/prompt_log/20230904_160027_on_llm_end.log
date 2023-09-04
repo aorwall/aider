@@ -1,0 +1,33 @@
+method: on_llm_end [2023-09-04 16:00:27]
+llm_output: null
+prompt:
+def find_fewest_coins(coins, target):
+    # Sort the coins in descending order
+    coins.sort(reverse=True)
+    
+    # Initialize variables
+    total = 0
+    count = 0
+    index = 0
+    
+    while total < target:
+        # If there are no more coins left, we need to check if we have enough coins to reach the target
+        if index >= len(coins):
+            break
+        
+        # Add the current coin to the total
+        total += coins[index]
+        
+        # Increment the counter for the number of coins used
+        count += 1
+        
+        # Move on to the next coin
+        index += 1
+    
+    # Check if the exact change was found
+    if total != target:
+        raise ValueError('Can\'t make target with given coins')
+    
+    return count - 1
+
+---

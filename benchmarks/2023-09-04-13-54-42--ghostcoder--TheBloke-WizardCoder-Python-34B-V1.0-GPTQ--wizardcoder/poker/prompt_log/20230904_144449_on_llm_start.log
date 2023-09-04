@@ -1,0 +1,296 @@
+method: on_llm_start [2023-09-04 14:44:49]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Pick the best hand(s) from a list of poker hands.
+
+See [wikipedia][poker-hands] for an overview of poker hands.
+
+[poker-hands]: https://en.wikipedia.org/wiki/List_of_poker_hands
+
+####
+
+Use the above instructions to modify the supplied files: poker.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: poker.py
+```python
+
+```
+
+### Response:
+Filepath: poker.py
+```python
+import itertools
+from collections import Counter
+
+RANKS = "23456789TJQKA"
+SUITS = "SHDC"
+
+def card_value(card):
+    rank_value = RANKS.index(card[0])
+    suit_value = SUITS.index(card[1])
+    return rank_value, suit_value
+
+def flush(hand):
+    suits = set(card[1] for card in hand)
+    return len(suits) == 1
+
+def straight(ranks):
+    return (max(ranks) - min(ranks)) == 4 and len(set(ranks)) == 5
+
+def kind(n, ranks):
+    counts = Counter(ranks)
+    return any(count == n for count in counts.values())
+
+def two_pair(ranks):
+    pairs = set()
+    for rank, group in itertools.groupby(sorted(ranks)):
+        if len(list(group)) >= 2:
+            pairs.add(rank)
+        if len(pairs) == 2:
+            return True
+    return False
+
+def full_house(ranks):
+    counts = Counter(ranks)
+    sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))
+    return sorted_counts[0][1] == 3 and sorted_counts[1][1] == 2
+
+def four_of_a_kind(ranks):
+    counts = Counter(ranks)
+    return any(count == 4 for count in counts.values())
+
+def three_of_a_kind(ranks):
+    counts = Counter(ranks)
+    return any(count == 3 for count in counts.values())
+
+def best_hands(hands):
+    def get_score(hand):
+        cards = [(RANKS.index(card[0]), card[1]) for card in hand]
+        ranks = [card[0] for card in cards]
+        suites = [card[1] for card in cards]
+
+        if flush(cards) and straight(ranks):
+            return (8, max(ranks))
+        elif kind(4, ranks):
+            return (7, max(filter(lambda r: ranks.count(r) == 4, ranks)))
+        elif kind(3, ranks) and kind(2, ranks):
+            return (6, max(filter(lambda r: ranks.count(r) == 3, ranks)), max(filter(lambda r: ranks.count(r) == 2, ranks)))
+        elif flush(cards):
+            return (5, max(ranks), sorted(ranks)[-2:])
+        elif straight(ranks):
+            return (4, max(ranks))
+        elif three_of_a_kind(ranks):
+            return (3, max(filter(lambda r: ranks.count(r) == 3, ranks)), sorted(filter(lambda r: ranks.count(r) == 1, ranks))[::-1])
+        elif two_pair(ranks):
+            return (2, tuple(sorted(filter(lambda r: ranks.count(r) == 2, ranks), reverse=True)))
+        else:
+            return (1, sorted(ranks)[-2:])
+
+    scores = [get_score(hand) for hand in hands]
+    winner = max(enumerate(scores), key=lambda x: x[1])[0]
+    return winner
+
+```
+
+### Instruction:
+EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+====
+ERROR: test_a_straight_beats_three_of_a_kind (poker_test.PokerTest.test_a_straight_beats_three_of_a_kind)
+----
+Traceback (most recent call last):
+  File "poker/poker_test.py", line 107, in test_a_straight_beats_three_of_a_kind
+    best_hands(["4S 5H 4C 8D 4H", "3S 4D 2S 6D 5C"]), ["3S 4D 2S 6D 5C"]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 68, in best_hands
+    scores = [get_score(hand) for hand in hands]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 68, in <listcomp>
+    scores = [get_score(hand) for hand in hands]
+              ^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 47, in get_score
+    cards = [(RANKS.index(card[0]), card[1]) for card in hand]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 47, in <listcomp>
+    cards = [(RANKS.index(card[0]), card[1]) for card in hand]
+                                    ~~~~^^^
+IndexError: string index out of range
+
+====
+ERROR: test_a_tie_has_multiple_winners (poker_test.PokerTest.test_a_tie_has_multiple_winners)
+----
+Traceback (most recent call last):
+  File "poker/poker_test.py", line 24, in test_a_tie_has_multiple_winners
+    best_hands(
+  File "poker/poker.py", line 68, in best_hands
+    scores = [get_score(hand) for hand in hands]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 68, in <listcomp>
+    scores = [get_score(hand) for hand in hands]
+              ^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 47, in get_score
+    cards = [(RANKS.index(card[0]), card[1]) for card in hand]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 47, in <listcomp>
+    cards = [(RANKS.index(card[0]), card[1]) for card in hand]
+                                    ~~~~^^^
+IndexError: string index out of range
+
+====
+ERROR: test_aces_can_end_a_straight_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_10_j_q_k_a)
+----
+Traceback (most recent call last):
+  File "poker/poker_test.py", line 112, in test_aces_can_end_a_straight_10_j_q_k_a
+    best_hands(["4S 5H 4C 8D 4H", "10D JH QS KD AC"]), ["10D JH QS KD AC"]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "poker/poker.py", line 68, in best_hands
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in poker.py to resolve the errors.
+
+Filepath: poker.py
+```python
+import itertools
+from collections import Counter
+
+RANKS = "23456789TJQKA"
+SUITS = "SHDC"
+
+def card_value(card):
+    rank_value = RANKS.index(card[0])
+    suit_value = SUITS.index(card[1])
+    return rank_value, suit_value
+
+def flush(hand):
+    suits = set(card[1] for card in hand)
+    return len(suits) == 1
+
+def straight(ranks):
+    return (max(ranks) - min(ranks)) == 4 and len(set(ranks)) == 5
+
+def kind(n, ranks):
+    counts = Counter(ranks)
+    return any(count == n for count in counts.values())
+
+def two_pair(ranks):
+    pairs = set()
+    for rank, group in itertools.groupby(sorted(ranks)):
+        if len(list(group)) >= 2:
+            pairs.add(rank)
+        if len(pairs) == 2:
+            return True
+    return False
+
+def full_house(ranks):
+    counts = Counter(ranks)
+    sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))
+    return sorted_counts[0][1] == 3 and sorted_counts[1][1] == 2
+
+def four_of_a_kind(ranks):
+    counts = Counter(ranks)
+    return any(count == 4 for count in counts.values())
+
+def three_of_a_kind(ranks):
+    counts = Counter(ranks)
+    return any(count == 3 for count in counts.values())
+
+def best_hands(hands):
+    def get_score(hand):
+        cards = [(RANKS.index(card[0]), card[1]) for card in hand]
+        ranks = [card[0] for card in cards]
+        suites = [card[1] for card in cards]
+
+        if flush(cards) and straight(ranks):
+            return (8, max(ranks))
+        elif kind(4, ranks):
+            return (7, max(filter(lambda r: ranks.count(r) == 4, ranks)))
+        elif kind(3, ranks) and kind(2, ranks):
+            return (6, max(filter(lambda r: ranks.count(r) == 3, ranks)), max(filter(lambda r: ranks.count(r) == 2, ranks)))
+        elif flush(cards):
+            return (5, max(ranks), sorted(ranks)[-2:])
+        elif straight(ranks):
+            return (4, max(ranks))
+        elif three_of_a_kind(ranks):
+            return (3, max(filter(lambda r: ranks.count(r) == 3, ranks)), sorted(filter(lambda r: ranks.count(r) == 1, ranks))[::-1])
+        elif two_pair(ranks):
+            return (2, tuple(sorted(filter(lambda r: ranks.count(r) == 2, ranks), reverse=True)))
+        else:
+            return (1, sorted(ranks)[-2:])
+
+    scores = [get_score(hand) for hand in hands]
+    winner = max(enumerate(scores), key=lambda x: x[1])[0]
+    return winner
+
+```
+
+
+### Response:
+Filepath: poker.py
+```python
+
+

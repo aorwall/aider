@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement run-length encoding and decoding.\n\nRun-length encoding (RLE) is a simple form of data compression, where runs (consecutive data elements) are replaced by just one data value and count.\n\nFor example we can represent the original 53 characters with only 13.\n\n```text\n\"WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB\"  ->  \"12WB12W3B24WB\"\n```\n\nRLE allows the original data to be perfectly reconstructed from the compressed data, which makes it a lossless data compression.\n\n```text\n\"AABCCCDEEEE\"  ->  \"2AB3CD4E\"  ->  \"AABCCCDEEEE\"\n```\n\nFor simplicity, you can assume that the unencoded string will only contain the letters A through Z (either lower or upper case) and whitespace.\nThis way data to be encoded will never contain any numbers and numbers inside data to be decoded always represent the count for the following character.\n\n####\n\nUse the above instructions to modify the supplied files: run_length_encoding.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef decode(rle_string):\n    pattern = r'\\d+[\\w\\s]+|(\\D)'\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n\ndef encode(original_string):\n    encoded_string = \"\"\n    current_char = original_string[0]\n    counter = 1\n\n    for char in original_string[1:]:\n        if char == current_char:\n            counter += 1\n        else:\n            encoded_string += str(counter) + current_char\n            current_char = char\n            counter = 1\n\n    encoded_string += str(counter) + current_char\n    return encoded_string",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".EEEEEEE.FFF.\n====\nERROR: test_decode_lowercase_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_lowercase_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 54, in test_decode_lowercase_string\n    self.assertMultiLineEqual(decode(\"2a3b4c\"), \"aabbbcccc\")\n                              ^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 5, in decode\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 5, in <listcomp>\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: invalid literal for int() with base 10: ''\n\n====\nERROR: test_decode_multiple_whitespace_mixed_in_string (run_length_encoding_test.RunLengthEncodingTest.test_decode_multiple_whitespace_mixed_in_string)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 51, in test_decode_multiple_whitespace_mixed_in_string\n    self.assertMultiLineEqual(decode(\"2 hs2q q2w2 \"), \"  hsqq qww  \")\n                              ^^^^^^^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 5, in decode\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 5, in <listcomp>\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: invalid literal for int() with base 10: ''\n\n====\nERROR: test_decode_single_characters_only (run_length_encoding_test.RunLengthEncodingTest.test_decode_single_characters_only)\n----\nTraceback (most recent call last):\n  File \"run-length-encoding/run_length_encoding_test.py\", line 39, in test_decode_single_characters_only\n    self.assertMultiLineEqual(decode(\"XYZ\"), \"XYZ\")\n                              ^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 5, in decode\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"run-length-encoding/run_length_encoding.py\", line 5, in <listcomp>\n    return ''.join([match.group() * int(rle_string[:match.start()].split('+')[-1]) if match.group() != '' else match.group() for match in re.finditer(pattern, rle_string)])\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: invalid literal for int() with base 10: ''\n\n====\nERROR: test_decode_single_characters_with_repeated_characters (run_length_encoding_test.RunLengthEncodingTest.test_decode_single_characters_with_repeated_characters)\n----\nTraceback (most recent call last):\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in run_length_encoding.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef decode(rle_string):\n    pattern = r'(\\d+)?([\\w\\s])?'\n    return ''.join([match.group(2)*int(match.group(1)) if match.group(1) and match.group(2) else match.group(0) for match in re.finditer(pattern, rle_string)])\n\ndef encode(original_string):\n    encoded_string = \"\"\n    current_char = original_string[0]\n    counter = 1\n\n    for char in original_string[1:]:\n        if char == current_char:\n            counter += 1\n        else:\n            encoded_string += str(counter) + current_char\n            current_char = char\n            counter = 1\n\n    encoded_string += str(counter) + current_char\n    return encoded_string",
+        "language": "python",
+        "file_path": "run_length_encoding.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

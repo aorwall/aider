@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nPick the best hand(s) from a list of poker hands.\n\nSee [wikipedia][poker-hands] for an overview of poker hands.\n\n[poker-hands]: https://en.wikipedia.org/wiki/List_of_poker_hands\n\n####\n\nUse the above instructions to modify the supplied files: poker.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import itertools\n\ndef best_hands(hands):\n    \"\"\"Return the best hand(s) from a list of poker hands.\"\"\"\n    # Sort the hands by rank in descending order\n    sorted_hands = sorted(hands, key=lambda x: get_rank(x), reverse=True)\n\n    # Initialize the best hand(s) and their rank\n    best_hands = []\n    best_rank = -1\n\n    # Iterate over each unique combination of hands\n    for combination in itertools.combinations(sorted_hands, 5):\n        rank = get_rank(combination)\n        if rank > best_rank:\n            best_hands = [combination]\n            best_rank = rank\n        elif rank == best_rank:\n            best_hands.append(combination)\n\n    return best_hands\n\ndef get_rank(hand):\n    \"\"\"Return the rank of a poker hand.\"\"\"\n    ranks = [\"High Card\", \"One Pair\", \"Two Pairs\", \"Three of a Kind\", \"Straight\", \"Flush\", \"Full House\", \"Four of a Kind\", \"Straight Flush\"]\n    if len(set([card[0] for card in hand])) == 5:\n        return ranks.index(\"Straight Flush\")\n    else:\n        counts = [len([card for card in hand if card[0] == r]) for r in set([card[0] for card in hand])]\n        if max(counts) >= 4:\n            return ranks.index(\"Four of a Kind\")\n        elif max(counts) >= 3:\n            return ranks.index(\"Full House\")\n        elif max(counts) >= 2:\n            return ranks.index(\"Flush\")\n        else:\n            return ranks.index(\"High Card\")\n",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\n====\nFAIL: test_a_straight_beats_three_of_a_kind (poker_test.PokerTest.test_a_straight_beats_three_of_a_kind)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 106, in test_a_straight_beats_three_of_a_kind\n    self.assertEqual(\nAssertionError: Lists differ: [] != ['3S 4D 2S 6D 5C']\n\nSecond list contains 1 additional elements.\nFirst extra element 0:\n'3S 4D 2S 6D 5C'\n\n- []\n+ ['3S 4D 2S 6D 5C']\n\n====\nFAIL: test_a_tie_has_multiple_winners (poker_test.PokerTest.test_a_tie_has_multiple_winners)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 23, in test_a_tie_has_multiple_winners\n    self.assertEqual(\nAssertionError: Lists differ: [] != ['3S 4S 5D 6H JH', '3H 4H 5C 6C JD']\n\nSecond list contains 2 additional elements.\nFirst extra element 0:\n'3S 4S 5D 6H JH'\n\n- []\n+ ['3S 4S 5D 6H JH', '3H 4H 5C 6C JD']\n\n====\nFAIL: test_aces_can_end_a_straight_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_10_j_q_k_a)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 111, in test_aces_can_end_a_straight_10_j_q_k_a\n    self.assertEqual(\nAssertionError: Lists differ: [] != ['10D JH QS KD AC']\n\nSecond list contains 1 additional elements.\nFirst extra element 0:\n'10D JH QS KD AC'\n\n- []\n+ ['10D JH QS KD AC']\n\n====\nFAIL: test_aces_can_end_a_straight_flush_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_flush_10_j_q_k_a)\n----\nTraceback (most recent call last):\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in poker.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import itertools\n\ndef best_hands(hands):\n    \"\"\"Return the best hand(s) from a list of poker hands.\"\"\"\n    # Sort the hands by rank in descending order\n    sorted_hands = sorted(hands, key=lambda x: get_rank(x), reverse=True)\n\n    # Initialize the best hand(s) and their rank\n    best_hands = []\n    best_rank = -1\n\n    # Iterate over each unique combination of hands\n    for combination in itertools.combinations(sorted_hands, 5):\n        rank = get_rank(combination)\n        if rank > best_rank:\n            best_hands = [combination]\n            best_rank = rank\n        elif rank == best_rank:\n            best_hands.append(combination)\n\n    return best_hands\n\ndef get_rank(hand):\n    \"\"\"Return the rank of a poker hand.\"\"\"\n    ranks = [\"High Card\", \"One Pair\", \"Two Pairs\", \"Three of a Kind\", \"Straight\", \"Flush\", \"Full House\", \"Four of a Kind\", \"Straight Flush\"]\n    if len(set([card[0] for card in hand])) == 5:\n        return ranks.index(\"Straight Flush\")\n    else:\n        counts = [len([card for card in hand if card[0] == r]) for r in set([card[0] for card in hand])]\n        if max(counts) >= 4:\n            return ranks.index(\"Four of a Kind\")\n        elif max(counts) >= 3:\n            return ranks.index(\"Full House\")\n        elif max(counts) >= 2:\n            return ranks.index(\"Flush\")\n        else:\n            return ranks.index(\"High Card\")\n",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

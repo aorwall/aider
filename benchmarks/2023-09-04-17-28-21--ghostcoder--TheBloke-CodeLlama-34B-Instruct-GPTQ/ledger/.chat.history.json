@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nRefactor a ledger printer.\n\nThe ledger exercise is a refactoring exercise.\nThere is code that prints a nicely formatted ledger, given a locale (American or Dutch) and a currency (US dollar or euro).\nThe code however is rather badly written, though (somewhat surprisingly) it consistently passes the test suite.\n\nRewrite this code.\nRemember that in refactoring the trick is to make small steps that keep the tests passing.\nThat way you can always quickly go back to a working version.\nVersion control tools like git can help here as well.\n\nPlease keep a log of what changes you've made and make a comment on the exercise containing that log, this will help reviewers.\n\n####\n\nUse the above instructions to modify the supplied files: ledger.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "class Ledger:\n    def __init__(self, filepath=None):\n        self._entries = {}\n        self._filepath = None\n        if filepath is not None:\n            with open(filepath, \"r\") as f:\n                lines = [line.strip() for line in f.readlines()]\n            for line in lines:\n                parts = line.split(\"|\")\n                date = datetime.datetime.strptime(parts[0], \"%Y-%m-%d\").date()\n                desc = parts[1].strip()\n                change = int(float(parts[2]) * 100)\n                self.record(date, desc, change)\n\n    @property\n    def size(self):\n        return len(self._entries)\n\n    def record(self, date, description, change):\n        assert type(date) == datetime.date\n        assert type(description) == str\n        assert type(change) == int\n        self._entries[(date, description)] = Entry(date, description, change)\n\n    def get_balance(self, date=None):\n        balance = 0\n        if date is None:\n            date = datetime.date.today()\n        for key in sorted(self._entries.keys(), reverse=True):\n            if key[0] <= date:\n                balance += self._entries[key].change\n        return balance\n\n    def write_to_file(self, filepath):\n        with open(filepath, \"w+\") as f:\n            for key in sorted(self._entries.keys(), reverse=True):\n                f.write(\"%s\\n\" % (self._entries[key]))\n\n    def __repr__(self):\n        s = \"\"\n        for key in sorted(self._entries.keys(), reverse=True):\n            s += \"%s\\n\" % (self._entries[key])\n        return s[:-1]\n\n    def __iter__(self):\n        yield from self._entries.values()\n\n\nclass Entry:\n    def __init__(self, date, description, change):\n        self.date = date\n        self.description = description\n        self.change = change\n\n    def __eq__(self, other):\n        return (\n            self.date == other.date\n            and self.description == other.description\n            and self.change == other.change\n        )\n\n    def __hash__(self):\n        return hash((self.date, self.description, self.change))\n\n    def __lt__(self, other):\n        return self.date < other.date\n\n    def __gt__(self, other):\n        return self.date > other.date\n\n    def __le__(self, other):\n        return self.date <= other.date\n\n    def __ge__(self, other):\n        return self.date >= other.date\n\n    def __ne__(self, other):\n        return not self.__eq__(other)\n\n    def __repr__(self):\n        return \"%s | %s | $%.2f\" % (\n            self.date.isoformat(),\n            self.description,\n            self.change / 100.0,\n        )\n\n\ndef demo():\n    l = Ledger(\"ledger.txt\")\n    print(l)\n    print(\"\\nsize:\", l.size)\n    print(\"\\nget_balance('2019-12-31'):\", l.get_balance(datetime.date(2019, 12, 31)))\n    print(\"\\nget_balance('2020-06-30'):\", l.get_balance(datetime.date(2020, 6, 30)))\n    print(\"\\nget_balance():\", l.get_balance())\n    l.record(datetime.date(2020, 7, 1), \"New entry\", -12345)\n    print(\"\\nl after new entry:\")\n    print(l)\n    l.write_to_file(\"new_ledger.txt\")\n    print(\"\\ncontents of new_ledger.txt:\")\n    with open(\"new_ledger.txt\", \"r\") as f:\n        print(f.read())\n\n\nif __name__ == \"__main__\":\n    demo()",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "E\n====\nERROR: ledger_test (unittest.loader._FailedTest.ledger_test)\n----\nImportError: Failed to import test module: ledger_test\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 407, in _find_test_path\n    module = self._get_module_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 350, in _get_module_from_name\n    __import__(name)\n  File \"/home/albert/repos/albert/aider/ledger/ledger_test.py\", line 7, in <module>\n    from ledger import (\nImportError: cannot import name 'format_entries' from 'ledger' (/home/albert/repos/albert/aider/ledger/ledger.py)\n\n\n----\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in ledger.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from typing import List\nimport datetime\n\nclass Ledger:\n    def __init__(self, filepath=None):\n        self._entries = []\n        self._filepath = None\n        if filepath is not None:\n            with open(filepath, 'r') as f:\n                lines = [line.strip() for line in f.readlines()]\n            for line in lines:\n                parts = line.split('|')\n                date = datetime.datetime.strptime(parts[0], '%Y-%m-%d').date()\n                desc = parts[1].strip()\n                change = int(float(parts[2])*100)\n                self.record(date, desc, change)\n\n    @property\n    def size(self):\n        return len(self._entries)\n\n    def record(self, date, description, change):\n        assert type(date) == datetime.date\n        assert type(description) == str\n        assert type(change) == int\n        self._entries.append(Entry(date, description, change))\n\n    def get_balance(self, date=None):\n        balance = 0\n        if date is None:\n            date = datetime.date.today()\n        for entry in self._entries:\n            if entry.date <= date:\n                balance += entry.change\n        return balance\n\n    def write_to_file(self, filepath):\n        with open(filepath, 'w+') as f:\n            for entry in self._entries:\n                f.write('%s\\n' % (entry))\n\n    def __repr__(self):\n        s = ''\n        for entry in self._entries:\n            s += '%s\\n' % (entry)\n        return s[:-1]\n\n    def __iter__(self):\n        yield from self._entries\n\nclass Entry:\n    def __init__(self, date, description, change):\n        self.date = date\n        self.description = description\n        self.change = change\n\n    def __eq__(self, other):\n        return (self.date == other.date and self.description == other.description and self.change == other.change)\n\n    def __hash__(self):\n        return hash((self.date, self.description, self.change))\n\n    def __lt__(self, other):\n        return self.date < other.date\n\n    def __gt__(self, other):\n        return self.date > other.date\n\n    def __le__(self, other):\n        return self.date <= other.date\n\n    def __ge__(self, other):\n        return self.date >= other.date\n\n    def __ne__(self, other):\n        return not self.__eq__(other)\n\n    def __repr__(self):\n        return '%s | %s | $%.2f' % (self.date.isoformat(), self.description, self.change/100.0)\n\ndef demo():\n    l = Ledger('ledger.txt')\n    print(l)\n    print('\\nsize:', l.size)\n    print('\\nget_balance(\\'2019-12-31\\'):', l.get_balance(datetime.date(2019, 12, 31)))\n    print('\\nget_balance(\\'2020-06-30\\'):', l.get_balance(datetime.date(2020, 6, 30)))\n    print('\\nget_balance():', l.get_balance())\n    l.record(datetime.date(2020, 7, 1), 'New entry', -12345)\n    print('\\nl after new entry:')\n    print(l)\n    l.write_to_file('new_ledger.txt')\n    print('\\ncontents of new_ledger.txt:')\n    with open('new_ledger.txt', 'r') as f:\n        print(f.read())\n\nif __name__ == '__main__':\n    demo()\n\n\nif __name__ == \"__main__\":\n    demo()",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

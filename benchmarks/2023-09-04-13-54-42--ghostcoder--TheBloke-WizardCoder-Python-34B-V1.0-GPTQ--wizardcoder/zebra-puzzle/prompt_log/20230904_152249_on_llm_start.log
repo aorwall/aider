@@ -1,0 +1,226 @@
+method: on_llm_start [2023-09-04 15:22:49]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Solve the zebra puzzle.
+
+1. There are five houses.
+2. The Englishman lives in the red house.
+3. The Spaniard owns the dog.
+4. Coffee is drunk in the green house.
+5. The Ukrainian drinks tea.
+6. The green house is immediately to the right of the ivory house.
+7. The Old Gold smoker owns snails.
+8. Kools are smoked in the yellow house.
+9. Milk is drunk in the middle house.
+10. The Norwegian lives in the first house.
+11. The man who smokes Chesterfields lives in the house next to the man with the fox.
+12. Kools are smoked in the house next to the house where the horse is kept.
+13. The Lucky Strike smoker drinks orange juice.
+14. The Japanese smokes Parliaments.
+15. The Norwegian lives next to the blue house.
+
+Each of the five houses is painted a different color, and their inhabitants are of different national extractions, own different pets, drink different beverages and smoke different brands of cigarettes.
+
+Which of the residents drinks water?
+Who owns the zebra?
+
+####
+
+Use the above instructions to modify the supplied files: zebra_puzzle.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: zebra_puzzle.py
+```python
+
+```
+
+### Response:
+Filepath: zebra_puzzle.py
+```python
+class House:
+    def __init__(self, nationality, pet, drink, brand, animal):
+        self.nationality = nationality
+        self.pet = pet
+        self.drink = drink
+        self.brand = brand
+        self.animal = animal
+
+
+def find_owner_of_pet(houses, pet):
+    for house in houses:
+        if house.pet == pet:
+            return house.nationality
+
+
+def find_house_with_color(houses, color):
+    for index, house in enumerate(houses):
+        if house.animal == color:
+            return index
+
+
+def drinks_water():
+    houses = [House('English', None, 'tea', None, 'red'),
+             House('Spaniard', 'dog', 'coffee', 'OldGold', 'ivory'),
+             House('Ukrainian', None, 'milk', 'Kools', 'green'),
+             House('Norwegian', 'fox', 'water', 'Chesterfields', 'blue'),
+             House('Japanese', 'snails', 'orange juice', 'LuckyStrikes', 'yellow')]
+    
+    norwegian_index = find_house_with_color(houses, 'blue')
+    japanese_index = find_house_with_color(houses, 'yellow')
+    
+    # The Norwegian lives in the first house.
+    # The man who smokes Chesterfields lives in the house next to the man with the fox.
+    chesterfield_index = norwegian_index + 1
+    
+    # The man who smokes Chesterfields lives in the house next to the house where the horse is kept.
+    horse_index = chesterfield_index - 1
+    
+    # The Lucky Strike smoker drinks orange juice.
+    lucky_strike_index = horse_index + 1
+    
+    # The Japanese smokes Parliaments.
+    parliament_index = japanese_index - 1
+    
+    # The green house is immediately to the right of the ivory house.
+    green_index = find_house_with_color(houses, 'ivory') + 1
+    
+    # The Old Gold smoker owns snails.
+    old_gold_index = find_house_with_color(houses, 'green') - 1
+    
+    # The Spaniard owns the dog.
+    spaniard_index = find_house_with_color(houses, 'yellow') + 2
+    
+    # The Englishman lives in the red house.
+    englishman_index = find_house_with_color(houses, 'red')
+    
+    # The Ukranian drinks tea.
+    ukrainian_index = find_house_with_color(houses, 'green')
+    
+    # The Norwegian lives next to the blue house.
+    # The man who smokes Chesterfields lives in the house next to the man with the fox.
+    # The man who smokes Chesterfields lives in the house next to the house where the horse is kept.
+    # The Lucky Strike smoker drinks orange juice.
+    # The Japanese smokes Parliaments.
+    # The green house is immediately to the right of the ivory house.
+    # The Old Gold smoker owns snails.
+    # The Spaniard owns the dog.
+    # The Englishman lives in the red house.
+    # The Ukranian drinks tea.
+    
+    possible_solutions = []
+    for index, house in enumerate(houses):
+        if (index != englishman_index and house.nationality == "English") or \
+           (index != spaniard_index and house.pet == "dog") or \
+           (index != lucky_strike_index and house.brand == "LuckyStrikes" and house.drink == "orange juice") or \
+           (index != parliament_index and house.brand == "Parliaments" and house.nationality == "Japanese") or \
+           (index != green_index and house.animal == "horse") or \
+           (index != old_gold_index and house.brand == "OldGold" and house.pet == "snails") or \
+           (index != norwegian_index and house.```
+### Instruction:
+FF
+====
+FAIL: test_resident_who_drinks_water (zebra_puzzle_test.ZebraPuzzleTest.test_resident_who_drinks_water)
+----
+Traceback (most recent call last):
+  File "zebra-puzzle/zebra_puzzle_test.py", line 15, in test_resident_who_drinks_water
+    self.assertEqual(drinks_water(), "Norwegian")
+AssertionError: None != 'Norwegian'
+
+====
+FAIL: test_resident_who_owns_zebra (zebra_puzzle_test.ZebraPuzzleTest.test_resident_who_owns_zebra)
+----
+Traceback (most recent call last):
+  File "zebra-puzzle/zebra_puzzle_test.py", line 18, in test_resident_who_owns_zebra
+    self.assertEqual(owns_zebra(), "Japanese")
+AssertionError: None != 'Japanese'
+
+----
+
+
+FAILED (failures=2)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in zebra_puzzle.py to resolve the errors.
+
+Filepath: zebra_puzzle.py
+```python
+def drinks_water():
+    pass
+
+
+def owns_zebra():
+    pass
+
+```
+
+
+### Response:
+Filepath: zebra_puzzle.py
+```python
+
+

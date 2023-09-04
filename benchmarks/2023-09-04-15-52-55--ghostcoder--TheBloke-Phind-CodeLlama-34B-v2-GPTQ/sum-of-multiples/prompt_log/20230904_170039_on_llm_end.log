@@ -1,0 +1,19 @@
+method: on_llm_end [2023-09-04 17:00:39]
+llm_output: null
+prompt:
+from itertools import compress, count
+
+def sum_of_multiples(limit, multiples):
+    # Create a list where True means the corresponding number
+    # is a multiple of one of the base values
+    accumulator = [False] * limit
+    for m in multiples:
+        accumulator[m:] = [not x for x in accumulator[m:]]
+        
+    # Use Boolean logic to find the indices of the Trues in the list
+    true_indices = [i for i, x in enumerate(accumulator) if x]
+    
+    # Return the sum of the indicated indices
+    return sum(true_indices)
+
+---

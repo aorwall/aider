@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nBob is a [lackadaisical][] teenager.\nHe likes to think that he's very cool.\nAnd he definitely doesn't get excited about things.\nThat wouldn't be cool.\n\nWhen people talk to him, his responses are pretty limited.\n\n[lackadaisical]: https://www.collinsdictionary.com/dictionary/english/lackadaisical\n# Instructions\n\nYour task is to determine what Bob will reply to someone when they say something to him or ask him a question.\n\nBob only ever answers one of five things:\n\n- **\"Sure.\"**\n  This is his response if you ask him a question, such as \"How are you?\"\n  The convention used for questions is that it ends with a question mark.\n- **\"Whoa, chill out!\"**\n  This is his answer if you YELL AT HIM.\n  The convention used for yelling is ALL CAPITAL LETTERS.\n- **\"Calm down, I know what I'm doing!\"**\n  This is what he says if you yell a question at him.\n- **\"Fine. Be that way!\"**\n  This is how he responds to silence.\n  The convention used for silence is nothing, or various combinations of whitespace characters.\n- **\"Whatever.\"**\n  This is what he answers to anything else.\n\n####\n\nUse the above instructions to modify the supplied files: bob.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "bob.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef response(hey_bob):\n    hey_bob = hey_bob.strip()\n\n    if hey_bob == \"\":\n        return \"Fine. Be that way!\"\n    elif re.match('.*\\?$', hey_bob) is not None:\n        return \"Sure.\"\n    elif re.search('[A-Z]+', hey_bob) is not None and hey_bob == hey_bob.upper():\n        return \"Whoa, chill out!\"\n    elif re.search('[A-Z]+', hey_bob) is not None:\n        return \"Calm down, I know what I'm doing!\"\n    else:\n        return \"Whatever.\"\n",
+        "language": "python",
+        "file_path": "bob.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".....FF..F...........FFFF\n====\nFAIL: test_forceful_question (bob_test.BobTest.test_forceful_question)\n----\nTraceback (most recent call last):\n  File \"bob/bob_test.py\", line 42, in test_forceful_question\n    self.assertEqual(\nAssertionError: 'Sure.' != \"Calm down, I know what I'm doing!\"\n- Sure.\n+ Calm down, I know what I'm doing!\n\n\n====\nFAIL: test_multiple_line_question (bob_test.BobTest.test_multiple_line_question)\n----\nTraceback (most recent call last):\n  File \"bob/bob_test.py\", line 83, in test_multiple_line_question\n    self.assertEqual(\nAssertionError: \"Calm down, I know what I'm doing!\" != 'Whatever.'\n- Calm down, I know what I'm doing!\n+ Whatever.\n\n\n====\nFAIL: test_non_question_ending_with_whitespace (bob_test.BobTest.test_non_question_ending_with_whitespace)\n----\nTraceback (most recent call last):\n  File \"bob/bob_test.py\", line 100, in test_non_question_ending_with_whitespace\n    self.assertEqual(\nAssertionError: \"Calm down, I know what I'm doing!\" != 'Whatever.'\n- Calm down, I know what I'm doing!\n+ Whatever.\n\n\n====\nFAIL: test_statement_containing_question_mark (bob_test.BobTest.test_statement_containing_question_mark)\n----\nTraceback (most recent call last):\n  File \"bob/bob_test.py\", line 65, in test_statement_containing_question_mark\n    self.assertEqual(response(\"Ending with ? means a question.\"), \"Whatever.\")\nAssertionError: \"Calm down, I know what I'm doing!\" != 'Whatever.'\n- Calm down, I know what I'm doing!\n+ Whatever.\n\n\n====\nFAIL: test_stating_something (bob_test.BobTest.test_stating_something)\n----\nTraceback (most recent call last):\n  File \"bob/bob_test.py\", line 14, in test_stating_something\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in bob.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "bob.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\ndef response(hey_bob):\n    hey_bob = hey_bob.strip()\n\n    if hey_bob == \"\":\n        return \"Fine. Be that way!\"\n    elif re.match('^[^?]*\\?$', hey_bob) is not None:\n        return \"Sure.\"\n    elif re.search('[A-Z]+', hey_bob) is not None and hey_bob == hey_bob.upper():\n        return \"Whoa, chill out!\"\n    elif re.search('[A-Z]+', hey_bob) is not None:\n        return \"Calm down, I know what I'm doing!\"\n    else:\n        return \"Whatever.\"\n",
+        "language": "python",
+        "file_path": "bob.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

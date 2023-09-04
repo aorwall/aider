@@ -1,0 +1,109 @@
+method: on_llm_end [2023-09-04 14:38:46]
+llm_output: null
+prompt:
+import copy
+from typing import List
+
+class NodeNotFoundException(Exception):
+    """Raises an exception when a node is not found."""
+    pass
+
+class NotAPathException(Exception):
+    """Raises an exception when there is no path between two nodes."""
+    pass
+
+def find_node_index(nodes: List['Node'], target_label: str) -> int:
+    """Finds the index of a node with a given label in a list of nodes."""
+    for i, node in enumerate(nodes):
+        if node.label == target_label:
+            return i
+    raise NodeNotFoundException(f"Node with label '{target_label}' was not found.")
+
+def find_new_root(tree: 'Tree', old_root_label: str, new_root_label: str) -> 'Tree':
+    """Creates a new tree with the specified node as the root."""
+    # Find the index of the new root node
+    try:
+        new_root_index = find_node_index(tree.children, new_root_label)
+    except NodeNotFoundException:
+        # If the new root node does not exist in the original tree, create a new node
+        new_root = Node(new_root_label)
+        new_root.add_child(copy.deepcopy(tree))
+        return new_root
+
+    # Create a new tree with the new root node at the top
+    new_tree = Node(new_root_label)
+    new_tree.children = [tree.children[new_root_index]]
+
+    # Remove the new root node from the original tree
+    del tree.children[new_root_index]
+
+    return new_tree
+
+def find_path(tree: 'Tree', start_label: str, end_label: str) -> List['Node']:
+    """Returns the path between two nodes in a tree."""
+    current_node = tree
+    path = [current_node]
+
+    while True:
+        found_path = False
+        for child in current_node.children:
+            if child.label == start_label:
+                path.append(child)
+                return path
+            elif child.label != end_label:
+                path.append(child)
+                current_node = child
+                found_path = True
+                break
+        if not found_path:
+            raise NotAPathException("No path found.")
+
+class Node:
+    def __init__(self, label: str, children: List['Node'] = None):
+        self.label = label
+        self.children = children if children is not None else []
+
+    def add_child(self, child: 'Node'):
+        self.children.append(child)
+
+    def __repr__(self):
+        return f"<{self.label}: {''.join([str(c) for c in self.children])}>"
+
+class Tree:
+    def __init__(self, label: str, children: List[Node] = None):
+        self.root = Node(label, children)
+
+    @property
+    def label(self):
+        return self.root.label
+
+    @property
+    def children(self):
+        return self.root.children
+
+    def from_pov(self, from_node: str) -> 'Tree':
+        """Re-orients the tree to the point of view of a specified node."""
+        try:
+            new_root = find_new_root(self.root, self.label, from_node)
+        except NodeNotFoundException as e:
+            raise ValueError(e)
+        except NotAPathException:
+            raise ValueError("No path found.")
+
+        return Tree(new_root.label, new_root.children)
+
+    def path_to(self, from_node: str, to_node: str) -> List[str]:
+        """Returns the path between two nodes in the tree."""
+        try:
+            path = find_path(self.root, from_node, to_node)
+        except NodeNotFoundException as e:
+            raise ValueError(e)
+        except NotAPathException:
+            raise ValueError("No path found.")
+
+        return [node.label for node in path]
+
+    def __repr__(self):
+        return repr(self.root)
+
+---

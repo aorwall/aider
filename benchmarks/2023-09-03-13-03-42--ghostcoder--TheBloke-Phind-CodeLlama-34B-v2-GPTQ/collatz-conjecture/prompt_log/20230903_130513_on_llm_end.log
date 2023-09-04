@@ -1,0 +1,21 @@
+method: on_llm_end [2023-09-03 13:05:13]
+llm_output: null
+prompt:
+In the current version of the program, the error messages for raising a ValueError are set to "Input must be a strictly positive integer". However, the tests expect the message to be "Only positive integers are allowed". To fix these failures, simply update the error messages in the `if` statements where we check for values less than 1. Here's what the corrected code looks like:
+
+```python
+def steps(number):
+    # Check if the number is less than 1, if true then raise ValueError
+    if number < 1:
+        raise ValueError('Only positive integers are allowed')
+
+    count = 0
+    while number != 1:
+        if number % 2 == 0:
+            number //= 2
+        else:
+            number = (3 * number) + 1
+        count += 1
+    return count
+```
+---

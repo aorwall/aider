@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou work for a company that makes an online multiplayer game called Lexiconia.\n\nTo play the game, each player is given 13 letters, which they must rearrange to create words.\nDifferent letters have different point values, since it's easier to create words with some letters than others.\n\nThe game was originally launched in English, but it is very popular, and now the company wants to expand to other languages as well.\n\nDifferent languages need to support different point values for letters.\nThe point values are determined by how often letters are used, compared to other letters in that language.\n\nFor example, the letter 'C' is quite common in English, and is only worth 3 points.\nBut in Norwegian it's a very rare letter, and is worth 10 points.\n\nTo make it easier to add new languages, your team needs to change the way letters and their point values are stored in the game.\n# Instructions\n\nYour task is to change the data format of letters and their point values in the game.\n\nCurrently, letters are stored in groups based on their score, in a one-to-many mapping.\n\n- 1 point: \"A\", \"E\", \"I\", \"O\", \"U\", \"L\", \"N\", \"R\", \"S\", \"T\",\n- 2 points: \"D\", \"G\",\n- 3 points: \"B\", \"C\", \"M\", \"P\",\n- 4 points: \"F\", \"H\", \"V\", \"W\", \"Y\",\n- 5 points: \"K\",\n- 8 points: \"J\", \"X\",\n- 10 points: \"Q\", \"Z\",\n\nThis needs to be changed to store each individual letter with its score in a one-to-one mapping.\n\n- \"a\" is worth 1 point.\n- \"b\" is worth 3 points.\n- \"c\" is worth 3 points.\n- \"d\" is worth 2 points.\n- etc.\n\nAs part of this change, the team has also decided to change the letters to be lower-case rather than upper-case.\n\n~~~~exercism/note\nIf you want to look at how the data was previously structured and how it needs to change, take a look at the examples in the test suite.\n~~~~\n\n####\n\nUse the above instructions to modify the supplied files: etl.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "etl.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "LEGACY_DATA = {\n    1: [\"A\", \"E\", \"I\", \"O\", \"U\", \"L\", \"N\", \"R\", \"S\", \"T\"],\n    2: [\"D\", \"G\"],\n    3: [\"B\", \"C\", \"M\", \"P\"],\n    4: [\"F\", \"H\", \"V\", \"W\", \"Y\"],\n    5: [\"K\"],\n    8: [\"J\", \"X\"],\n    10: [\"Q\", \"Z\"]\n}\n\nNEW_DATA = {}\nfor value, letters in LEGACY_DATA.items():\n    for letter in letters:\n        NEW_DATA[letter.lower()] = value\n\ndef transform(legacy_data):\n    if legacy_data not in LEGACY_DATA:\n        raise ValueError(\"Invalid input\")\n    return [NEW_DATA[letter.lower()] for letter in LEGACY_DATA[legacy_data]]\n",
+        "language": "python",
+        "file_path": "etl.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEE\n====\nERROR: test_multiple_scores_with_differing_numbers_of_letters (etl_test.EtlTest.test_multiple_scores_with_differing_numbers_of_letters)\n----\nTraceback (most recent call last):\n  File \"etl/etl_test.py\", line 66, in test_multiple_scores_with_differing_numbers_of_letters\n    self.assertEqual(transform(legacy_data), data)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"etl/etl.py\", line 17, in transform\n    if legacy_data not in LEGACY_DATA:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: unhashable type: 'dict'\n\n====\nERROR: test_multiple_scores_with_multiple_letters (etl_test.EtlTest.test_multiple_scores_with_multiple_letters)\n----\nTraceback (most recent call last):\n  File \"etl/etl_test.py\", line 26, in test_multiple_scores_with_multiple_letters\n    self.assertEqual(transform(legacy_data), data)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"etl/etl.py\", line 17, in transform\n    if legacy_data not in LEGACY_DATA:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: unhashable type: 'dict'\n\n====\nERROR: test_single_letter (etl_test.EtlTest.test_single_letter)\n----\nTraceback (most recent call last):\n  File \"etl/etl_test.py\", line 16, in test_single_letter\n    self.assertEqual(transform(legacy_data), data)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"etl/etl.py\", line 17, in transform\n    if legacy_data not in LEGACY_DATA:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: unhashable type: 'dict'\n\n====\nERROR: test_single_score_with_multiple_letters (etl_test.EtlTest.test_single_score_with_multiple_letters)\n----\nTraceback (most recent call last):\n  File \"etl/etl_test.py\", line 21, in test_single_score_with_multiple_letters\n    self.assertEqual(transform(legacy_data), data)\n                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"etl/etl.py\", line 17, in transform\n    if legacy_data not in LEGACY_DATA:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: unhashable type: 'dict'\n\n----\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in etl.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "etl.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "LEGACY_DATA = {\n    1: {\"A\": True, \"E\": True, \"I\": True, \"O\": True, \"U\": True, \"L\": True, \"N\": True, \"R\": True, \"S\": True, \"T\": True},\n    2: {\"D\": True, \"G\": True},\n    3: {\"B\": True, \"C\": True, \"M\": True, \"P\": True},\n    4: {\"F\": True, \"H\": True, \"V\": True, \"W\": True, \"Y\": True},\n    5: {\"K\": True},\n    8: {\"J\": True, \"X\": True},\n    10: {\"Q\": True, \"Z\": True}\n}\n\nNEW_DATA = {}\nfor value, letters in LEGACY_DATA.items():\n    for letter in letters:\n        NEW_DATA[letter.lower()] = value\n\ndef transform(legacy_data):\n    if isinstance(legacy_data, int):\n        return [NEW_DATA[letter.lower()] for letter in LEGACY_DATA[legacy_data]]\n    elif isinstance(legacy_data, str):\n        try:\n            score = int(legacy_data)\n            return [NEW_DATA[letter.lower()] for letter in LEGACY_DATA[score]]\n        except ValueError:\n            raise ValueError(\"Invalid input\")\n        except KeyError:\n            raise ValueError(\"Invalid input\")\n    else:\n        raise TypeError(\"Invalid input type\")\n",
+        "language": "python",
+        "file_path": "etl.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

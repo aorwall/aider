@@ -1,0 +1,28 @@
+method: on_llm_end [2023-09-04 15:33:08]
+llm_output: null
+prompt:
+import random
+from typing import Optional
+
+class Cipher:
+    def __init__(self, key: str = None):
+        self._key = key or ''.join([chr(random.randint(ord('a'), ord('z'))) for _ in range(100)])
+        
+    def encode(self, text: str) -> str:
+        encoded = ''
+        for char in text:
+            new_char = chr((ord(char) - ord('a') + 1) % 26 + ord('a')) if char.isalpha() else char
+            encoded += new_char
+            
+        return encoded
+    
+    def decode(self, text: str) -> str:
+        decoded = ''
+        for char in text:
+            new_char = chr((ord(char) - ord('a') - 1) % 26 + ord('a')) if char.isalpha() else char
+            decoded += new_char
+            
+        return decoded
+
+
+---

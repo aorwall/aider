@@ -1,0 +1,45 @@
+method: on_llm_end [2023-09-04 19:33:40]
+llm_output: null
+prompt:
+def can_chain(dominoes):
+    # Check if there are no dominoes
+    if len(dominoes) == 0:
+        return False
+
+    # Initialize a dictionary to store the counts of each number
+    num_counts = {}
+    for domino in dominoes:
+        for num in domino:
+            if num in num_counts:
+                num_counts[num] += 1
+            else:
+                num_counts[num] = 1
+
+    # Check if there are an equal number of each number
+    for count in num_counts.values():
+        if count % 2 != 0:
+            return False
+
+    # Sort the dominoes by the first number
+    sorted_dominoes = sorted(dominoes, key=lambda x: x[0])
+
+    # Create a list to store the chain
+    chain = []
+
+    # Iterate over the sorted dominoes
+    for domino in sorted_dominoes:
+        # If the current domino can be added to the chain, add it
+        if len(chain) > 0 and chain[-1][1] == domino[0]:
+            chain.append(domino)
+        # Otherwise, check if the current domino can start a new chain
+        elif len(chain) == 0 or chain[-1][1] == domino[1]:
+            chain.append(domino)
+        # If neither condition is met, return False
+        else:
+            return False
+
+    # Return True if the entire input was processed without returning False
+    return True
+
+
+---

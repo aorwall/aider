@@ -1,0 +1,37 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nRefactor a ledger printer.\n\nThe ledger exercise is a refactoring exercise.\nThere is code that prints a nicely formatted ledger, given a locale (American or Dutch) and a currency (US dollar or euro).\nThe code however is rather badly written, though (somewhat surprisingly) it consistently passes the test suite.\n\nRewrite this code.\nRemember that in refactoring the trick is to make small steps that keep the tests passing.\nThat way you can always quickly go back to a working version.\nVersion control tools like git can help here as well.\n\nPlease keep a log of what changes you've made and make a comment on the exercise containing that log, this will help reviewers.\n\n####\n\nUse the above instructions to modify the supplied files: ledger.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "ledger.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Filepath: ledger.py\n```python\nclass LedgerEntry:\n    def __init__(self, date, description, change):\n        self.date = date\n        self.description = description\n        self.change = change\n\n    @staticmethod\n    def from_string(ledger_entry_line):\n        fields = ledger_entry_line.split(',')\n        date = datetime.datetime.strptime(fields[0], '%Y-%m-%d').date()\n        description = fields[1]\n        change = int(float(fields[2]) * 100)\n        return LedgerEntry(date, description, change)\n\n    def __repr__(self):\n        return f\"{self.__class__.__name__}({self.date!r}, {self.description!r}, {self.change})\"\n\n\nclass Ledger:\n    def __init__(self):\n        self._entries = []\n\n    def add_entry(self, entry):\n        self._entries.append(entry)\n\n    def remove_entry(self, index):\n        del self._entries[index]\n\n    def get_balance(self):\n        balance = 0\n        for entry in reversed(self._entries):\n            balance -= entry.change\n        return balance\n\n    def print_table(self, currency='USD'):\n        table = ''\n        for i, entry in enumerate(reversed(self._entries)):\n            # Write entry date to table\n            day = entry.date.day\n            day = str(day)\n            if len(day) < 2:\n                day = '0' + day\n            date_str = day\n            date_str += '-'\n            month = entry.date.month\n            month = str(month)\n            if len(month) < 2:\n                month = '0' + month\n            date_str += month\n            date_str += '-'\n            year = entry.date.year\n            year = str(year)\n            while len(year) < 4:\n                year = '0' + year\n            date_str += year\n            table += date_str\n            table += ' | '\n\n            # Write entry description to table\n            # Truncate if necessary\n            if len(entry.description) > 25:\n                for i in range(22):\n                    table += entry.description[i]\n                table += '...'\n            else:\n                for i in range(25):\n                    if len(entry.description) > i:\n                        table += entry.description[i]\n                    else:\n                        table += ' '\n            table += ' | '\n\n            # Write entry change to table\n            if currency == 'USD':\n                change_str = '$ '\n                if entry.change < 0:\n                    change_str += '-'\n                change_dollar = abs(int(entry.change / 100.0))\n                dollar_parts = []\n                while change_dollar > 0:\n                    dollar_parts.insert(0, str(change_dollar % 1000))\n                    change_dollar = change_dollar // 1000\n                if len(dollar_parts) == 0:\n                    change_str += '0'\n                else:\n                    while True:\n                        change_str += dollar_parts[0]\n                        dollar_parts.pop(0)\n                        if len(dollar_parts) == 0:\n                            break\n                        change_str += '.'\n                change_str += ','\n                change_cents = abs(entry.change) % 100\n                change_cents = str(change_cents)\n                if len(change_cents) < 2:\n                    change_cents = '0' + change_cents\n                change_str += change_cents\n                change_str += ' '\n                while len(change_str) < 13:\n                    change_str = ' ' + change_str\n                table += change_str\n            elif currency == 'EUR':\n                change_str = u'\u20ac '\n                if entry.change < 0:\n                    change_str += '-'\n                change_euro = abs(int(entry.change / 100.0))\n                euro_parts = []\n                while change_euro```",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

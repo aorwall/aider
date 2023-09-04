@@ -1,0 +1,36 @@
+method: on_llm_end [2023-09-04 17:30:37]
+llm_output: null
+prompt:
+import re
+from itertools import permutations
+
+def solve(puzzle):
+    # Extract the words from the puzzle
+    words = re.findall('[A-Z]+', puzzle)
+    
+    # Get the unique letters in the puzzle
+    letters = set(''.join(words))
+    
+    # Create a list of possible digits for each letter
+    digits = []
+    for letter in letters:
+        digits.append([str(i) for i in range(10) if str(i) != letter])
+    
+    # Generate all possible combinations of digits for the letters
+    possibilities = permutations(*digits)
+    
+    # Iterate over the possibilities and check if they satisfy the equation
+    for possibility in possibilities:
+        substitution = dict(zip(letters, possibility))
+        
+        # Check if the equation is satisfied
+        left = eval(f"{substitution['S']} {substitution['E']} {substitution['N']} {substitution['D']}")
+        right = eval(f"{substitution['M']} {substitution['O']} {substitution['R']} {substitution['E']}")
+        if left + right == eval(f"{substitution['M']} {substitution['O']} {substitution['N']} {substitution['E']}"):
+            return ' '.join(word.translate(str.maketrans(substitution)) for word in words)
+    
+    # If no solution was found, return None
+    return None
+
+
+---

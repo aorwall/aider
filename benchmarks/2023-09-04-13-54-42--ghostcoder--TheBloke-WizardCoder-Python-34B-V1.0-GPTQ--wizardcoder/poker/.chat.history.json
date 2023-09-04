@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nPick the best hand(s) from a list of poker hands.\n\nSee [wikipedia][poker-hands] for an overview of poker hands.\n\n[poker-hands]: https://en.wikipedia.org/wiki/List_of_poker_hands\n\n####\n\nUse the above instructions to modify the supplied files: poker.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import itertools\nfrom collections import Counter\n\nRANKS = \"23456789TJQKA\"\nSUITS = \"SHDC\"\n\ndef card_value(card):\n    rank_value = RANKS.index(card[0])\n    suit_value = SUITS.index(card[1])\n    return rank_value, suit_value\n\ndef flush(hand):\n    suits = set(card[1] for card in hand)\n    return len(suits) == 1\n\ndef straight(ranks):\n    return (max(ranks) - min(ranks)) == 4 and len(set(ranks)) == 5\n\ndef kind(n, ranks):\n    counts = Counter(ranks)\n    return any(count == n for count in counts.values())\n\ndef two_pair(ranks):\n    pairs = set()\n    for rank, group in itertools.groupby(sorted(ranks)):\n        if len(list(group)) >= 2:\n            pairs.add(rank)\n        if len(pairs) == 2:\n            return True\n    return False\n\ndef full_house(ranks):\n    counts = Counter(ranks)\n    sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))\n    return sorted_counts[0][1] == 3 and sorted_counts[1][1] == 2\n\ndef four_of_a_kind(ranks):\n    counts = Counter(ranks)\n    return any(count == 4 for count in counts.values())\n\ndef three_of_a_kind(ranks):\n    counts = Counter(ranks)\n    return any(count == 3 for count in counts.values())\n\ndef best_hands(hands):\n    def get_score(hand):\n        cards = [(RANKS.index(card[0]), card[1]) for card in hand]\n        ranks = [card[0] for card in cards]\n        suites = [card[1] for card in cards]\n\n        if flush(cards) and straight(ranks):\n            return (8, max(ranks))\n        elif kind(4, ranks):\n            return (7, max(filter(lambda r: ranks.count(r) == 4, ranks)))\n        elif kind(3, ranks) and kind(2, ranks):\n            return (6, max(filter(lambda r: ranks.count(r) == 3, ranks)), max(filter(lambda r: ranks.count(r) == 2, ranks)))\n        elif flush(cards):\n            return (5, max(ranks), sorted(ranks)[-2:])\n        elif straight(ranks):\n            return (4, max(ranks))\n        elif three_of_a_kind(ranks):\n            return (3, max(filter(lambda r: ranks.count(r) == 3, ranks)), sorted(filter(lambda r: ranks.count(r) == 1, ranks))[::-1])\n        elif two_pair(ranks):\n            return (2, tuple(sorted(filter(lambda r: ranks.count(r) == 2, ranks), reverse=True)))\n        else:\n            return (1, sorted(ranks)[-2:])\n\n    scores = [get_score(hand) for hand in hands]\n    winner = max(enumerate(scores), key=lambda x: x[1])[0]\n    return winner\n",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n====\nERROR: test_a_straight_beats_three_of_a_kind (poker_test.PokerTest.test_a_straight_beats_three_of_a_kind)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 107, in test_a_straight_beats_three_of_a_kind\n    best_hands([\"4S 5H 4C 8D 4H\", \"3S 4D 2S 6D 5C\"]), [\"3S 4D 2S 6D 5C\"]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 68, in best_hands\n    scores = [get_score(hand) for hand in hands]\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 68, in <listcomp>\n    scores = [get_score(hand) for hand in hands]\n              ^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 47, in get_score\n    cards = [(RANKS.index(card[0]), card[1]) for card in hand]\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 47, in <listcomp>\n    cards = [(RANKS.index(card[0]), card[1]) for card in hand]\n                                    ~~~~^^^\nIndexError: string index out of range\n\n====\nERROR: test_a_tie_has_multiple_winners (poker_test.PokerTest.test_a_tie_has_multiple_winners)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 24, in test_a_tie_has_multiple_winners\n    best_hands(\n  File \"poker/poker.py\", line 68, in best_hands\n    scores = [get_score(hand) for hand in hands]\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 68, in <listcomp>\n    scores = [get_score(hand) for hand in hands]\n              ^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 47, in get_score\n    cards = [(RANKS.index(card[0]), card[1]) for card in hand]\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 47, in <listcomp>\n    cards = [(RANKS.index(card[0]), card[1]) for card in hand]\n                                    ~~~~^^^\nIndexError: string index out of range\n\n====\nERROR: test_aces_can_end_a_straight_10_j_q_k_a (poker_test.PokerTest.test_aces_can_end_a_straight_10_j_q_k_a)\n----\nTraceback (most recent call last):\n  File \"poker/poker_test.py\", line 112, in test_aces_can_end_a_straight_10_j_q_k_a\n    best_hands([\"4S 5H 4C 8D 4H\", \"10D JH QS KD AC\"]), [\"10D JH QS KD AC\"]\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"poker/poker.py\", line 68, in best_hands\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in poker.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import itertools\nfrom collections import Counter\n\nRANKS = \"23456789TJQKA\"\nSUITS = \"SHDC\"\n\ndef card_value(card):\n    rank_value = RANKS.index(card[0])\n    suit_value = SUITS.index(card[1])\n    return rank_value, suit_value\n\ndef flush(hand):\n    suits = set(card[1] for card in hand)\n    return len(suits) == 1\n\ndef straight(ranks):\n    return (max(ranks) - min(ranks)) == 4 and len(set(ranks)) == 5\n\ndef kind(n, ranks):\n    counts = Counter(ranks)\n    return any(count == n for count in counts.values())\n\ndef two_pair(ranks):\n    pairs = set()\n    for rank, group in itertools.groupby(sorted(ranks)):\n        if len(list(group)) >= 2:\n            pairs.add(rank)\n        if len(pairs) == 2:\n            return True\n    return False\n\ndef full_house(ranks):\n    counts = Counter(ranks)\n    sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0]))\n    return sorted_counts[0][1] == 3 and sorted_counts[1][1] == 2\n\ndef four_of_a_kind(ranks):\n    counts = Counter(ranks)\n    return any(count == 4 for count in counts.values())\n\ndef three_of_a_kind(ranks):\n    counts = Counter(ranks)\n    return any(count == 3 for count in counts.values())\n\ndef best_hands(hands):\n    def get_score(hand):\n        cards = [(RANKS.index(card[0]), card[1]) for card in hand]\n        ranks = [card[0] for card in cards]\n        suites = [card[1] for card in cards]\n\n        if flush(cards) and straight(ranks):\n            return (8, max(ranks))\n        elif kind(4, ranks):\n            return (7, max(filter(lambda r: ranks.count(r) == 4, ranks)))\n        elif kind(3, ranks) and kind(2, ranks):\n            return (6, max(filter(lambda r: ranks.count(r) == 3, ranks)), max(filter(lambda r: ranks.count(r) == 2, ranks)))\n        elif flush(cards):\n            return (5, max(ranks), sorted(ranks)[-2:])\n        elif straight(ranks):\n            return (4, max(ranks))\n        elif three_of_a_kind(ranks):\n            return (3, max(filter(lambda r: ranks.count(r) == 3, ranks)), sorted(filter(lambda r: ranks.count(r) == 1, ranks))[::-1])\n        elif two_pair(ranks):\n            return (2, tuple(sorted(filter(lambda r: ranks.count(r) == 2, ranks), reverse=True)))\n        else:\n            return (1, sorted(ranks)[-2:])\n\n    scores = [get_score(hand) for hand in hands]\n    winner = max(enumerate(scores), key=lambda x: x[1])[0]\n    return winner\n",
+        "language": "python",
+        "file_path": "poker.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

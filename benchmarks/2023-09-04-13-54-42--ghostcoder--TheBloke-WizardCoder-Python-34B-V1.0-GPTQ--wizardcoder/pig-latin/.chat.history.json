@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a program that translates from English to Pig Latin.\n\nPig Latin is a made-up children's language that's intended to be confusing.\nIt obeys a few simple rules (below), but when it's spoken quickly it's really difficult for non-children (and non-native speakers) to understand.\n\n- **Rule 1**: If a word begins with a vowel sound, add an \"ay\" sound to the end of the word.\n  Please note that \"xr\" and \"yt\" at the beginning of a word make vowel sounds (e.g. \"xray\" -> \"xrayay\", \"yttria\" -> \"yttriaay\").\n- **Rule 2**: If a word begins with a consonant sound, move it to the end of the word and then add an \"ay\" sound to the end of the word.\n  Consonant sounds can be made up of multiple consonants, such as the \"ch\" in \"chair\" or \"st\" in \"stand\" (e.g. \"chair\" -> \"airchay\").\n- **Rule 3**: If a word starts with a consonant sound followed by \"qu\", move it to the end of the word, and then add an \"ay\" sound to the end of the word (e.g. \"square\" -> \"aresquay\").\n- **Rule 4**: If a word contains a \"y\" after a consonant cluster or as the second letter in a two letter word it makes a vowel sound (e.g. \"rhythm\" -> \"ythmrhay\", \"my\" -> \"ymay\").\n\nThere are a few more rules for edge cases, and there are regional variants too.\nCheck the tests for all the details.\n\nRead more about [Pig Latin on Wikipedia][pig-latin].\n\n[pig-latin]: https://en.wikipedia.org/wiki/Pig_latin\n\n####\n\nUse the above instructions to modify the supplied files: pig_latin.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "pig_latin.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\nVOWELS = set('aeiou')\nCONSONANTS = set('bcdfghjklmnpqrstvwxyz')\n\ndef translate(text):\n    words = text.split()\n    translated_words = []\n\n    for word in words:\n        if not VOWELS & set(word[:1].lower()) and len(word) > 1:\n            if 'qu' == word[:2].lower():\n                word = word[2:] + word[:2]\n            else:\n                word = word[1:] + word[0]\n\n        if not VOWELS & set(word[:1].lower()):\n            word += 'ay'\n\n        translated_words.append(word)\n\n    return ' '.join(translated_words)\n",
+        "language": "python",
+        "file_path": "pig_latin.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFFFFFFF.FF\n====\nFAIL: test_a_whole_phrase (pig_latin_test.PigLatinTest.test_a_whole_phrase)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 77, in test_a_whole_phrase\n    self.assertEqual(translate(\"quick fast run\"), \"ickquay astfay unray\")\nAssertionError: 'ickqu astf unr' != 'ickquay astfay unray'\n- ickqu astf unr\n+ ickquay astfay unray\n?      ++     ++    ++\n\n\n====\nFAIL: test_word_beginning_with_a (pig_latin_test.PigLatinTest.test_word_beginning_with_a)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 14, in test_word_beginning_with_a\n    self.assertEqual(translate(\"apple\"), \"appleay\")\nAssertionError: 'apple' != 'appleay'\n- apple\n+ appleay\n?      ++\n\n\n====\nFAIL: test_word_beginning_with_a_vowel_and_followed_by_a_qu (pig_latin_test.PigLatinTest.test_word_beginning_with_a_vowel_and_followed_by_a_qu)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 29, in test_word_beginning_with_a_vowel_and_followed_by_a_qu\n    self.assertEqual(translate(\"equal\"), \"equalay\")\nAssertionError: 'equal' != 'equalay'\n- equal\n+ equalay\n?      ++\n\n\n====\nFAIL: test_word_beginning_with_ch (pig_latin_test.PigLatinTest.test_word_beginning_with_ch)\n----\nTraceback (most recent call last):\n  File \"pig-latin/pig_latin_test.py\", line 44, in test_word_beginning_with_ch\n    self.assertEqual(translate(\"chair\"), \"airchay\")\nAssertionError: 'haircay' != 'airchay'\n- haircay\n? -\n+ airchay\n?     +\n\n\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in pig_latin.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "pig_latin.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import re\n\nVOWELS = set('aeiou')\nCONSONANTS = set('bcdfghjklmnpqrstvwxyz')\n\ndef translate(text):\n    words = text.split()\n    translated_words = []\n\n    for word in words:\n        if not VOWELS & set(word[:1].lower()) and len(word) > 1:\n            if 'qu' == word[:2].lower():\n                word = word[2:] + word[:2]\n            else:\n                word = word[1:] + word[0]\n\n        if not VOWELS & set(word[:1].lower()):\n            word += 'ay'\n\n        translated_words.append(word)\n\n    return ' '.join(translated_words)\n",
+        "language": "python",
+        "file_path": "pig_latin.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

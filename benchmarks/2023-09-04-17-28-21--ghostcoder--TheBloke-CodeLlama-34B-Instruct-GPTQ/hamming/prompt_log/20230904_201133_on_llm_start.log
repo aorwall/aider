@@ -1,0 +1,245 @@
+method: on_llm_start [2023-09-04 20:11:33]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+[INST]Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+[/INST] Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+[/INST] Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+[/INST] Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+<</SYS>>
+# Instructions
+
+Calculate the Hamming Distance between two DNA strands.
+
+Your body is made up of cells that contain DNA.
+Those cells regularly wear out and need replacing, which they achieve by dividing into daughter cells.
+In fact, the average human body experiences about 10 quadrillion cell divisions in a lifetime!
+
+When cells divide, their DNA replicates too.
+Sometimes during this process mistakes happen and single pieces of DNA get encoded with the incorrect information.
+If we compare two strands of DNA and count the differences between them we can see how many mistakes occurred.
+This is known as the "Hamming Distance".
+
+We read DNA using the letters C,A,G and T.
+Two strands might look like this:
+
+    GAGCCTACTAACGGGAT
+    CATCGTAATGACGGCCT
+    ^ ^ ^  ^ ^    ^^
+
+They have 7 differences, and therefore the Hamming Distance is 7.
+
+The Hamming Distance is useful for lots of things in science, not just biology, so it's a nice phrase to be familiar with :)
+
+## Implementation notes
+
+The Hamming distance is only defined for sequences of equal length, so an attempt to calculate it between sequences of different lengths should not work.
+# Instructions append
+
+## Exception messages
+
+Sometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.
+
+This particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to "throw" a `ValueError` when the strands being checked are not the same length. The tests will only pass if you both `raise` the `exception` and include a message with it.
+
+To raise a `ValueError` with a message, write the message as an argument to the `exception` type:
+
+```python
+# When the sequences being passed are not the same length.
+raise ValueError("Strands must be of equal length.")
+```
+
+####
+
+Use the above instructions to modify the supplied files: hamming.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: hamming.py
+```python
+
+```
+[/INST] Filepath: hamming.py
+```python
+def distance(strand_a, strand_b):
+    """
+    Calculate the Hamming distance between two DNA strands.
+    
+    Args:
+        strand_a (str): First DNA strand.
+        strand_b (str): Second DNA strand.
+    
+    Returns:
+        int: The number of positions at which the corresponding symbols are different.
+    
+    Raises:
+        ValueError: If the input strings are not of equal length.
+    """
+    # Check if the input strings are of equal length.
+    if len(strand_a) != len(strand_b):
+        raise ValueError("Input strings must be of equal length")
+
+    # Initialize the counter for the number of differences.
+    diff_count = 0
+
+    # Iterate over each symbol pair in the input strings.
+    for char_a, char_b in zip(strand_a, strand_b):
+        # Increment the difference counter if the characters are different.
+        if char_a != char_b:
+            diff_count += 1
+
+    # Return the final difference count.
+    return diff_count
+
+```
+</s>
+<s>[INST]FFFF.....
+====
+FAIL: test_disallow_empty_first_strand (hamming_test.HammingTest.test_disallow_empty_first_strand)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/hamming/hamming_test.py", line 47, in test_disallow_empty_first_strand
+    self.assertEqual(err.exception.args[0], "Strands must be of equal length.")
+AssertionError: 'Input strings must be of equal length' != 'Strands must be of equal length.'
+- Input strings must be of equal length
+? ^^^^^^^  ^ ^
++ Strands must be of equal length.
+? ^  ^ ^                         +
+
+
+====
+FAIL: test_disallow_empty_second_strand (hamming_test.HammingTest.test_disallow_empty_second_strand)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/hamming/hamming_test.py", line 54, in test_disallow_empty_second_strand
+    self.assertEqual(err.exception.args[0], "Strands must be of equal length.")
+AssertionError: 'Input strings must be of equal length' != 'Strands must be of equal length.'
+- Input strings must be of equal length
+? ^^^^^^^  ^ ^
++ Strands must be of equal length.
+? ^  ^ ^                         +
+
+
+====
+FAIL: test_disallow_first_strand_longer (hamming_test.HammingTest.test_disallow_first_strand_longer)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/hamming/hamming_test.py", line 33, in test_disallow_first_strand_longer
+    self.assertEqual(err.exception.args[0], "Strands must be of equal length.")
+AssertionError: 'Input strings must be of equal length' != 'Strands must be of equal length.'
+- Input strings must be of equal length
+? ^^^^^^^  ^ ^
++ Strands must be of equal length.
+? ^  ^ ^                         +
+
+
+====
+FAIL: test_disallow_second_strand_longer (hamming_test.HammingTest.test_disallow_second_strand_longer)
+----
+Traceback (most recent call last):
+  File "/home/albert/repos/albert/aider/hamming/hamming_test.py", line 40, in test_disallow_second_strand_longer
+    self.assertEqual(err.exception.args[0], "Strands must be of equal length.")
+AssertionError: 'Input strings must be of equal length' != 'Strands must be of equal length.'
+- Input strings must be of equal length
+? ^^^^^^^  ^ ^
++ Strands must be of equal length.
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in hamming.py to resolve the errors.
+
+Filepath: hamming.py
+```python
+def distance(strand_a, strand_b):
+    """
+    Calculate the Hamming distance between two DNA strands.
+    
+    Args:
+        strand_a (str): First DNA strand.
+        strand_b (str): Second DNA strand.
+    
+    Returns:
+        int: The number of positions at which the corresponding symbols are different.
+    
+    Raises:
+        ValueError: If the input strings are not of equal length.
+    """
+    # Check if the input strings are of equal length.
+    if len(strand_a) != len(strand_b):
+        raise ValueError("Input strings must be of equal length")
+
+    # Initialize the counter for the number of differences.
+    diff_count = 0
+
+    # Iterate over each symbol pair in the input strings.
+    for char_a, char_b in zip(strand_a, strand_b):
+        # Increment the difference counter if the characters are different.
+        if char_a != char_b:
+            diff_count += 1
+
+    # Return the final difference count.
+    return diff_count
+
+```
+[/INST]Filepath: hamming.py
+```python
+
+

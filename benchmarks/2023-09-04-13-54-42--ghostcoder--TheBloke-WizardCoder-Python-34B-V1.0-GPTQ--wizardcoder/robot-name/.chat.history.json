@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nManage robot factory settings.\n\nWhen a robot comes off the factory floor, it has no name.\n\nThe first time you turn on a robot, a random name is generated in the format of two uppercase letters followed by three digits, such as RX837 or BC811.\n\nEvery once in a while we need to reset a robot to its factory settings, which means that its name gets wiped.\nThe next time you ask, that robot will respond with a new random name.\n\nThe names must be random: they should not follow a predictable sequence.\nUsing random names means a risk of collisions.\nYour solution must ensure that every existing robot has a unique name.\n\n####\n\nUse the above instructions to modify the supplied files: robot_name.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import string\nimport random\n\nclass Robot:\n    used_names = set()\n\n    def __init__(self):\n        if len(Robot.used_names) < 900: # There are only 900 possible combinations of letters and numbers\n            self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n            while self.name in Robot.used_names:\n                self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n            Robot.used_names.add(self.name)\n        else:\n            raise ValueError('No more available names')\n\n    def reset(self):\n        Robot.used_names.remove(self.name)\n        self.__init__()\n\n    @property\n    def name(self):\n        return self._name\n\n    @name.setter\n    def name(self, value):\n        if value in Robot.used_names:\n            raise ValueError('Name already exists')\n        elif len(value) != 5 or not (value[0].isalpha() and value[1].isalpha() and value[2:].isdigit()):\n            raise ValueError('Invalid name format')\n        else:\n            self._name = value\n            Robot.used_names.add(value)\n",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEE\n====\nERROR: test_different_robots_have_different_names (robot_name_test.RobotNameTest.test_different_robots_have_different_names)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 25, in test_different_robots_have_different_names\n    Robot().name,\n    ^^^^^^^\n  File \"robot-name/robot_name.py\", line 9, in __init__\n    self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n    ^^^^^^^^^\n  File \"robot-name/robot_name.py\", line 29, in name\n    raise ValueError('Invalid name format')\nValueError: Invalid name format\n\n====\nERROR: test_has_name (robot_name_test.RobotNameTest.test_has_name)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 16, in test_has_name\n    self.assertRegex(Robot().name, self.name_re)\n                     ^^^^^^^\n  File \"robot-name/robot_name.py\", line 9, in __init__\n    self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n    ^^^^^^^^^\n  File \"robot-name/robot_name.py\", line 29, in name\n    raise ValueError('Invalid name format')\nValueError: Invalid name format\n\n====\nERROR: test_name_sticks (robot_name_test.RobotNameTest.test_name_sticks)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 19, in test_name_sticks\n    robot = Robot()\n            ^^^^^^^\n  File \"robot-name/robot_name.py\", line 9, in __init__\n    self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n    ^^^^^^^^^\n  File \"robot-name/robot_name.py\", line 29, in name\n    raise ValueError('Invalid name format')\nValueError: Invalid name format\n\n====\nERROR: test_reset_name (robot_name_test.RobotNameTest.test_reset_name)\n----\nTraceback (most recent call last):\n  File \"robot-name/robot_name_test.py\", line 37, in test_reset_name\n    robot = Robot()\n            ^^^^^^^\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in robot_name.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import string\nimport random\nfrom typing import Set\n\nclass Robot:\n    used_names: Set[str] = set()\n\n    def __init__(self):\n        if len(Robot.used_names) < 900: # There are only 900 possible combinations of letters and numbers\n            self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n            while self.name in Robot.used_names:\n                self.name = ''.join([random.choice(string.ascii_uppercase), random.choice(string.digits)] + [str(random.randint(0, 9)) for _ in range(3)])\n            Robot.used_names.add(self.name)\n        else:\n            raise ValueError('No more available names')\n\n    def reset(self):\n        Robot.used_names.remove(self.name)\n        self.__init__()\n\n    @property\n    def name(self):\n        return self._name\n\n    @name.setter\n    def name(self, value):\n        if value in Robot.used_names:\n            raise ValueError('Name already exists')\n        elif len(value) != 5 or not (value[0].isalpha() and value[1].isalpha() and value[2:].isdigit()):\n            raise ValueError('Invalid name format')\n        else:\n            self._name = value\n            Robot.used_names.add(value)\n",
+        "language": "python",
+        "file_path": "robot_name.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

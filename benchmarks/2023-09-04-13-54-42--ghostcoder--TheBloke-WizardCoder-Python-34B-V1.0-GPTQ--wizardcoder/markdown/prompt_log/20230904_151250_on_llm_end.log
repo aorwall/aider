@@ -1,0 +1,87 @@
+method: on_llm_end [2023-09-04 15:12:50]
+llm_output: null
+prompt:
+import re
+from typing import List
+
+class MarkdownParser:
+    def __init__(self):
+        self._lines = []
+    
+    def add_line(self, line: str) -> None:
+        self._lines.append(line)
+        
+    def parse(self) -> str:
+        result = ""
+        in_list = False
+        in_list_append = False
+        
+        for i, line in enumerate(self._lines):
+            # Check if it's a header
+            match = re.match("^#{1,6} (.*)", line)
+            if match:
+                heading_level = len(match.groups()[0])
+                line = f"<h{heading_level}>{match.groups()[0]}</h{heading_level}>"
+            
+            # Check if it's an unordered list item
+            match = re.match("^ *[-+\*] (.*)", line)
+            if match:
+                if not in_list:
+                    in_list = True
+                    line = f"<ul>\n<li>{match.groups()[0].strip()} </li>"
+                else:
+                    line = f"\n<li>{match.groups()[0].strip()} </li>"
+            
+            # Check if it's an ordered list item
+            match = re.match("^ *\d*\. (.*)", line)
+            if match:
+                if not in_list:
+                    in_list = True
+                    line = f"<ol>\n<li>{match.groups()[0].strip()} </li>"
+                else:
+                    line = f"\n<li>{match.groups()[0].strip()} </li>"
+            
+            # Check if it's a paragraph
+            match = re.match("<h|<ul|<ol|<li", line)
+            if not match:
+                line = f"<p>{line}</p>"
+            
+            # Check if it's strong text
+            while "__" in line:
+                match = re.search("^(.*?)__(.*?)__(.*)$", line)
+                if match:
+                    line = match.group(1) + "<strong>" + match.group(2) + "</strong>" + match.group(3)
+                else:
+                    break
+            
+            # Check if it's italic text
+            while "_" in line:
+                match = re.search("^(.*?)_(.*?)_(.*)$", line)
+                if match:
+                    line = match.group(1) + "<em>" + match.group(2) + "</em>" + match.group(3)
+                else:
+                    break
+            
+            # Append the processed line to the result
+            result += line
+            
+            # If we were previously in a list but this line doesn't continue it, close the list tag
+            if in_list and not re.match("^ *(-|\+|\*|\d+\.) ", line):
+                in_list = False
+                result += "\n</ul>" if in_list_append else "\n</ol></li>"
+                in_list_append = False
+        
+        # Close any remaining lists
+        if in_list:
+            result += "\n</ul>" if not in_list_append else "\n</ol></li>"
+        
+        return result
+
+if __name__ == "__main__":
+    parser = MarkdownParser()
+    parser.add_line("# Heading")
+    parser.add_line("- Item 1")
+    parser.add_line("- Item 2")
+    print(parser.parse())
+
+---

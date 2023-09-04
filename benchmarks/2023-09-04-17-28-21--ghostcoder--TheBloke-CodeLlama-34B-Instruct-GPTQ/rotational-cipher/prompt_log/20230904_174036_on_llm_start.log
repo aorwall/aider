@@ -1,0 +1,205 @@
+method: on_llm_start [2023-09-04 17:40:36]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+[INST]Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+[/INST] Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+[/INST] Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+[/INST] Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+<</SYS>>
+# Instructions
+
+Create an implementation of the rotational cipher, also sometimes called the Caesar cipher.
+
+The Caesar cipher is a simple shift cipher that relies on transposing all the letters in the alphabet using an integer key between `0` and `26`.
+Using a key of `0` or `26` will always yield the same output due to modular arithmetic.
+The letter is shifted for as many values as the value of the key.
+
+The general notation for rotational ciphers is `ROT + <key>`.
+The most commonly used rotational cipher is `ROT13`.
+
+A `ROT13` on the Latin alphabet would be as follows:
+
+```text
+Plain:  abcdefghijklmnopqrstuvwxyz
+Cipher: nopqrstuvwxyzabcdefghijklm
+```
+
+It is stronger than the Atbash cipher because it has 27 possible keys, and 25 usable keys.
+
+Ciphertext is written out in the same formatting as the input including spaces and punctuation.
+
+## Examples
+
+- ROT5  `omg` gives `trl`
+- ROT0  `c` gives `c`
+- ROT26 `Cool` gives `Cool`
+- ROT13 `The quick brown fox jumps over the lazy dog.` gives `Gur dhvpx oebja sbk whzcf bire gur ynml qbt.`
+- ROT13 `Gur dhvpx oebja sbk whzcf bire gur ynml qbt.` gives `The quick brown fox jumps over the lazy dog.`
+
+####
+
+Use the above instructions to modify the supplied files: rotational_cipher.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: rotational_cipher.py
+```python
+
+```
+[/INST] Filepath: rotational_cipher.py
+```python
+def rotate(text, key):
+    """
+    Takes a string and a rotation key. Returns the encrypted text.
+    """
+    # Create a dictionary to map each character to its corresponding encrypted character
+    char_map = {}
+    for i in range(len(string.ascii_letters)):
+        char_map[string.ascii_letters[i]] = string.ascii_letters[(i+key) % len(string.ascii_letters)]
+
+    # Encrypt the text by replacing each character with its corresponding encrypted character
+    encrypted_text = ""
+    for char in text:
+        encrypted_text += char_map[char]
+
+    return encrypted_text
+
+```
+</s>
+<s>[INST]EEEEEEEEEE
+====
+ERROR: test_rotate_a_by_0_same_output_as_input (rotational_cipher_test.RotationalCipherTest.test_rotate_a_by_0_same_output_as_input)
+----
+Traceback (most recent call last):
+  File "rotational-cipher/rotational_cipher_test.py", line 14, in test_rotate_a_by_0_same_output_as_input
+    self.assertEqual(rotate("a", 0), "a")
+                     ^^^^^^^^^^^^^^
+  File "rotational-cipher/rotational_cipher.py", line 7, in rotate
+    for i in range(len(string.ascii_letters)):
+                       ^^^^^^
+NameError: name 'string' is not defined
+
+====
+ERROR: test_rotate_a_by_1 (rotational_cipher_test.RotationalCipherTest.test_rotate_a_by_1)
+----
+Traceback (most recent call last):
+  File "rotational-cipher/rotational_cipher_test.py", line 17, in test_rotate_a_by_1
+    self.assertEqual(rotate("a", 1), "b")
+                     ^^^^^^^^^^^^^^
+  File "rotational-cipher/rotational_cipher.py", line 7, in rotate
+    for i in range(len(string.ascii_letters)):
+                       ^^^^^^
+NameError: name 'string' is not defined
+
+====
+ERROR: test_rotate_a_by_26_same_output_as_input (rotational_cipher_test.RotationalCipherTest.test_rotate_a_by_26_same_output_as_input)
+----
+Traceback (most recent call last):
+  File "rotational-cipher/rotational_cipher_test.py", line 20, in test_rotate_a_by_26_same_output_as_input
+    self.assertEqual(rotate("a", 26), "a")
+                     ^^^^^^^^^^^^^^^
+  File "rotational-cipher/rotational_cipher.py", line 7, in rotate
+    for i in range(len(string.ascii_letters)):
+                       ^^^^^^
+NameError: name 'string' is not defined
+
+====
+ERROR: test_rotate_all_letters (rotational_cipher_test.RotationalCipherTest.test_rotate_all_letters)
+----
+Traceback (most recent call last):
+  File "rotational-cipher/rotational_cipher_test.py", line 42, in test_rotate_all_letters
+    rotate("The quick brown fox jumps over the lazy dog.", 13),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "rotational-cipher/rotational_cipher.py", line 7, in rotate
+    for i in range(len(string.ascii_letters)):
+                       ^^^^^^
+NameError: name 'string' is not defined
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in rotational_cipher.py to resolve the errors.
+
+Filepath: rotational_cipher.py
+```python
+def rotate(text, key):
+    """
+    Takes a string and a rotation key. Returns the encrypted text.
+    """
+    # Create a dictionary to map each character to its corresponding encrypted character
+    char_map = {}
+    for i in range(len(string.ascii_letters)):
+        char_map[string.ascii_letters[i]] = string.ascii_letters[(i+key) % len(string.ascii_letters)]
+
+    # Encrypt the text by replacing each character with its corresponding encrypted character
+    encrypted_text = ""
+    for char in text:
+        encrypted_text += char_map[char]
+
+    return encrypted_text
+
+```
+[/INST]Filepath: rotational_cipher.py
+```python
+
+

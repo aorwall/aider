@@ -1,0 +1,34 @@
+method: on_llm_end [2023-09-03 13:03:59]
+llm_output: null
+prompt:
+Here is how I would complete the implementation of `pascals_triangle.py`:
+
+```python
+def rows(row_count):
+    """
+    Computes Pascal's triangle up to a given number of rows.
+    :param row_count: The number of rows to compute. Must be >= 0.
+    :return: A list of lists representing the rows of Pascal's triangle.
+    """
+    if row_count < 0:
+        raise ValueError("Number of rows cannot be negative.")
+
+    result = [[1]]
+
+    def compute_next_row(previous_row):
+        next_row = []
+        for index in range(len(previous_row)):
+            next_value = (index == len(previous_row) - 1) \
+                         and 1 \
+                         or sum([previous_row[index], previous_row[index + 1]])
+            next_row.append(next_value)
+        return next_row
+
+    while len(result) < row_count:
+        result.append(compute_next_row(result[-1]))
+
+    return result[:row_count]
+```
+
+This implementation uses a helper function (`compute_next_row`) to calculate each row based on the previous row. It starts with the topmost row `[1]` and then iteratively computes the next row until reaching the desired number of rows. If the input `row_count` is less than 0, it raises a `ValueError`.
+---

@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nReport network IO statistics.\n\nYou are writing a [PaaS][paas], and you need a way to bill customers based on network and filesystem usage.\n\nCreate a wrapper for network connections and files that can report IO statistics.\nThe wrapper must report:\n\n- The total number of bytes read/written.\n- The total number of read/write operations.\n\n[paas]: https://en.wikipedia.org/wiki/Platform_as_a_service\n\n####\n\nUse the above instructions to modify the supplied files: paasio.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "paasio.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import io\nfrom functools import wraps\n\n\nclass MeteredFile(io.BufferedRandom):\n    \"\"\"Implement using a subclassing model.\"\"\"\n\n    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        self._read_bytes = 0\n        self._read_ops = 0\n        self._write_bytes = 0\n        self._write_ops = 0\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        pass\n\n    def __iter__(self):\n        return self\n\n    def __next__(self):\n        line = self.readline()\n        if not line:\n            raise StopIteration\n        return line\n\n    def _update_read_stats(self, size):\n        self._read_bytes += size\n        self._read_ops += 1\n\n    def _update_write_stats(self, size):\n        self._write_bytes += size\n        self._write_ops += 1\n\n    def read(self, size=-1):\n        data = super().read(size)\n        self._update_read_stats(len(data))\n        return data\n\n    @property\n    def read_bytes(self):\n        return self._read_bytes\n\n    @property\n    def read_ops(self):\n        return self._read_ops\n\n    def write(self, b):\n        num_bytes = len(b)\n        super().write(b)\n        self._update_write_stats(num_bytes)\n\n    @property\n    def write_bytes(self):\n        return self._write_bytes\n\n    @property\n    def write_ops(self):\n        return self._write_ops\n\n\nclass MeteredSocket:\n    \"\"\"Implement using a delegation model.\"\"\"\n\n    def __init__(self, socket):\n        self._socket = socket\n        self._recv_bytes = 0\n        self._recv_ops = 0\n        self._send_bytes = 0\n        self._send_ops = 0\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        pass\n\n    def _update_recv_stats(self, data):\n        self._recv_bytes += len(data)\n        self._recv_ops += 1\n\n    def _update_send_stats(self, size):\n        self._send_bytes += size\n        self._send_ops += 1\n\n    def recv(self, bufsize, flags=0):\n        data = self._socket.recv(bufsize, flags)\n        self._update_recv_stats(data)\n        return data\n\n    @property\n    def recv_bytes(self):\n        return self._recv_bytes\n\n    @property\n    def recv_ops(self):\n        return self._recv_ops\n\n    def send(self, data, flags=0):\n        size = self._socket.send(data, flags)\n        self._update_send_stats(size)\n        return size\n\n    @property\n    def send_bytes(self):\n        return self._send_bytes\n\n    @property\n    def send_ops(self):\n        return self._send_ops\n",
+        "language": "python",
+        "file_path": "paasio.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFEE.....EFF.FFE.........\n====\nERROR: test_meteredfile_context_manager_exception_suppress (paasio_test.PaasioTest.test_meteredfile_context_manager_exception_suppress)\n----\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/mock.py\", line 1375, in patched\n    return func(*newargs, **newkeywargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"paasio/paasio_test.py\", line 261, in test_meteredfile_context_manager_exception_suppress\n    file.read()\n  File \"paasio/paasio.py\", line 39, in read\n    data = super().read(size)\n           ^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/mock.py\", line 1124, in __call__\n    return self._mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/mock.py\", line 1128, in _mock_call\n    return self._execute_mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/mock.py\", line 1198, in _execute_mock_call\n    return self._mock_wraps(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"paasio/test_utils.py\", line 47, in read\n    raise self.__exception\ntest_utils.MockException: Should suppress\n\n====\nERROR: test_meteredfile_iteration (paasio_test.PaasioTest.test_meteredfile_iteration)\n----\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/mock.py\", line 1375, in patched\n    return func(*newargs, **newkeywargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"paasio/paasio_test.py\", line 275, in test_meteredfile_iteration\n    for line in file:\n  File \"paasio/paasio.py\", line 25, in __next__\n    line = self.readline()\n           ^^^^^^^^^^^^^^^\nValueError: I/O operation on uninitialized object\n\n====\nERROR: test_meteredfile_write_multiple (paasio_test.PaasioTest.test_meteredfile_write_multiple)\n----\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/mock.py\", line 1375, in patched\n    return func(*newargs, **newkeywargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"paasio/paasio_test.py\", line 387, in test_meteredfile_write_multiple\n    write_len += file.write(b\"Tomorro\")\nTypeError: unsupported operand type(s) for +=: 'int' and 'NoneType'\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in paasio.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "paasio.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import io\nfrom functools import wraps\n\n\nclass MeteredFile(io.BufferedRandom):\n    \"\"\"Implement using a subclassing model.\"\"\"\n\n    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        self._read_bytes = 0\n        self._read_ops = 0\n        self._write_bytes = 0\n        self._write_ops = 0\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        pass\n\n    def __iter__(self):\n        return self\n\n    def __next__(self):\n        line = self.readline()\n        if not line:\n            raise StopIteration\n        return line\n\n    def _update_read_stats(self, size):\n        self._read_bytes += size\n        self._read_ops += 1\n\n    def _update_write_stats(self, size):\n        self._write_bytes += size\n        self._write_ops += 1\n\n    def read(self, size=-1):\n        data = super().read(size)\n        self._update_read_stats(len(data))\n        return data\n\n    @property\n    def read_bytes(self):\n        return self._read_bytes\n\n    @property\n    def read_ops(self):\n        return self._read_ops\n\n    def write(self, b):\n        num_bytes = len(b)\n        super().write(b)\n        self._update_write_stats(num_bytes)\n\n    @property\n    def write_bytes(self):\n        return self._write_bytes\n\n    @property\n    def write_ops(self):\n        return self._write_ops\n\n\nclass MeteredSocket:\n    \"\"\"Implement using a delegation model.\"\"\"\n\n    def __init__(self, socket):\n        self._socket = socket\n        self._recv_bytes = 0\n        self._recv_ops = 0\n        self._send_bytes = 0\n        self._send_ops = 0\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        pass\n\n    def _update_recv_stats(self, data):\n        self._recv_bytes += len(data)\n        self._recv_ops += 1\n\n    def _update_send_stats(self, size):\n        self._send_bytes += size\n        self._send_ops += 1\n\n    def recv(self, bufsize, flags=0):\n        data = self._socket.recv(bufsize, flags)\n        self._update_recv_stats(data)\n        return data\n\n    @property\n    def recv_bytes(self):\n        return self._recv_bytes\n\n    @property\n    def recv_ops(self):\n        return self._recv_ops\n\n    def send(self, data, flags=0):\n        size = self._socket.send(data, flags)\n        self._update_send_stats(size)\n        return size\n\n    @property\n    def send_bytes(self):\n        return self._send_bytes\n\n    @property\n    def send_ops(self):\n        return self._send_ops\n",
+        "language": "python",
+        "file_path": "paasio.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

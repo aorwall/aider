@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nRecite the nursery rhyme 'This is the House that Jack Built'.\n\n> [The] process of placing a phrase of clause within another phrase of clause is called embedding.\n> It is through the processes of recursion and embedding that we are able to take a finite number of forms (words and phrases) and construct an infinite number of expressions.\n> Furthermore, embedding also allows us to construct an infinitely long structure, in theory anyway.\n\n- [papyr.com][papyr]\n\nThe nursery rhyme reads as follows:\n\n```text\nThis is the house that Jack built.\n\nThis is the malt\nthat lay in the house that Jack built.\n\nThis is the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the maiden all forlorn\nthat milked the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the man all tattered and torn\nthat kissed the maiden all forlorn\nthat milked the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the priest all shaven and shorn\nthat married the man all tattered and torn\nthat kissed the maiden all forlorn\nthat milked the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the rooster that crowed in the morn\nthat woke the priest all shaven and shorn\nthat married the man all tattered and torn\nthat kissed the maiden all forlorn\nthat milked the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the farmer sowing his corn\nthat kept the rooster that crowed in the morn\nthat woke the priest all shaven and shorn\nthat married the man all tattered and torn\nthat kissed the maiden all forlorn\nthat milked the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n\nThis is the horse and the hound and the horn\nthat belonged to the farmer sowing his corn\nthat kept the rooster that crowed in the morn\nthat woke the priest all shaven and shorn\nthat married the man all tattered and torn\nthat kissed the maiden all forlorn\nthat milked the cow with the crumpled horn\nthat tossed the dog\nthat worried the cat\nthat killed the rat\nthat ate the malt\nthat lay in the house that Jack built.\n```\n\n[papyr]: https://papyr.com/hypertextbooks/grammar/ph_noun.htm\n\n####\n\nUse the above instructions to modify the supplied files: house.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "house.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def recite(start_verse=1, end_verse=12):\n    verses = {\n        1: \"This is the house that Jack built.\",\n        2: \"This is the malt\",\n        3: \"that lay in the house that Jack built.\",\n        4: \"This is the rat\",\n        5: \"that ate the malt\",\n        6: \"that lay in the house that Jack built.\",\n        7: \"This is the cat\",\n        8: \"that killed the rat\",\n        9: \"that ate the malt\",\n        10: \"that lay in the house that Jack built.\",\n        11: \"This is the dog\",\n        12: \"that worried the cat\"\n    }\n\n    result = []\n    for i in range(start_verse, end_verse + 1):\n        verse = verses[i]\n        if i == start_verse:\n            result.append(\"This is\")\n        else:\n            result.append(\"This is the\")\n\n        if i % 2 != 0:\n            result[-1] += f\" {verse}\"\n        elif i > 1:\n            result[-1] += f\" that {verse}\"\n\n        if i < end_verse:\n            result[-1] += \",\"\n        result[-1] += \".\"\n\n    return \"\\n\".join(result)",
+        "language": "python",
+        "file_path": "house.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFF\n====\nFAIL: test_full_rhyme (house_test.HouseTest.test_full_rhyme)\n----\nTraceback (most recent call last):\n  File \"house/house_test.py\", line 114, in test_full_rhyme\n    self.assertEqual(\nAssertionError: 'This is This is the house that Jack buil[453 chars]cat.' != ['This is the house that Jack built.', 'T[2326 chars]lt.']\n\n====\nFAIL: test_multiple_verses (house_test.HouseTest.test_multiple_verses)\n----\nTraceback (most recent call last):\n  File \"house/house_test.py\", line 102, in test_multiple_verses\n    self.assertEqual(\nAssertionError: 'This is that This is the rat,.\\nThis is [148 chars]rat.' != ['This is the cat that killed the rat tha[759 chars]lt.']\n\n====\nFAIL: test_verse_10_the_rooster_that_crowed_in_the_morn (house_test.HouseTest.test_verse_10_the_rooster_that_crowed_in_the_morn)\n----\nTraceback (most recent call last):\n  File \"house/house_test.py\", line 78, in test_verse_10_the_rooster_that_crowed_in_the_morn\n    self.assertEqual(\nAssertionError: 'This is that that lay in the house that Jack built..' != ['This is the rooster that crowed in the [282 chars]lt.']\n\n====\nFAIL: test_verse_11_the_farmer_sowing_his_corn (house_test.HouseTest.test_verse_11_the_farmer_sowing_his_corn)\n----\nTraceback (most recent call last):\n  File \"house/house_test.py\", line 86, in test_verse_11_the_farmer_sowing_his_corn\n    self.assertEqual(\nAssertionError: 'This is This is the dog.' != ['This is the farmer sowing his corn that[319 chars]lt.']\n\n====\nFAIL: test_verse_12_the_horse_and_the_hound_and_the_horn (house_test.HouseTest.test_verse_12_the_horse_and_the_hound_and_the_horn)\n----\nTraceback (most recent call last):\n  File \"house/house_test.py\", line 94, in test_verse_12_the_horse_and_the_hound_and_the_horn\n    self.assertEqual(\nAssertionError: 'This is that that worried the cat.' != ['This is the horse and the hound and the[373 chars]lt.']\n\n====\nFAIL: test_verse_eight_the_man_all_tattered_and_torn (house_test.HouseTest.test_verse_eight_the_man_all_tattered_and_torn)\n----\nTraceback (most recent call last):\n  File \"house/house_test.py\", line 62, in test_verse_eight_the_man_all_tattered_and_torn\n    self.assertEqual(\nAssertionError: 'This is that that killed the rat.' != ['This is the man all tattered and torn t[191 chars]lt.']\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in house.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "house.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def recite(start_verse=1, end_verse=12):\n    verses = {\n        1: \"This is the house that Jack built.\",\n        2: \"This is the malt\",\n        3: \"that lay in the house that Jack built.\",\n        4: \"This is the rat\",\n        5: \"that ate the malt\",\n        6: \"that lay in the house that Jack built.\",\n        7: \"This is the cat\",\n        8: \"that killed the rat\",\n        9: \"that ate the malt\",\n        10: \"that lay in the house that Jack built.\",\n        11: \"This is the farmer sowing his corn\",\n        12: \"that the birds do eat.\"\n    }\n\n    result = []\n    for i in range(start_verse, end_verse + 1):\n        verse = verses[i]\n        if i == start_verse:\n            result.append(\"This is\")\n        else:\n            result.append(\"This is the\")\n\n        if i % 2 != 0:\n            result[-1] += f\" {verse}\"\n        elif i > 1:\n            result[-1] += f\" that {verse}\"\n\n        if i < end_verse:\n            result[-1] += \",\"\n        result[-1] += \".\"\n\n    return \"\\n\".join(result)",
+        "language": "python",
+        "file_path": "house.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

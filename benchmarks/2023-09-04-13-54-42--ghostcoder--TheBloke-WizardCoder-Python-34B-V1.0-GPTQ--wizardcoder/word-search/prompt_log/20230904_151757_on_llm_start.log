@@ -1,0 +1,250 @@
+method: on_llm_start [2023-09-04 15:17:57]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+In word search puzzles you get a square of letters and have to find specific words in them.
+
+For example:
+
+```text
+jefblpepre
+camdcimgtc
+oivokprjsm
+pbwasqroua
+rixilelhrs
+wolcqlirpc
+screeaumgr
+alxhpburyi
+jalaycalmp
+clojurermt
+```
+
+There are several programming languages hidden in the above square.
+
+Words can be hidden in all kinds of directions: left-to-right, right-to-left, vertical and diagonal.
+
+Given a puzzle and a list of words return the location of the first and last letter of each word.
+
+####
+
+Use the above instructions to modify the supplied files: word_search.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: word_search.py
+```python
+
+```
+
+### Response:
+Filepath: word_search.py
+```python
+from typing import List, Tuple
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
+
+class WordSearch:
+    def __init__(self, puzzle: str):
+        self.puzzle = [list(row) for row in puzzle.split("
+")]
+
+    def _find_word(self, word: str, start: Point, direction: Tuple[int, int]) -> bool:
+        current_point = start
+        for char in word:
+            if not (0 <= current_point.x < len(self.puzzle) and 0 <= current_point.y < len(self.puzzle[current_point.x])):
+                return False
+            if self.puzzle[current_point.x][current_point.y] != char:
+                return False
+            current_point = Point(current_point.x + direction[0], current_point.y + direction[1])
+        return True
+
+    def _get_starting_points(self, word: str) -> List[Point]:
+        starting_points = []
+        for i, row in enumerate(self.puzzle):
+            for j, char in enumerate(row):
+                if char == word[0]:
+                    for direction in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+                        if self._find_word(word, Point(i, j), direction):
+                            starting_points.append((Point(i, j), direction))
+        return starting_points
+
+    def search(self, word: str) -> List[Tuple[Point, Point]]:
+        starting_points = self._get_starting_points(word)
+        locations = []
+        for point, direction in starting_points:
+            end_point = Point(point.x + (len(word) - 1) * direction[0], point.y + (len(word) - 1) * direction[1])
+            locations.append((point, end_point))
+        return locations
+
+
+if __name__ == "__main__":
+    puzzle = """
+    jefblpepre
+    camdcimgtc
+    oivokprjsm
+    pbwasqroua
+    rixilelhrs
+    wolcqlirpc
+    screeaumgr
+    alxhpburyi
+    jalycalmp
+    clojurermt
+    """
+
+    ws = WordSearch(puzzle)
+    print(ws.search("clojure")) # [(Point(8, 9), Point(8, 6))]
+    ```
+### Instruction:
+.F.FFFFFFFFFFFFFFFFFF...
+====
+FAIL: test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle (word_search_test.WordSearchTest.test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle)
+----
+Traceback (most recent call last):
+  File "word-search/word_search_test.py", line 285, in test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle
+    self.assertEqual(puzzle.search("clojure"), (Point(0, 9), Point(6, 9)))
+AssertionError: None != (<word_search.Point object at 0x7f0a7e4f8[46 chars]950>)
+
+====
+FAIL: test_should_locate_a_different_left_to_right_word (word_search_test.WordSearchTest.test_should_locate_a_different_left_to_right_word)
+----
+Traceback (most recent call last):
+  File "word-search/word_search_test.py", line 30, in test_should_locate_a_different_left_to_right_word
+    self.assertEqual(puzzle.search("coffee"), (Point(0, 0), Point(5, 0)))
+AssertionError: None != (<word_search.Point object at 0x7f0a7e4f8[46 chars]790>)
+
+====
+FAIL: test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid (word_search_test.WordSearchTest.test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid)
+----
+Traceback (most recent call last):
+  File "word-search/word_search_test.py", line 97, in test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid
+    self.assertEqual(puzzle.search("fortran"), (Point(0, 6), Point(6, 6)))
+AssertionError: None != (<word_search.Point object at 0x7f0a7e4f8[46 chars]950>)
+
+====
+FAIL: test_should_locate_a_left_to_right_word_in_ten_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_ten_line_grid)
+----
+Traceback (most recent call last):
+  File "word-search/word_search_test.py", line 61, in test_should_locate_a_left_to_right_word_in_ten_line_grid
+    self.assertEqual(puzzle.search("clojure"), (Point(0, 9), Point(6, 9)))
+AssertionError: None != (<word_search.Point object at 0x7f0a7e4f9[46 chars]d50>)
+
+====
+FAIL: test_should_locate_a_left_to_right_word_in_three_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_three_line_grid)
+----
+Traceback (most recent call last):
+  File "word-search/word_search_test.py", line 44, in test_should_locate_a_left_to_right_word_in_three_line_grid
+    self.assertEqual(puzzle.search("clojure"), (Point(0, 2), Point(6, 2)))
+AssertionError: None != (<word_search.Point object at 0x7f0a7e4f9[46 chars]ed0>)
+
+====
+FAIL: test_should_locate_a_left_to_right_word_in_two_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_two_line_grid)
+----
+Traceback (most recent call last):
+  File "word-search/word_search_test.py", line 40, in test_should_locate_a_left_to_right_word_in_two_line_grid
+    self.assertEqual(puzzle.search("clojure"), (Point(1, 1), Point(7, 1)))
+AssertionError: None != (<word_search.Point object at 0x7f0a7e4fa[46 chars]010>)
+
+====
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in word_search.py to resolve the errors.
+
+Filepath: word_search.py
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = None
+        self.y = None
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+
+class WordSearch:
+    def __init__(self, puzzle):
+        pass
+
+    def search(self, word):
+        pass
+
+```
+
+
+### Response:
+Filepath: word_search.py
+```python
+
+

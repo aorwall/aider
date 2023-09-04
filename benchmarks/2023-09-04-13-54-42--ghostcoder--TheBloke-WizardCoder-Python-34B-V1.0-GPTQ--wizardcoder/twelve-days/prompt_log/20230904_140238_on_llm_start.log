@@ -1,0 +1,299 @@
+method: on_llm_start [2023-09-04 14:02:38]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+Act as a an automated AI with superior programming skills.
+Below is an instruction that describes a task, paired with an input that
+provides further context. Write a response that appropriately completes
+the request.
+
+### Instruction:
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+### Response:
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+### Instruction:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+### Response:
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+### Instruction:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+### Response:
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+### Instruction:
+# Instructions
+
+Your task in this exercise is to write code that returns the lyrics of the song: "The Twelve Days of Christmas."
+
+"The Twelve Days of Christmas" is a common English Christmas carol.
+Each subsequent verse of the song builds on the previous verse.
+
+The lyrics your code returns should _exactly_ match the full song text shown below.
+
+## Lyrics
+
+```text
+On the first day of Christmas my true love gave to me: a Partridge in a Pear Tree.
+
+On the second day of Christmas my true love gave to me: two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the third day of Christmas my true love gave to me: three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the fourth day of Christmas my true love gave to me: four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the fifth day of Christmas my true love gave to me: five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the sixth day of Christmas my true love gave to me: six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the seventh day of Christmas my true love gave to me: seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the eighth day of Christmas my true love gave to me: eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the ninth day of Christmas my true love gave to me: nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the tenth day of Christmas my true love gave to me: ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the eleventh day of Christmas my true love gave to me: eleven Pipers Piping, ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+
+On the twelfth day of Christmas my true love gave to me: twelve Drummers Drumming, eleven Pipers Piping, ten Lords-a-Leaping, nine Ladies Dancing, eight Maids-a-Milking, seven Swans-a-Swimming, six Geese-a-Laying, five Gold Rings, four Calling Birds, three French Hens, two Turtle Doves, and a Partridge in a Pear Tree.
+```
+# Instructions append
+
+## Test-driven development
+
+ Be sure to check the comments at the top of the tests file.
+ They will be helpful in understanding the expected output of your function.
+
+This challenge _could_ be solved with a minimum of code and a lot of hardcoded text which is duplicated between the verses.
+However, this song is a type of [cumulative song][cumulative song], where each new verse builds on the verse that comes before it.
+For more of a programming challenge, consider assembling each verse from its parts.
+For example, for each verse, the day changes and the gift changes, and the rest of the verse is pretty much the same.
+What might be a good strategy for avoiding repetition?
+
+[cumulative song]: https://en.wikipedia.org/wiki/Cumulative_song
+
+####
+
+Use the above instructions to modify the supplied files: twelve_days.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: twelve_days.py
+```python
+
+```
+
+### Response:
+Filepath: twelve_days.py
+```python
+from typing import List
+
+def build_gift_list(day: int) -> List[str]:
+    gifts = {
+        12: "twelve Drummers Drumming",
+        11: "eleven Pipers Piping",
+        10: "ten Lords-a-Leaping",
+         9: "nine Ladies Dancing",
+         8: "eight Maids-a-Milking",
+         7: "seven Swans-a-Swimming",
+         6: "six Geese-a-Laying",
+         5: "five Gold Rings",
+         4: "four Calling Birds",
+         3: "three French Hens",
+         2: "two Turtle Doves",
+        -1: "Partridge in a Pear Tree"
+    }
+
+    if day == 1:
+        return [gifts[-1]]
+    elif day > 12:
+        raise ValueError("Invalid day")
+
+    gift_list = []
+    for i in range(day, 0, -1):
+        gift_list.append(gifts[i])
+
+    return gift_list
+
+def build_verse(day: int) -> str:
+    gift_list = build_gift_list(day)
+    first_line = f"On the {ordinal(day)} day of Christmas my true love gave to me:"
+    gifts_str = ", ".join(gift_list[:-1]) + ", and " + gift_list[-1]
+    last_line = "
+".join([f"{first_line}", f"{gifts_str}.
+"])
+    return last_line
+
+def ordinal(num: int) -> str:
+    suffixes = {1: 'st', 2: 'nd', 3: 'rd'}
+    if 1 <= num % 100 <= 20:
+        return f"{num}th"
+    else:
+        return f"{num}{suffixes.get(num % 10, 'th')}"
+
+def recite(start_verse: int, end_verse: int) -> List[str]:
+    return [build_verse(i) for i in range(start_verse, end_verse+1)]
+
+if __name__ == "__main__":
+    print("
+".join(recite(1, 12)))
+```
+
+### Instruction:
+EEEFEEEEEEEEEEE
+====
+ERROR: test_eighth_day_eight_maids_a_milking (twelve_days_test.TwelveDaysTest.test_eighth_day_eight_maids_a_milking)
+----
+Traceback (most recent call last):
+  File "twelve-days/twelve_days_test.py", line 99, in test_eighth_day_eight_maids_a_milking
+    self.assertEqual(recite(8, 8), expected)
+                     ^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 45, in recite
+    return [build_verse(i) for i in range(start_verse, end_verse+1)]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 45, in <listcomp>
+    return [build_verse(i) for i in range(start_verse, end_verse+1)]
+            ^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 31, in build_verse
+    gift_list = build_gift_list(day)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 26, in build_gift_list
+    gift_list.append(gifts[i])
+                     ~~~~~^^^
+KeyError: 1
+
+====
+ERROR: test_eleventh_day_eleven_pipers_piping (twelve_days_test.TwelveDaysTest.test_eleventh_day_eleven_pipers_piping)
+----
+Traceback (most recent call last):
+  File "twelve-days/twelve_days_test.py", line 147, in test_eleventh_day_eleven_pipers_piping
+    self.assertEqual(recite(11, 11), expected)
+                     ^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 45, in recite
+    return [build_verse(i) for i in range(start_verse, end_verse+1)]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 45, in <listcomp>
+    return [build_verse(i) for i in range(start_verse, end_verse+1)]
+            ^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 31, in build_verse
+    gift_list = build_gift_list(day)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "twelve-days/twelve_days.py", line 26, in build_gift_list
+    gift_list.append(gifts[i])
+                     ~~~~~^^^
+KeyError: 1
+
+====
+ERROR: test_fifth_day_five_gold_rings (twelve_days_test.TwelveDaysTest.test_fifth_day_five_gold_rings)
+----
+Traceback (most recent call last):
+  File "twelve-days/twelve_days_test.py", line 60, in test_fifth_day_five_gold_rings
+    self.assertEqual(recite(5, 5), expected)
+                     ^^^^^^^^^^^^
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in twelve_days.py to resolve the errors.
+
+Filepath: twelve_days.py
+```python
+from typing import List
+
+def build_gift_list(day: int) -> List[str]:
+    gifts = {
+        12: "twelve Drummers Drumming",
+        11: "eleven Pipers Piping",
+        10: "ten Lords-a-Leaping",
+         9: "nine Ladies Dancing",
+         8: "eight Maids-a-Milking",
+         7: "seven Swans-a-Swimming",
+         6: "six Geese-a-Laying",
+         5: "five Gold Rings",
+         4: "four Calling Birds",
+         3: "three French Hens",
+         2: "two Turtle Doves",
+        -1: "Partridge in a Pear Tree"
+    }
+
+    if day == 1:
+        return [gifts[-1]]
+    elif day > 12:
+        raise ValueError("Invalid day")
+
+    gift_list = []
+    for i in range(day, 0, -1):
+        gift_list.append(gifts[i])
+
+    return gift_list
+
+def build_verse(day: int) -> str:
+    gift_list = build_gift_list(day)
+    first_line = f"On the {ordinal(day)} day of Christmas my true love gave to me:"
+    gifts_str = ", ".join(gift_list[:-1]) + ", and " + gift_list[-1]
+    last_line = "
+".join([f"{first_line}", f"{gifts_str}.
+"])
+    return last_line
+
+def ordinal(num: int) -> str:
+    suffixes = {1: 'st', 2: 'nd', 3: 'rd'}
+    if 1 <= num % 100 <= 20:
+        return f"{num}th"
+    else:
+        return f"{num}{suffixes.get(num % 10, 'th')}"
+
+def recite(start_verse: int, end_verse: int) -> List[str]:
+    return [build_verse(i) for i in range(start_verse, end_verse+1)]
+
+if __name__ == "__main__":
+    print("
+".join(recite(1, 12)))
+```
+
+
+### Response:
+Filepath: twelve_days.py
+```python
+
+

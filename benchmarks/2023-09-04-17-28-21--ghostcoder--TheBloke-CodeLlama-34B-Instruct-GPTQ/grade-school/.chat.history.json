@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nGiven students' names along with the grade that they are in, create a roster for the school.\n\nIn the end, you should be able to:\n\n- Add a student's name to the roster for a grade\n  - \"Add Jim to grade 2.\"\n  - \"OK.\"\n- Get a list of all students enrolled in a grade\n  - \"Which students are in grade 2?\"\n  - \"We've only got Jim just now.\"\n- Get a sorted list of all students in all grades.\n  Grades should sort as 1, 2, 3, etc., and students within a grade should be sorted alphabetically by name.\n  - \"Who all is enrolled in school right now?\"\n  - \"Let me think.\n    We have Anna, Barb, and Charlie in grade 1, Alex, Peter, and Zoe in grade 2 and Jim in grade 5.\n    So the answer is: Anna, Barb, Charlie, Alex, Peter, Zoe and Jim\"\n\nNote that all our students only have one name (It's a small town, what do you want?) and each student cannot be added more than once to a grade or the roster.\nIn fact, when a test attempts to add the same student more than once, your implementation should indicate that this is incorrect.\n# Instructions append\n\nThe tests for this exercise expect your school roster will be implemented via a School `class` in Python.\nIf you are unfamiliar with classes in Python, [classes][classes in python] from the Python docs is a good place to start.\n\n[classes in python]: https://docs.python.org/3/tutorial/classes.html\n\n####\n\nUse the above instructions to modify the supplied files: grade_school.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "grade_school.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from collections import defaultdict\n\nclass School:\n    def __init__(self):\n        self._roster = defaultdict(list)\n\n    def add_student(self, name, grade):\n        if name in self._roster[grade]:\n            raise ValueError('Student already exists')\n\n        self._roster[grade].append(name)\n        self._roster[grade].sort()\n\n    def roster(self):\n        result = []\n        for grade in sorted(self._roster.keys()):\n            result += self._roster[grade]\n        return result\n\n    def grade(self, grade_number):\n        if grade_number not in self._roster:\n            return []\n        else:\n            return self._roster[grade_number]\n\n    def added(self):\n        return len(self._roster) > 0\n",
+        "language": "python",
+        "file_path": "grade_school.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFE......FFEE.....\n====\nERROR: test_cannot_add_student_to_same_grade_in_the_roster_more_than_once (grade_school_test.GradeSchoolTest.test_cannot_add_student_to_same_grade_in_the_roster_more_than_once)\n----\nTraceback (most recent call last):\n  File \"grade-school/grade_school_test.py\", line 53, in test_cannot_add_student_to_same_grade_in_the_roster_more_than_once\n    school.add_student(name=\"James\", grade=2)\n  File \"grade-school/grade_school.py\", line 9, in add_student\n    raise ValueError('Student already exists')\nValueError: Student already exists\n\n====\nERROR: test_student_not_added_to_same_grade_in_the_roster_more_than_once (grade_school_test.GradeSchoolTest.test_student_not_added_to_same_grade_in_the_roster_more_than_once)\n----\nTraceback (most recent call last):\n  File \"grade-school/grade_school_test.py\", line 62, in test_student_not_added_to_same_grade_in_the_roster_more_than_once\n    school.add_student(name=\"James\", grade=2)\n  File \"grade-school/grade_school.py\", line 9, in add_student\n    raise ValueError('Student already exists')\nValueError: Student already exists\n\n====\nERROR: test_student_not_added_to_same_grade_more_than_once (grade_school_test.GradeSchoolTest.test_student_not_added_to_same_grade_more_than_once)\n----\nTraceback (most recent call last):\n  File \"grade-school/grade_school_test.py\", line 151, in test_student_not_added_to_same_grade_more_than_once\n    school.add_student(name=\"James\", grade=2)\n  File \"grade-school/grade_school.py\", line 9, in add_student\n    raise ValueError('Student already exists')\nValueError: Student already exists\n\n====\nFAIL: test_add_a_student (grade_school_test.GradeSchoolTest.test_add_a_student)\n----\nTraceback (most recent call last):\n  File \"grade-school/grade_school_test.py\", line 23, in test_add_a_student\n    self.assertEqual(school.added(), expected)\nAssertionError: True != [True]\n\n====\nFAIL: test_adding_multiple_students_in_the_same_grade_in_the_roster (grade_school_test.GradeSchoolTest.test_adding_multiple_students_in_the_same_grade_in_the_roster)\n----\nTraceback (most recent call last):\n  File \"grade-school/grade_school_test.py\", line 38, in test_adding_multiple_students_in_the_same_grade_in_the_roster\n    self.assertEqual(school.added(), expected)\nAssertionError: True != [True, True, True]\n\n====\nFAIL: test_adding_students_in_multiple_grades (grade_school_test.GradeSchoolTest.test_adding_students_in_multiple_grades)\n----\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in grade_school.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "grade_school.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from collections import defaultdict\n\nclass School:\n    def __init__(self):\n        self._roster = defaultdict(list)\n\n    def add_student(self, name, grade):\n        if name in self._roster[grade]:\n            raise ValueError('Student already exists')\n\n        self._roster[grade].append(name)\n        self._roster[grade].sort()\n\n    def roster(self):\n        result = []\n        for grade in sorted(self._roster.keys()):\n            result += self._roster[grade]\n        return result\n\n    def grade(self, grade_number):\n        if grade_number not in self._roster:\n            return []\n        else:\n            return self._roster[grade_number]\n\n    def added(self):\n        return len(self._roster) > 0\n",
+        "language": "python",
+        "file_path": "grade_school.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

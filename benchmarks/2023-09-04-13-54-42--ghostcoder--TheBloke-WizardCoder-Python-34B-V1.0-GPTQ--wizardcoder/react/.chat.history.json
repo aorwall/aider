@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nImplement a basic reactive system.\n\nReactive programming is a programming paradigm that focuses on how values are computed in terms of each other to allow a change to one value to automatically propagate to other values, like in a spreadsheet.\n\nImplement a basic reactive system with cells with settable values (\"input\" cells) and cells with values computed in terms of other cells (\"compute\" cells).\nImplement updates so that when an input value is changed, values propagate to reach a new stable system state.\n\nIn addition, compute cells should allow for registering change notification callbacks.\nCall a cell\u2019s callbacks when the cell\u2019s value in a new stable state has changed from the previous stable state.\n\n####\n\nUse the above instructions to modify the supplied files: react.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "react.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import functools\n\nclass InputCell:\n    def __init__(self, initial_value):\n        self._value = initial_value\n        self._observers = []\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_value):\n        if self._value != new_value:\n            old_value = self._value\n            self._value = new_value\n            for observer in self._observers:\n                observer(old_value, new_value)\n\n    def bind_to(self, observer):\n        self._observers.append(observer)\n\n    def unbind_from(self, observer):\n        self._observers.remove(observer)\n\n\nclass ComputeCell:\n    def __init__(self, inputs, compute_function):\n        self._dependents = {}\n        self._value = None\n        self._compute_function = compute_function\n\n        for input_cell in inputs:\n            input_cell.bind_to(functools.partial(self._update, input_cell))\n\n    def _update(self, changed_input, old_value, new_value):\n        self._recalculate()\n\n    def _recalculate(self):\n        inputs = [input_cell.value for input_cell in self._dependents]\n        self._value = self._compute_function(*inputs)\n\n        for dependent in self._dependents:\n            dependent._update(self, self._value)\n\n    def add_callback(self, callback):\n        if not hasattr(self, '_callbacks'):\n            self._callbacks = []\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        if hasattr(self, '_callbacks') and callback in self._callbacks:\n            self._callbacks.remove(callback)\n\n    def connect(self, output):\n        self._dependents[output] = True\n        if output._value is None:\n            output._recalculate()\n\n    def disconnect(self, output):\n        del self._dependents[output]\n\n\nif __name__ == \"__main__\":\n    # Test cases here\n    ",
+        "language": "python",
+        "file_path": "react.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "E\n====\nERROR: react_test (unittest.loader._FailedTest.react_test)\n----\nImportError: Failed to import test module: react_test\nTraceback (most recent call last):\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 407, in _find_test_path\n    module = self._get_module_from_name(name)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/unittest/loader.py\", line 350, in _get_module_from_name\n    __import__(name)\n  File \"react/react_test.py\", line 8, in <module>\n    from react import (\n  File \"react/react.py\", line 66\n    \n    ^\nIndentationError: expected an indented block after 'if' statement on line 64\n\n\n----\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in react.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "react.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import functools\n\nclass InputCell:\n    def __init__(self, initial_value):\n        self._value = initial_value\n        self._observers = []\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_value):\n        if self._value != new_value:\n            old_value = self._value\n            self._value = new_value\n            for observer in self._observers:\n                observer(old_value, new_value)\n\n    def bind_to(self, observer):\n        self._observers.append(observer)\n\n    def unbind_from(self, observer):\n        self._observers.remove(observer)\n\n\nclass ComputeCell:\n    def __init__(self, inputs, compute_function):\n        self._dependents = {}\n        self._value = None\n        self._compute_function = compute_function\n\n        for input_cell in inputs:\n            input_cell.bind_to(functools.partial(self._update, input_cell))\n\n    def _update(self, changed_input, old_value, new_value):\n        self._recalculate()\n\n    def _recalculate(self):\n        inputs = [input_cell.value for input_cell in self._dependents]\n        self._value = self._compute_function(*inputs)\n\n        for dependent in self._dependents:\n            dependent._update(self, self._value)\n\n    def add_callback(self, callback):\n        if not hasattr(self, '_callbacks'):\n            self._callbacks = []\n        self._callbacks.append(callback)\n\n    def remove_callback(self, callback):\n        if hasattr(self, '_callbacks') and callback in self._callbacks:\n            self._callbacks.remove(callback)\n\n    def connect(self, output):\n        self._dependents[output] = True\n        if output._value is None:\n            output._recalculate()\n\n    def disconnect(self, output):\n        del self._dependents[output]\n\n\nif __name__ == \"__main__\":\n    # Test cases here\n    ",
+        "language": "python",
+        "file_path": "react.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

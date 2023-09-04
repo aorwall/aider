@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCompute the prime factors of a given natural number.\n\nA prime number is only evenly divisible by itself and 1.\n\nNote that 1 is not a prime number.\n\n## Example\n\nWhat are the prime factors of 60?\n\n- Our first divisor is 2.\n  2 goes into 60, leaving 30.\n- 2 goes into 30, leaving 15.\n  - 2 doesn't go cleanly into 15.\n    So let's move on to our next divisor, 3.\n- 3 goes cleanly into 15, leaving 5.\n  - 3 does not go cleanly into 5.\n    The next possible factor is 4.\n  - 4 does not go cleanly into 5.\n    The next possible factor is 5.\n- 5 does go cleanly into 5.\n- We're left only with 1, so now, we're done.\n\nOur successful divisors in that computation represent the list of prime factors of 60: 2, 2, 3, and 5.\n\nYou can check this yourself:\n\n```text\n2 * 2 * 3 * 5\n= 4 * 15\n= 60\n```\n\nSuccess!\n\n####\n\nUse the above instructions to modify the supplied files: prime_factors.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "prime_factors.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from math import sqrt\n\ndef factors(value):\n    if value < 2:\n        raise ValueError(\"Value must be greater than or equal to 2\")\n\n    primes = []\n    while value % 2 == 0:\n        primes.append(2)\n        value //= 2\n\n    for i in range(3, int(sqrt(value))+1, 2):\n        while value % i == 0:\n            primes.append(i)\n            value //= i\n\n    if value > 2:\n        primes.append(value)\n\n    return primes\n",
+        "language": "python",
+        "file_path": "prime_factors.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "...E........\n====\nERROR: test_no_factors (prime_factors_test.PrimeFactorsTest.test_no_factors)\n----\nTraceback (most recent call last):\n  File \"prime-factors/prime_factors_test.py\", line 14, in test_no_factors\n    self.assertEqual(factors(1), [])\n                     ^^^^^^^^^^\n  File \"prime-factors/prime_factors.py\", line 5, in factors\n    raise ValueError(\"Value must be greater than or equal to 2\")\nValueError: Value must be greater than or equal to 2\n\n----\n\n\nFAILED (errors=1)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in prime_factors.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "prime_factors.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from math import sqrt\n\ndef factors(value):\n    if value <= 1:\n        raise ValueError(\"Value must be greater than 1\")\n\n    primes = []\n    while value % 2 == 0:\n        primes.append(2)\n        value //= 2\n\n    for i in range(3, int(sqrt(value)) + 1, 2):\n        while value % i == 0:\n            primes.append(i)\n            value //= i\n\n    if value > 2:\n        primes.append(value)\n\n    return primes\n",
+        "language": "python",
+        "file_path": "prime_factors.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

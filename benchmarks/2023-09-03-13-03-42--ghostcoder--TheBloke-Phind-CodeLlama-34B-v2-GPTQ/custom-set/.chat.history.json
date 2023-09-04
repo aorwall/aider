@@ -1,0 +1,51 @@
+[
+  {
+    "items": [
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "custom_set.py",
+        "readonly": false
+      },
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate a custom set type.\n\nSometimes it is necessary to define a custom data structure of some type, like a set.\nIn this exercise you will define your own set.\nHow it works internally doesn't matter, as long as it behaves like a set of unique elements.\n\n####\n\nUse the above instructions to modify the supplied files: custom_set.py\nKeep and implement the existing function or class stubs, they will be called from unit tests.\nDo not implement or change any unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "Here's how I would approach implementing a `CustomSet` class using Python's built-in set functionality:",
+        "need_input": false
+      },
+      {
+        "type": "updated_file",
+        "content": "class CustomSet:\n    def __init__(self, elements=None):\n        # Initialize an empty set if no elements provided, otherwise convert list to set\n        self._elements = set() if elements is None else set(elements)\n\n    def isempty(self):\n        return len(self._elements) == 0\n\n    def __contains__(self, element):\n        return element in self._elements\n\n    def issubset(self, other):\n        # Check whether every item in this set exists in 'other' set\n        return self._elements.issubset(other._elements)\n\n    def isdisjoint(self, other):\n        # Check whether two sets have no items in common\n        return self._elements.isdisjoint(other._elements)\n\n    def __eq__(self, other):\n        # Check whether two sets are equal (same items)\n        return self._elements == other._elements\n\n    def add(self, element):\n        # Add an element to the set\n        self._elements.add(element)\n\n    def intersection(self, other):\n        # Return a new set with items found in both sets\n        return CustomSet(self._elements & other._elements)\n\n    def __sub__(self, other):\n        # Return a new set with items from this set not found in other set\n        return CustomSet(self._elements - other._elements)\n\n    def __add__(self, other):\n        # Return a new set with items from both sets\n        return CustomSet(self._elements | other._elements)\n",
+        "language": null,
+        "file_path": "custom_set.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      },
+      {
+        "type": "text",
+        "text": "This implementation uses Python's built-in set datatype which provides most of the functionality we need for our `CustomSet`. We simply wrap its behavior inside our `CustomSet` class.",
+        "need_input": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

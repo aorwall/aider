@@ -1,0 +1,83 @@
+method: on_llm_end [2023-09-04 15:22:49]
+llm_output: null
+prompt:
+class House:
+    def __init__(self, nationality, pet, drink, brand, animal):
+        self.nationality = nationality
+        self.pet = pet
+        self.drink = drink
+        self.brand = brand
+        self.animal = animal
+
+
+def find_owner_of_pet(houses, pet):
+    for house in houses:
+        if house.pet == pet:
+            return house.nationality
+
+
+def find_house_with_color(houses, color):
+    for index, house in enumerate(houses):
+        if house.animal == color:
+            return index
+
+
+def drinks_water():
+    houses = [House('English', None, 'tea', None, 'red'),
+             House('Spaniard', 'dog', 'coffee', 'OldGold', 'ivory'),
+             House('Ukrainian', None, 'milk', 'Kools', 'green'),
+             House('Norwegian', 'fox', 'water', 'Chesterfields', 'blue'),
+             House('Japanese', 'snails', 'orange juice', 'LuckyStrikes', 'yellow')]
+    
+    norwegian_index = find_house_with_color(houses, 'blue')
+    japanese_index = find_house_with_color(houses, 'yellow')
+    
+    # The Norwegian lives in the first house.
+    # The man who smokes Chesterfields lives in the house next to the man with the fox.
+    chesterfield_index = norwegian_index + 1
+    
+    # The man who smokes Chesterfields lives in the house next to the house where the horse is kept.
+    horse_index = chesterfield_index - 1
+    
+    # The Lucky Strike smoker drinks orange juice.
+    lucky_strike_index = horse_index + 1
+    
+    # The Japanese smokes Parliaments.
+    parliament_index = japanese_index - 1
+    
+    # The green house is immediately to the right of the ivory house.
+    green_index = find_house_with_color(houses, 'ivory') + 1
+    
+    # The Old Gold smoker owns snails.
+    old_gold_index = find_house_with_color(houses, 'green') - 1
+    
+    # The Spaniard owns the dog.
+    spaniard_index = find_house_with_color(houses, 'yellow') + 2
+    
+    # The Englishman lives in the red house.
+    englishman_index = find_house_with_color(houses, 'red')
+    
+    # The Ukranian drinks tea.
+    ukrainian_index = find_house_with_color(houses, 'green')
+    
+    # The Norwegian lives next to the blue house.
+    # The man who smokes Chesterfields lives in the house next to the man with the fox.
+    # The man who smokes Chesterfields lives in the house next to the house where the horse is kept.
+    # The Lucky Strike smoker drinks orange juice.
+    # The Japanese smokes Parliaments.
+    # The green house is immediately to the right of the ivory house.
+    # The Old Gold smoker owns snails.
+    # The Spaniard owns the dog.
+    # The Englishman lives in the red house.
+    # The Ukranian drinks tea.
+    
+    possible_solutions = []
+    for index, house in enumerate(houses):
+        if (index != englishman_index and house.nationality == "English") or \
+           (index != spaniard_index and house.pet == "dog") or \
+           (index != lucky_strike_index and house.brand == "LuckyStrikes" and house.drink == "orange juice") or \
+           (index != parliament_index and house.brand == "Parliaments" and house.nationality == "Japanese") or \
+           (index != green_index and house.animal == "horse") or \
+           (index != old_gold_index and house.brand == "OldGold" and house.pet == "snails") or \
+           (index != norwegian_index and house.
+---

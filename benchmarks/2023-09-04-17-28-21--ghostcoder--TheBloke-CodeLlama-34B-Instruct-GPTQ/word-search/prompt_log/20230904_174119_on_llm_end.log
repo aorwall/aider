@@ -1,0 +1,58 @@
+method: on_llm_end [2023-09-04 17:41:19]
+llm_output: null
+prompt:
+import itertools
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
+
+class WordSearch:
+    def __init__(self, puzzle):
+        self.puzzle = puzzle
+        self.height = len(puzzle)
+        self.width = len(puzzle[0])
+
+    def search(self, word):
+        # Check rows
+        for row in self.puzzle:
+            if word in "".join(row):
+                start_index = row.index(word[0])
+                end_index = start_index + len(word) - 1
+                return (Point(start_index, 0), Point(end_index, 0))
+
+        # Check columns
+        for col in zip(*self.puzzle):
+            if word in "".join(col):
+                start_index = col.index(word[0])
+                end_index = start_index + len(word) - 1
+                return (Point(0, start_index), Point(0, end_index))
+
+        # Check diagonals
+        for direction in [(1, 1), (-1, 1)]:
+            for row in range(self.height):
+                for col in range(self.width):
+                    if self.puzzle[row][col] == word[0]:
+                        current_point = Point(row, col)
+                        for char in word[1:]:
+                            next_point = Point(current_point.x + direction[0], current_point.y + direction[1])
+                            if not (0 <= next_point.x < self.height and 0 <= next_point.y < self.width):
+                                break
+                            if self.puzzle[next_point.x][next_point.y] != char:
+                                break
+                            current_point = next_point
+                        else:
+                            return (Point(row, col), current_point)
+
+        return None
+
+
+---

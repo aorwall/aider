@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nAn anagram is a rearrangement of letters to form a new word: for example `\"owns\"` is an anagram of `\"snow\"`.\nA word is not its own anagram: for example, `\"stop\"` is not an anagram of `\"stop\"`.\n\nGiven a target word and a set of candidate words, this exercise requests the anagram set: the subset of the candidates that are anagrams of the target.\n\nThe target and candidates are words of one or more ASCII alphabetic characters (`A`-`Z` and `a`-`z`).\nLowercase and uppercase characters are equivalent: for example, `\"PoTS\"` is an anagram of `\"sTOp\"`, but `StoP` is not an anagram of `sTOp`.\nThe anagram set is the subset of the candidate set that are anagrams of the target (in any order).\nWords in the anagram set should have the same letter case as in the candidate set.\n\nGiven the target `\"stone\"` and candidates `\"stone\"`, `\"tones\"`, `\"banana\"`, `\"tons\"`, `\"notes\"`, `\"Seton\"`, the anagram set is `\"tones\"`, `\"notes\"`, `\"Seton\"`.\n\n####\n\nUse the above instructions to modify the supplied files: anagram.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "anagram.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from collections import Counter\n\ndef find_anagrams(word, candidates):\n    target = Counter(word)\n\n    def is_anagram(candidate):\n        if len(target) != len(candidate):\n            return False\n\n        candidate_counter = Counter(candidate)\n        return all([k in candidate_counter and v <= candidate_counter[k] for k, v in target.items()])\n\n    return [candidate for candidate in candidates if is_anagram(candidate)]\n",
+        "language": "python",
+        "file_path": "anagram.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "..FFFFF........F\n====\nFAIL: test_detects_anagrams_case_insensitively (anagram_test.AnagramTest.test_detects_anagrams_case_insensitively)\n----\nTraceback (most recent call last):\n  File \"anagram/anagram_test.py\", line 51, in test_detects_anagrams_case_insensitively\n    self.assertCountEqual(find_anagrams(\"Orchestra\", candidates), expected)\nAssertionError: Element counts were not equal:\nFirst has 0, Second has 1:  'Carthorse'\n\n====\nFAIL: test_detects_anagrams_using_case_insensitive_possible_matches (anagram_test.AnagramTest.test_detects_anagrams_using_case_insensitive_possible_matches)\n----\nTraceback (most recent call last):\n  File \"anagram/anagram_test.py\", line 61, in test_detects_anagrams_using_case_insensitive_possible_matches\n    self.assertCountEqual(find_anagrams(\"orchestra\", candidates), expected)\nAssertionError: Element counts were not equal:\nFirst has 0, Second has 1:  'Carthorse'\n\n====\nFAIL: test_detects_anagrams_using_case_insensitive_subject (anagram_test.AnagramTest.test_detects_anagrams_using_case_insensitive_subject)\n----\nTraceback (most recent call last):\n  File \"anagram/anagram_test.py\", line 56, in test_detects_anagrams_using_case_insensitive_subject\n    self.assertCountEqual(find_anagrams(\"Orchestra\", candidates), expected)\nAssertionError: Element counts were not equal:\nFirst has 0, Second has 1:  'carthorse'\n\n====\nFAIL: test_detects_multiple_anagrams_with_different_case (anagram_test.AnagramTest.test_detects_multiple_anagrams_with_different_case)\n----\nTraceback (most recent call last):\n  File \"anagram/anagram_test.py\", line 41, in test_detects_multiple_anagrams_with_different_case\n    self.assertCountEqual(find_anagrams(\"nose\", candidates), expected)\nAssertionError: Element counts were not equal:\nFirst has 0, Second has 1:  'Eons'\nFirst has 0, Second has 1:  'ONES'\n\n====\nFAIL: test_detects_three_anagrams (anagram_test.AnagramTest.test_detects_three_anagrams)\n----\nTraceback (most recent call last):\n  File \"anagram/anagram_test.py\", line 36, in test_detects_three_anagrams\n    self.assertCountEqual(find_anagrams(\"allergy\", candidates), expected)\nAssertionError: Element counts were not equal:\nFirst has 0, Second has 1:  'gallery'\nFirst has 0, Second has 1:  'regally'\nFirst has 0, Second has 1:  'largely'\n\n====\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in anagram.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "anagram.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "from collections import Counter\n\ndef find_anagrams(word, candidates):\n    target = Counter(word.lower())\n\n    def is_anagram(candidate):\n        if len(target) != len(candidate):\n            return False\n\n        candidate_counter = Counter(candidate.lower())\n        return all([k in candidate_counter and v == candidate_counter[k] for k, v in target.items()])\n\n    return [candidate for candidate in candidates if is_anagram(candidate)]\n",
+        "language": "python",
+        "file_path": "anagram.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

@@ -1,0 +1,217 @@
+method: on_llm_start [2023-09-04 17:36:02]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+<s>[INST]<<SYS>>
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+[INST]Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+[/INST] Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+[/INST] Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+[/INST] Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+<</SYS>>
+# Instructions
+
+Create an implementation of the atbash cipher, an ancient encryption system created in the Middle East.
+
+The Atbash cipher is a simple substitution cipher that relies on transposing all the letters in the alphabet such that the resulting alphabet is backwards.
+The first letter is replaced with the last letter, the second with the second-last, and so on.
+
+An Atbash cipher for the Latin alphabet would be as follows:
+
+```text
+Plain:  abcdefghijklmnopqrstuvwxyz
+Cipher: zyxwvutsrqponmlkjihgfedcba
+```
+
+It is a very weak cipher because it only has one possible key, and it is a simple mono-alphabetic substitution cipher.
+However, this may not have been an issue in the cipher's time.
+
+Ciphertext is written out in groups of fixed length, the traditional group size being 5 letters, leaving numbers unchanged, and punctuation is excluded.
+This is to make it harder to guess things based on word boundaries.
+All text will be encoded as lowercase letters.
+
+## Examples
+
+- Encoding `test` gives `gvhg`
+- Encoding `x123 yes` gives `c123b vh`
+- Decoding `gvhg` gives `test`
+- Decoding `gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt` gives `thequickbrownfoxjumpsoverthelazydog`
+
+####
+
+Use the above instructions to modify the supplied files: atbash_cipher.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: atbash_cipher.py
+```python
+
+```
+[/INST] Filepath: atbash_cipher.py
+```python
+import string
+
+def encode(plain_text):
+    # Create a dictionary to map each character to its corresponding encrypted character
+    char_map = {chr(i+97): chr((26 - (i % 26)) + 97) for i in range(26)}
+
+    # Replace each character in the plain text with its encrypted counterpart
+    cipher_text = ''.join([char_map[c] for c in plain_text])
+
+    # Group the characters into blocks of five and separate them by spaces
+    cipher_text = ' '.join([cipher_text[i:i+5] for i in range(0, len(cipher_text), 5)])
+
+    return cipher_text
+
+def decode(ciphered_text):
+    # Create a dictionary to map each encrypted character to its corresponding decrypted character
+    char_map = {chr((26 - (i % 26)) + 97): chr(i+97) for i in range(26)}
+
+    # Replace each encrypted character in the cipher text with its decrypted counterpart
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+
+    return plain_text
+
+```
+</s>
+<s>[INST]EEEEFEEEFFEEEF
+====
+ERROR: test_decode_a_sentence (atbash_cipher_test.AtbashCipherTest.test_decode_a_sentence)
+----
+Traceback (most recent call last):
+  File "atbash-cipher/atbash_cipher_test.py", line 46, in test_decode_a_sentence
+    decode("zmlyh gzxov rhlug vmzhg vkkrm thglm v"),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "atbash-cipher/atbash_cipher.py", line 20, in decode
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "atbash-cipher/atbash_cipher.py", line 20, in <listcomp>
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+                          ~~~~~~~~^^^
+KeyError: ' '
+
+====
+ERROR: test_decode_all_the_letters (atbash_cipher_test.AtbashCipherTest.test_decode_all_the_letters)
+----
+Traceback (most recent call last):
+  File "atbash-cipher/atbash_cipher_test.py", line 55, in test_decode_all_the_letters
+    decode("gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt"),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "atbash-cipher/atbash_cipher.py", line 20, in decode
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "atbash-cipher/atbash_cipher.py", line 20, in <listcomp>
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+                          ~~~~~~~~^^^
+KeyError: ' '
+
+====
+ERROR: test_decode_exercism (atbash_cipher_test.AtbashCipherTest.test_decode_exercism)
+----
+Traceback (most recent call last):
+  File "atbash-cipher/atbash_cipher_test.py", line 42, in test_decode_exercism
+    self.assertEqual(decode("vcvix rhn"), "exercism")
+                     ^^^^^^^^^^^^^^^^^^^
+  File "atbash-cipher/atbash_cipher.py", line 20, in decode
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "atbash-cipher/atbash_cipher.py", line 20, in <listcomp>
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+                          ~~~~~~~~^^^
+KeyError: ' '
+
+====
+ERROR: test_decode_numbers (atbash_cipher_test.AtbashCipherTest.test_decode_numbers)
+----
+Traceback (most recent call last):
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in atbash_cipher.py to resolve the errors.
+
+Filepath: atbash_cipher.py
+```python
+import string
+
+def encode(plain_text):
+    # Create a dictionary to map each character to its corresponding encrypted character
+    char_map = {chr(i+97): chr((26 - (i % 26)) + 97) for i in range(26)}
+
+    # Replace each character in the plain text with its encrypted counterpart
+    cipher_text = ''.join([char_map[c] for c in plain_text])
+
+    # Group the characters into blocks of five and separate them by spaces
+    cipher_text = ' '.join([cipher_text[i:i+5] for i in range(0, len(cipher_text), 5)])
+
+    return cipher_text
+
+def decode(ciphered_text):
+    # Create a dictionary to map each encrypted character to its corresponding decrypted character
+    char_map = {chr((26 - (i % 26)) + 97): chr(i+97) for i in range(26)}
+
+    # Replace each encrypted character in the cipher text with its decrypted counterpart
+    plain_text = ''.join([char_map[c] for c in ciphered_text])
+
+    return plain_text
+
+```
+[/INST]Filepath: atbash_cipher.py
+```python
+
+

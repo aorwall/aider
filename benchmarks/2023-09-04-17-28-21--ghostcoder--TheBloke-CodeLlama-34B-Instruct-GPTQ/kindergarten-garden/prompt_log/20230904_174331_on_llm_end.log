@@ -1,0 +1,15 @@
+method: on_llm_end [2023-09-04 17:43:31]
+llm_output: null
+prompt:
+class Garden:
+    def __init__(self, diagram, students = None):
+        self.diagram = diagram
+        self.students = ["Alice","Bob","Charlie","David","Eve","Fred","Ginny","Harriet","Ileana","Joseph","Kincaid","Larry"] if students == None else students
+        
+    def plants(self, student):
+        index = self.students.index(student) * 2
+        return list(map(lambda x : x[0], filter(lambda y : y[1] % 2 == 0 , enumerate([x for x in self.diagram.split("\n")[0]])))) + \
+            list(map(lambda x : x[0], filter(lambda y : y[1] % 2 != 0 , enumerate([x for x in self.diagram.split("\n")[1]]))))[index:]
+            
+
+---

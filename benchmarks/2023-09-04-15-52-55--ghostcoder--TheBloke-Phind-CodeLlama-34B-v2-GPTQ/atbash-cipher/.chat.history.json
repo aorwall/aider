@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nCreate an implementation of the atbash cipher, an ancient encryption system created in the Middle East.\n\nThe Atbash cipher is a simple substitution cipher that relies on transposing all the letters in the alphabet such that the resulting alphabet is backwards.\nThe first letter is replaced with the last letter, the second with the second-last, and so on.\n\nAn Atbash cipher for the Latin alphabet would be as follows:\n\n```text\nPlain:  abcdefghijklmnopqrstuvwxyz\nCipher: zyxwvutsrqponmlkjihgfedcba\n```\n\nIt is a very weak cipher because it only has one possible key, and it is a simple mono-alphabetic substitution cipher.\nHowever, this may not have been an issue in the cipher's time.\n\nCiphertext is written out in groups of fixed length, the traditional group size being 5 letters, leaving numbers unchanged, and punctuation is excluded.\nThis is to make it harder to guess things based on word boundaries.\nAll text will be encoded as lowercase letters.\n\n## Examples\n\n- Encoding `test` gives `gvhg`\n- Encoding `x123 yes` gives `c123b vh`\n- Decoding `gvhg` gives `test`\n- Decoding `gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt` gives `thequickbrownfoxjumpsoverthelazydog`\n\n####\n\nUse the above instructions to modify the supplied files: atbash_cipher.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def encode(plain_text):\n    plain_text = plain_text.lower()\n    cipher_text = \"\"\n\n    for char in plain_text:\n        if 'a' <= char <= 'z':\n            offset = ord('a') - ord('z')\n            cipher_char = chr((ord(char) - ord('a')) % 26 + ord('a') + offset)\n            cipher_text += cipher_char\n        else:\n            cipher_text += char\n\n    return cipher_text\n\n\ndef decode(ciphered_text):\n    decoded_text = \"\"\n\n    for char in ciphered_text:\n        if 'a' <= char <= 'z':\n            offset = ord('a') - ord('z')\n            decoded_char = chr((ord(char) - ord('a')) % 26 + ord('a') + offset)\n            decoded_text += decoded_char\n        else:\n            decoded_text += char\n\n    return decoded_text\n",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "FFFFFFFFFFFFFF\n====\nFAIL: test_decode_a_sentence (atbash_cipher_test.AtbashCipherTest.test_decode_a_sentence)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 45, in test_decode_a_sentence\n    self.assertEqual(\nAssertionError: 'aTS`O Na_V] YOS\\\\N ]TaON ]RRYT [ONST ]' != 'anobstacleisoftenasteppingstone'\n- aTS`O Na_V] YOS\\N ]TaON ]RRYT [ONST ]\n+ anobstacleisoftenasteppingstone\n\n\n====\nFAIL: test_decode_all_the_letters (atbash_cipher_test.AtbashCipherTest.test_decode_all_the_letters)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 54, in test_decode_all_the_letters\n    self.assertEqual(\nAssertionError: 'NZ]QM Y_W`P SKT\\\\S JXMUR OSL]P NZ]Va HI^S[' != 'thequickbrownfoxjumpsoverthelazydog'\n- NZ]QM Y_W`P SKT\\S JXMUR OSL]P NZ]Va HI^S[\n+ thequickbrownfoxjumpsoverthelazydog\n\n\n====\nFAIL: test_decode_exercism (atbash_cipher_test.AtbashCipherTest.test_decode_exercism)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 42, in test_decode_exercism\n    self.assertEqual(decode(\"vcvix rhn\"), \"exercism\")\nAssertionError: ']J]P_ YOU' != 'exercism'\n- ]J]P_ YOU\n+ exercism\n\n\n====\nFAIL: test_decode_numbers (atbash_cipher_test.AtbashCipherTest.test_decode_numbers)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 51, in test_decode_numbers\n    self.assertEqual(decode(\"gvhgr mt123 gvhgr mt\"), \"testing123testing\")\nAssertionError: 'N]ONY T[123 N]ONY T[' != 'testing123testing'\n- N]ONY T[123 N]ONY T[\n+ testing123testing\n\n\n====\nFAIL: test_decode_with_no_spaces (atbash_cipher_test.AtbashCipherTest.test_decode_with_no_spaces)\n----\nTraceback (most recent call last):\n  File \"atbash-cipher/atbash_cipher_test.py\", line 63, in test_decode_with_no_spaces\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in atbash_cipher.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def encode(plain_text):\n    plain_text = plain_text.replace(' ', '')\n    cipher_text = \"\"\n\n    for i in range(0, len(plain_text), 5):\n        chunk = plain_text[i : i + 5]\n        cipher_chunk = \"\"\n\n        for char in chunk:\n            if 'a' <= char <= 'z':\n                index = ord('a') - ord(char)\n                cipher_char = chr(index % 26 + ord('A'))\n                cipher_chunk += cipher_char\n            else:\n                cipher_chunk += char\n\n        cipher_text += cipher_chunk + \" \"\n\n    return cipher_text[:-1] # Remove trailing space\n\n\ndef decode(ciphered_text):\n    decoded_text = \"\"\n\n    for i in range(0, len(ciphered_text), 6):\n        chunk = ciphered_text[i : i + 6].rstrip()\n        decoded_chunk = \"\"\n\n        for char in chunk:\n            if 'A' <= char <= 'Z':\n                index = ord(char) - ord('A')\n                decoded_char = chr(index % 26 + ord('a'))\n                decoded_chunk += decoded_char\n            else:\n                decoded_chunk += char\n\n        decoded_text += decoded_chunk\n\n    return decoded_text\n",
+        "language": "python",
+        "file_path": "atbash_cipher.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

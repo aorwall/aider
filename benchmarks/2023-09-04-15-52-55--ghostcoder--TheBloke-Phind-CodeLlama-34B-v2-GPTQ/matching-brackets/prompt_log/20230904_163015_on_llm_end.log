@@ -1,0 +1,24 @@
+method: on_llm_end [2023-09-04 16:30:15]
+llm_output: null
+prompt:
+def is_paired(input_string):
+    stack = []
+    opening_brackets = ['(', '{', '[']
+    closing_brackets = [')', '}', ']']
+    
+    for char in input_string:
+        if char in opening_brackets:
+            stack.append(char)
+        elif char in closing_brackets:
+            if len(stack) == 0:
+                return False
+            else:
+                last_open_bracket = stack[-1]
+                if (last_open_bracket == '(' and char != ')') or \
+                   (last_open_bracket == '{' and char != '}') or \
+                   (last_open_bracket == '[' and char != ']'):
+                    return False
+                else:
+                    stack.pop()
+    return len(stack) == 0
+---

@@ -1,0 +1,61 @@
+method: on_llm_end [2023-09-04 17:56:11]
+llm_output: null
+prompt:
+def translate(text):
+    """
+    Translate text to Pig Latin.
+
+    :param text: The text to translate.
+    :return: The translated text.
+    """
+    # Split the text into words
+    words = text.split()
+
+    # Loop through each word and apply the Pig Latin rules
+    pig_words = []
+    for word in words:
+        # Check if the word starts with a vowel
+        if _is_vowel(word[0]):
+            # Add 'way' to the end of the word
+            pig_word = f"{word}way"
+        else:
+            # Find the index of the first vowel
+            idx = _find_first_vowel(word)
+
+            # Get the consonant prefix and the rest of the word
+            consonant_prefix = word[:idx]
+            rest_of_the_word = word[idx:]
+
+            # Move the consonant prefix to the end of the word and add 'ay'
+            pig_word = f"{rest_of_the_word}{consonant_prefix}ay"
+
+        # Append the Pig Latin word to the list
+        pig_words.append(pig_word)
+
+    # Join the Pig Latin words into a single string
+    return " ".join(pig_words)
+
+def _is_vowel(char):
+    """
+    Return True if char is a vowel, False otherwise.
+
+    :param char: A character.
+    :return: Whether the character is a vowel.
+    """
+    return char in ["a", "e", "i", "o", "u"]
+
+def _find_first_vowel(word):
+    """
+    Find the index of the first vowel in word.
+
+    :param word: A word.
+    :return: The index of the first vowel.
+    """
+    for i, char in enumerate(word):
+        if _is_vowel(char):
+            return i
+
+    return len(word)
+
+
+---

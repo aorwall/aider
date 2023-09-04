@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Introduction\n\nYou work for a government agency that has intercepted a series of encrypted communication signals from a group of bank robbers.\nThe signals contain a long sequence of digits.\nYour team needs to use various digital signal processing techniques to analyze the signals and identify any patterns that may indicate the planning of a heist.\n# Instructions\n\nYour task is to look for patterns in the long sequence of digits in the encrypted signal.\n\nThe technique you're going to use here is called the largest series product.\n\nLet's define a few terms, first.\n\n- **input**: the sequence of digits that you need to analyze\n- **series**: a sequence of adjacent digits (those that are next to each other) that is contained within the input\n- **span**: how many digits long each series is\n- **product**: what you get when you multiply numbers together\n\nLet's work through an example, with the input `\"63915\"`.\n\n- To form a series, take adjacent digits in the original input.\n- If you are working with a span of `3`, there will be three possible series:\n  - `\"639\"`\n  - `\"391\"`\n  - `\"915\"`\n- Then we need to calculate the product of each series:\n  - The product of the series `\"639\"` is 162 (`6 \u00d7 3 \u00d7 9 = 162`)\n  - The product of the series `\"391\"` is 27 (`3 \u00d7 9 \u00d7 1 = 27`)\n  - The product of the series `\"915\"` is 45 (`9 \u00d7 1 \u00d7 5 = 45`)\n- 162 is bigger than both 27 and 45, so the largest series product of `\"63915\"` is from the series `\"639\"`.\n  So the answer is **162**.\n# Instructions append\n\n## Exception messages\n\nSometimes it is necessary to [raise an exception](https://docs.python.org/3/tutorial/errors.html#raising-exceptions). When you do this, you should always include a **meaningful error message** to indicate what the source of the error is. This makes your code more readable and helps significantly with debugging. For situations where you know that the error source will be a certain type, you can choose to raise one of the [built in error types](https://docs.python.org/3/library/exceptions.html#base-classes), but should still include a meaningful message.\n\nThis particular exercise requires that you use the [raise statement](https://docs.python.org/3/reference/simple_stmts.html#the-raise-statement) to \"throw\" a `ValueError` when your `largest_product()` function receives invalid input. The tests will only pass if you both `raise` the `exception` and include a message with it.  Feel free to reuse your code from the `series` exercise!\n\nTo raise a `ValueError` with a message, write the message as an argument to the `exception` type:\n\n```python\n# span of numbers is longer than number series\nraise ValueError(\"span must be smaller than string length\")\n\n# span of number is negative\nraise ValueError(\"span must not be negative\")\n\n# series includes non-number input\nraise ValueError(\"digits input must only contain digits\")\n```\n\n####\n\nUse the above instructions to modify the supplied files: largest_series_product.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def largest_product(series, size):\n    \"\"\"Return the largest product of consecutive digits of given length.\n    \n    Args:\n        series: A string containing a series of digits.\n        size: An integer indicating the desired length of consecutive digits.\n    \n    Returns:\n        An integer representing the largest product of consecutive digits.\n    \n    Raises:\n        ValueError: If size is larger than the length of series or less than 0.\n    \n    Examples:\n        >>> largest_product('12345', 2)\n        12\n        >>> largest_product('12345', 3)\n        60\n        >>> largest_product('12345', 4)\n        240\n        >>> largest_product('12345', 5)\n        1200\n        >>> largest_product('12345', 6)\n        Traceback (most recent call last):\n            ...\n        ValueError: span must be smaller than string length\n        >>> largest_product('abcd', 2)\n        Traceback (most recent call last):\n            ...\n        ValueError: digits input must only contain digits\n        >>> largest_product('12345', -1)\n        Traceback (most recent call last):\n            ...\n        ValueError: span must not be negative\n    \"\"\"\n    # Check if size is valid\n    if size > len(series) or size < 0:\n        raise ValueError(\"span must be smaller than string length\")\n\n    # Initialize variables\n    max_product = 0\n    current_product = 1\n    start_index = 0\n\n    # Iterate over each digit in the series\n    for i, digit in enumerate(series):\n        # Check if digit is a number\n        if not digit.isdigit():\n            raise ValueError(\"digits input must only contain digits\")\n\n        # Calculate the product of consecutive digits\n        current_product *= int(digit)\n\n        # Check if the current product is greater than the maximum product\n        if current_product > max_product:\n            max_product = current_product\n\n        # Check if the end of the series has been reached\n        if i == len(series) - 1:\n            break\n\n        # Check if the window size has been exceeded\n        if i - start_index + 1 == size:\n            # Calculate the product of the previous window\n            prev_window_product = 1\n            for j in range(start_index, i):\n                prev_window_product *= int(series[j])\n\n            # Update the starting index\n            start_index += 1\n\n            # Divide the current product by the previous window product\n            current_product //= prev_window_product\n\n    return max_product\n",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "EEEEEEE...F.EE\n====\nERROR: test_can_find_the_largest_product_of_2 (largest_series_product_test.LargestSeriesProductTest.test_can_find_the_largest_product_of_2)\n----\nTraceback (most recent call last):\n  File \"largest-series-product/largest_series_product_test.py\", line 20, in test_can_find_the_largest_product_of_2\n    self.assertEqual(largest_product(\"576802143\", 2), 48)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"largest-series-product/largest_series_product.py\", line 73, in largest_product\n    current_product //= prev_window_product\nZeroDivisionError: integer division or modulo by zero\n\n====\nERROR: test_can_find_the_largest_product_of_2_with_numbers_in_order (largest_series_product_test.LargestSeriesProductTest.test_can_find_the_largest_product_of_2_with_numbers_in_order)\n----\nTraceback (most recent call last):\n  File \"largest-series-product/largest_series_product_test.py\", line 17, in test_can_find_the_largest_product_of_2_with_numbers_in_order\n    self.assertEqual(largest_product(\"0123456789\", 2), 72)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"largest-series-product/largest_series_product.py\", line 73, in largest_product\n    current_product //= prev_window_product\nZeroDivisionError: integer division or modulo by zero\n\n====\nERROR: test_can_find_the_largest_product_of_3 (largest_series_product_test.LargestSeriesProductTest.test_can_find_the_largest_product_of_3)\n----\nTraceback (most recent call last):\n  File \"largest-series-product/largest_series_product_test.py\", line 26, in test_can_find_the_largest_product_of_3\n    self.assertEqual(largest_product(\"1027839564\", 3), 270)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"largest-series-product/largest_series_product.py\", line 73, in largest_product\n    current_product //= prev_window_product\nZeroDivisionError: integer division or modulo by zero\n\n====\nERROR: test_can_find_the_largest_product_of_3_with_numbers_in_order (largest_series_product_test.LargestSeriesProductTest.test_can_find_the_largest_product_of_3_with_numbers_in_order)\n----\nTraceback (most recent call last):\n  File \"largest-series-product/largest_series_product_test.py\", line 23, in test_can_find_the_largest_product_of_3_with_numbers_in_order\n    self.assertEqual(largest_product(\"0123456789\", 3), 504)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"largest-series-product/largest_series_product.py\", line 73, in largest_product\n    current_product //= prev_window_product\nZeroDivisionError: integer division or modulo by zero\n\n====\nERROR: test_can_find_the_largest_product_of_5_with_numbers_in_order (largest_series_product_test.LargestSeriesProductTest.test_can_find_the_largest_product_of_5_with_numbers_in_order)\n----\nTraceback (most recent call last):\n  File \"largest-series-product/largest_series_product_test.py\", line 29, in test_can_find_the_largest_product_of_5_with_numbers_in_order\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in largest_series_product.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "def largest_product(series, size):\n    \"\"\"Return the largest product of consecutive digits of given length.\n    \n    Args:\n        series: A string containing a series of digits.\n        size: An integer indicating the desired length of consecutive digits.\n    \n    Returns:\n        An integer representing the largest product of consecutive digits.\n    \n    Raises:\n        ValueError: If size is larger than the length of series or less than 0.\n    \n    Examples:\n        >>> largest_product('12345', 2)\n        12\n        >>> largest_product('12345', 3)\n        60\n        >>> largest_product('12345', 4)\n        240\n        >>> largest_product('12345', 5)\n        1200\n        >>> largest_product('12345', 6)\n        Traceback (most recent call last):\n            ...\n        ValueError: span must be smaller than string length\n        >>> largest_product('abcd', 2)\n        Traceback (most recent call last):\n            ...\n        ValueError: digits input must only contain digits\n        >>> largest_product('12345', -1)\n        Traceback (most recent call last):\n            ...\n        ValueError: span must not be negative\n    \"\"\"\n    # Check if size is valid\n    if size > len(series) or size < 0:\n        raise ValueError(\"span must be smaller than string length\")\n\n    # Initialize variables\n    max_product = 0\n    current_product = 1\n    start_index = 0\n\n    # Iterate over each digit in the series\n    for i, digit in enumerate(series):\n        # Check if digit is a number\n        if not digit.isdigit():\n            raise ValueError(\"digits input must only contain digits\")\n\n        # Calculate the product of consecutive digits\n        current_product *= int(digit)\n\n        # Check if the current product is greater than the maximum product\n        if current_product > max_product:\n            max_product = current_product\n\n        # Check if the end of the series has been reached\n        if i == len(series) - 1:\n            break\n\n        # Check if the window size has been exceeded\n        if i - start_index + 1 == size:\n            # Calculate the product of the previous window\n            prev_window_product = 1\n            for j in range(start_index, i):\n                prev_window_product *= int(series[j])\n\n            # Update the starting index\n            start_index += 1\n\n            # Divide the current product by the previous window product\n            current_product //= prev_window_product\n\n    return max_product\n",
+        "language": "python",
+        "file_path": "largest_series_product.py",
+        "readonly": false,
+        "error": null,
+        "invalid": true
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

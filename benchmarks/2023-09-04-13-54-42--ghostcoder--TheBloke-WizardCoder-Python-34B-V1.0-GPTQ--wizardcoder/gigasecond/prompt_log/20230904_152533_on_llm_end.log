@@ -1,0 +1,29 @@
+method: on_llm_end [2023-09-04 15:25:33]
+llm_output: null
+prompt:
+from datetime import timedelta
+import re
+
+def add_gigasecond(moment):
+    return moment + timedelta(seconds=1e9)
+
+def parse_date_time(input_string):
+    pattern = r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+    match = re.search(pattern, input_string)
+    
+    if not match:
+        raise ValueError("Invalid input string format")
+        
+    parsed_string = match.group()
+    formatted_string = f"{parsed_string}.000000"
+    return formatted_string
+
+if __name__ == '__main__':
+    input_string = input('Enter a date and time in yyyy-mm-dd hh:mm:ss format: ')
+    try:
+        formatted_string = parse_date_time(input_string)
+        print(add_gigasecond(formatted_string))
+    except ValueError as ve:
+        print(ve)
+
+---

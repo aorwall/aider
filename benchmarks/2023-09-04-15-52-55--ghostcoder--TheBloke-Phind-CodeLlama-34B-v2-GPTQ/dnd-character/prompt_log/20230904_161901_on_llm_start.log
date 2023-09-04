@@ -1,0 +1,258 @@
+method: on_llm_start [2023-09-04 16:19:01]
+serialized: {"lc": 1, "type": "not_implemented", "id": ["langchain", "llms", "textgen", "TextGen"]}
+prompt:
+### System Prompt
+Act as a an automated AI with superior programming skills.
+You can both update the existing files and add new ones if needed. 
+When responding, answer with an through explanation of what you changed, and present the updated files. 
+Please exclude files that have not been updated.   
+
+When you update or add a new file you must follow the rules below:
+* YOU MUST keep package names and comments.
+* YOU MUST include all the original code in the updated files, even if it hasn't been altered.  
+* YOU SHOULD avoid adding any comments to the new code sections you are proposing.
+
+ALL files should be presented in the following format:
+Filepath: path/to/file
+```language
+code 
+```
+
+
+
+### User Message
+Update the function factorial to calculate the factorial of a given integer.
+Filepath: factorial.py
+```python
+def factorial(n):
+    pass
+```
+
+
+### Assistant
+Filepath: factorial.py
+```python
+def factorial(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+
+### User Message
+Create a function named is_palindrome that checks if a given string is a palindrome.
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    pass
+```
+
+
+### Assistant
+Filepath: palindrome_checker.py
+```python
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+```
+
+
+### User Message
+Add a new method named area to the class Rectangle that calculates and returns the area of the rectangle.
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+```
+
+
+### Assistant
+Filepath: shapes.py
+```python
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+```
+
+
+
+
+### User Message
+# Instructions
+
+For a game of [Dungeons & Dragons][dnd], each player starts by generating a character they can play with.
+This character has, among other things, six abilities; strength, dexterity, constitution, intelligence, wisdom and charisma.
+These six abilities have scores that are determined randomly.
+You do this by rolling four 6-sided dice and record the sum of the largest three dice.
+You do this six times, once for each ability.
+
+Your character's initial hitpoints are 10 + your character's constitution modifier.
+You find your character's constitution modifier by subtracting 10 from your character's constitution, divide by 2 and round down.
+
+Write a random character generator that follows the rules above.
+
+For example, the six throws of four dice may look like:
+
+- 5, 3, 1, 6: You discard the 1 and sum 5 + 3 + 6 = 14, which you assign to strength.
+- 3, 2, 5, 3: You discard the 2 and sum 3 + 5 + 3 = 11, which you assign to dexterity.
+- 1, 1, 1, 1: You discard the 1 and sum 1 + 1 + 1 = 3, which you assign to constitution.
+- 2, 1, 6, 6: You discard the 1 and sum 2 + 6 + 6 = 14, which you assign to intelligence.
+- 3, 5, 3, 4: You discard the 3 and sum 5 + 3 + 4 = 12, which you assign to wisdom.
+- 6, 6, 6, 6: You discard the 6 and sum 6 + 6 + 6 = 18, which you assign to charisma.
+
+Because constitution is 3, the constitution modifier is -4 and the hitpoints are 6.
+
+## Notes
+
+Most programming languages feature (pseudo-)random generators, but few programming languages are designed to roll dice.
+One such language is [Troll][troll].
+
+[dnd]: https://en.wikipedia.org/wiki/Dungeons_%26_Dragons
+[troll]: https://di.ku.dk/Ansatte/?pure=da%2Fpublications%2Ftroll-a-language-for-specifying-dicerolls(84a45ff0-068b-11df-825d-000ea68e967b)%2Fexport.html
+
+####
+
+Use the above instructions to modify the supplied files: dnd_character.py
+Keep and implement the existing function or class stubs, they will be called from existing unit tests.
+Only use standard python libraries, don't suggest installing any packages.
+
+Filepath: dnd_character.py
+```python
+
+```
+
+
+### Assistant
+Filepath: dnd_character.py
+```python
+import random
+
+class Character:
+    def __init__(self):
+        self._abilities = {}
+        self.generate_abilities()
+        self.calculate_hitpoints()
+
+    def generate_abilities(self):
+        for _ in range(6):
+            roll = sorted([random.randint(1, 6) for _ in range(4)])[-3:]
+            score = sum(roll)
+            self._abilities[list(self._abilities.keys())[-1]] = score
+
+    def calculate_hitpoints(self):
+        const = self._abilities["constitution"]
+        self.hitpoints = max(10 + ((const - 10) // 2), 1)
+
+    @property
+    def strength(self):
+        return self._abilities.get('strength', None)
+
+    @property
+    def dexterity(self):
+        return self._abilities.get('dexterity', None)
+
+    @property
+    def constitution(self):
+        return self._abilities.get('constitution', None)
+
+    @property
+    def intelligence(self):
+        return self._abilities.get('intelligence', None)
+
+    @property
+    def wisdom(self):
+        return self._abilities.get('wisdom', None)
+
+    @property
+    def charisma(self):
+        return self._abilities.get('charisma', None)
+
+```
+
+
+### User Message
+E
+====
+ERROR: dnd_character_test (unittest.loader._FailedTest.dnd_character_test)
+----
+ImportError: Failed to import test module: dnd_character_test
+Traceback (most recent call last):
+  File "/usr/lib/python3.11/unittest/loader.py", line 407, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/unittest/loader.py", line 350, in _get_module_from_name
+    __import__(name)
+  File "dnd-character/dnd_character_test.py", line 7, in <module>
+    from dnd_character import (
+ImportError: cannot import name 'modifier' from 'dnd_character' (dnd-character/dnd_character.py)
+
+
+----
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+####
+
+See the testing errors above.
+The tests are correct.
+Fix the code in dnd_character.py to resolve the errors.
+
+Filepath: dnd_character.py
+```python
+import random
+
+class Character:
+    def __init__(self):
+        self._abilities = {}
+        self.generate_abilities()
+        self.calculate_hitpoints()
+
+    def generate_abilities(self):
+        for _ in range(6):
+            roll = sorted([random.randint(1, 6) for _ in range(4)])[-3:]
+            score = sum(roll)
+            self._abilities[list(self._abilities.keys())[-1]] = score
+
+    def calculate_hitpoints(self):
+        const = self._abilities["constitution"]
+        self.hitpoints = max(10 + ((const - 10) // 2), 1)
+
+    @property
+    def strength(self):
+        return self._abilities.get('strength', None)
+
+    @property
+    def dexterity(self):
+        return self._abilities.get('dexterity', None)
+
+    @property
+    def constitution(self):
+        return self._abilities.get('constitution', None)
+
+    @property
+    def intelligence(self):
+        return self._abilities.get('intelligence', None)
+
+    @property
+    def wisdom(self):
+        return self._abilities.get('wisdom', None)
+
+    @property
+    def charisma(self):
+        return self._abilities.get('charisma', None)
+
+```
+
+
+### Assistant
+Filepath: dnd_character.py
+```python
+
+

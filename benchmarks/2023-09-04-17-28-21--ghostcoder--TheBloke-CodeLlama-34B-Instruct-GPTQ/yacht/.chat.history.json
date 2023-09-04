@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nThe dice game [Yacht][yacht] is from the same family as Poker Dice, Generala and particularly Yahtzee, of which it is a precursor.\nIn the game, five dice are rolled and the result can be entered in any of twelve categories.\nThe score of a throw of the dice depends on category chosen.\n\n## Scores in Yacht\n\n| Category | Score | Description | Example |\n| -------- | ----- | ----------- | ------- |\n| Ones | 1 \u00d7 number of ones | Any combination | 1 1 1 4 5 scores 3 |\n| Twos | 2 \u00d7 number of twos | Any combination | 2 2 3 4 5 scores 4 |\n| Threes | 3 \u00d7 number of threes | Any combination | 3 3 3 3 3 scores 15 |\n| Fours | 4 \u00d7 number of fours | Any combination | 1 2 3 3 5 scores 0 |\n| Fives | 5 \u00d7 number of fives| Any combination | 5 1 5 2 5 scores 15 |\n| Sixes | 6 \u00d7 number of sixes | Any combination | 2 3 4 5 6 scores 6 |\n| Full House | Total of the dice | Three of one number and two of another | 3 3 3 5 5 scores 19 |\n| Four of a Kind | Total of the four dice | At least four dice showing the same face | 4 4 4 4 6 scores 16 |\n| Little Straight |  30 points | 1-2-3-4-5 | 1 2 3 4 5 scores 30 |\n| Big Straight | 30 points | 2-3-4-5-6 | 2 3 4 5 6 scores 30 |\n| Choice | Sum of the dice | Any combination | 2 3 3 4 6 scores 18 |\n| Yacht | 50 points | All five dice showing the same face | 4 4 4 4 4 scores 50 |\n\nIf the dice do not satisfy the requirements of a category, the score is zero.\nIf, for example, *Four Of A Kind* is entered in the *Yacht* category, zero points are scored.\nA *Yacht* scores zero if entered in the *Full House* category.\n\n## Task\n\nGiven a list of values for five dice and a category, your solution should return the score of the dice for that category.\nIf the dice do not satisfy the requirements of the category your solution should return 0.\nYou can assume that five values will always be presented, and the value of each will be between one and six inclusively.\nYou should not assume that the dice are ordered.\n\n[yacht]: https://en.wikipedia.org/wiki/Yacht_(dice_game)\n\n####\n\nUse the above instructions to modify the supplied files: yacht.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "yacht.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import collections\n\n# Score categories.\n# Change the values as you see fit.\nYACHT = 50\nONES = 1\nTWOS = 2\nTHREES = 3\nFOURS = 4\nFIVES = 5\nSIXES = 6\nFULL_HOUSE = 7\nFOUR_OF_A_KIND = 8\nLITTLE_STRAIGHT = 9\nBIG_STRAIGHT = 10\nCHOICE = 11\n\n\ndef score(dice, category):\n    counts = collections.Counter(dice)\n    max_count = max(counts.values())\n    min_count = min(counts.values())\n\n    # Yacht\n    if category == YACHT and len(set(dice)) == 1:\n        return YACHT\n\n    # Ones, Twos, Threes, Fours, Fives, Sixes\n    elif category in (ONES, TWOS, THREES, FOURS, FIVES, SIXES):\n        count = counts[category]\n        return count * category\n\n    # Full House\n    elif category == FULL_HOUSE and max_count >= 3 and min_count >= 2:\n        return sum(dice)\n\n    # Four of a kind\n    elif category == FOUR_OF_A_KIND and max_count >= 4:\n        return sum(dice)\n\n    # Little straight\n    elif category == LITTLE_STRAIGHT and set(range(1, 6)).issubset(counts.keys()):\n        return LITTLE_STRAIGHT\n\n    # Big straight\n    elif category == BIG_STRAIGHT and set(range(2, 7)).issubset(counts.keys()):\n        return BIG_STRAIGHT\n\n    # Choice\n    elif category == CHOICE:\n        return sum(dice)\n\n    else:\n        return 0\n",
+        "language": "python",
+        "file_path": "yacht.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "F....F.....F.............F.F.\n====\nFAIL: test_big_straight (yacht_test.YachtTest.test_big_straight)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/yacht/yacht_test.py\", line 83, in test_big_straight\n    self.assertEqual(yacht.score([4, 6, 2, 5, 3], yacht.BIG_STRAIGHT), 30)\nAssertionError: 10 != 30\n\n====\nFAIL: test_four_of_a_kind (yacht_test.YachtTest.test_four_of_a_kind)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/yacht/yacht_test.py\", line 59, in test_four_of_a_kind\n    self.assertEqual(yacht.score([6, 6, 4, 6, 6], yacht.FOUR_OF_A_KIND), 24)\nAssertionError: 28 != 24\n\n====\nFAIL: test_little_straight (yacht_test.YachtTest.test_little_straight)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/yacht/yacht_test.py\", line 68, in test_little_straight\n    self.assertEqual(yacht.score([3, 5, 4, 1, 2], yacht.LITTLE_STRAIGHT), 30)\nAssertionError: 9 != 30\n\n====\nFAIL: test_yacht_can_be_scored_as_four_of_a_kind (yacht_test.YachtTest.test_yacht_can_be_scored_as_four_of_a_kind)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/yacht/yacht_test.py\", line 62, in test_yacht_can_be_scored_as_four_of_a_kind\n    self.assertEqual(yacht.score([3, 3, 3, 3, 3], yacht.FOUR_OF_A_KIND), 12)\nAssertionError: 15 != 12\n\n====\nFAIL: test_yacht_is_not_a_full_house (yacht_test.YachtTest.test_yacht_is_not_a_full_house)\n----\nTraceback (most recent call last):\n  File \"/home/albert/repos/albert/aider/yacht/yacht_test.py\", line 56, in test_yacht_is_not_a_full_house\n    self.assertEqual(yacht.score([2, 2, 2, 2, 2], yacht.FULL_HOUSE), 0)\nAssertionError: 10 != 0\n\n----\n\n\nFAILED (failures=5)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in yacht.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "yacht.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import collections\n\n# Score categories.\n# Change the values as you see fit.\nYACHT = 50\nONES = 1\nTWOS = 2\nTHREES = 3\nFOURS = 4\nFIVES = 5\nSIXES = 6\nFULL_HOUSE = 7\nFOUR_OF_A_KIND = 8\nLITTLE_STRAIGHT = 9\nBIG_STRAIGHT = 10\nCHOICE = 11\n\n\ndef score(dice, category):\n    counts = collections.Counter(dice)\n    max_count = max(counts.values())\n    min_count = min(counts.values())\n\n    # Yacht\n    if category == YACHT and len(set(dice)) == 1:\n        return YACHT\n\n    # Ones, Twos, Threes, Fours, Fives, Sixes\n    elif category in (ONES, TWOS, THREES, FOURS, FIVES, SIXES):\n        count = counts[category]\n        return count * category\n\n    # Full House\n    elif category == FULL_HOUSE and max_count >= 3 and min_count >= 2:\n        return sum(dice)\n\n    # Four of a Kind\n    elif category == FOUR_OF_A_KIND and max_count >= 4:\n        return 4 * [max(counts)] + list({k: v for k, v in counts.items() if v < 4}.values())\n\n    # Little Straight\n    elif category == LITTLE_STRAIGHT and set(range(1, 6)).issubset(counts.keys()):\n        return LITTLE_STRAIGHT\n\n    # Big Straight\n    elif category == BIG_STRAIGHT and set(range(2, 7)).issubset(counts.keys()):\n        return BIG_STRAIGHT\n\n    # Choice\n    elif category == CHOICE:\n        return sum(dice)\n\n    else:\n        return 0\n",
+        "language": "python",
+        "file_path": "yacht.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]

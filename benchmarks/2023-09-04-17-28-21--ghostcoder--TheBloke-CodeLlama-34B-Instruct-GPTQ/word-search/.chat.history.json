@@ -1,0 +1,80 @@
+[
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": "# Instructions\n\nIn word search puzzles you get a square of letters and have to find specific words in them.\n\nFor example:\n\n```text\njefblpepre\ncamdcimgtc\noivokprjsm\npbwasqroua\nrixilelhrs\nwolcqlirpc\nscreeaumgr\nalxhpburyi\njalaycalmp\nclojurermt\n```\n\nThere are several programming languages hidden in the above square.\n\nWords can be hidden in all kinds of directions: left-to-right, right-to-left, vertical and diagonal.\n\nGiven a puzzle and a list of words return the location of the first and last letter of each word.\n\n####\n\nUse the above instructions to modify the supplied files: word_search.py\nKeep and implement the existing function or class stubs, they will be called from existing unit tests.\nOnly use standard python libraries, don't suggest installing any packages.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import itertools\n\nclass Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    def __eq__(self, other):\n        return self.x == other.x and self.y == other.y\n\n    def __repr__(self):\n        return f\"({self.x}, {self.y})\"\n\n\nclass WordSearch:\n    def __init__(self, puzzle):\n        self.puzzle = puzzle\n        self.height = len(puzzle)\n        self.width = len(puzzle[0])\n\n    def search(self, word):\n        # Check rows\n        for row in self.puzzle:\n            if word in \"\".join(row):\n                start_index = row.index(word[0])\n                end_index = start_index + len(word) - 1\n                return (Point(start_index, 0), Point(end_index, 0))\n\n        # Check columns\n        for col in zip(*self.puzzle):\n            if word in \"\".join(col):\n                start_index = col.index(word[0])\n                end_index = start_index + len(word) - 1\n                return (Point(0, start_index), Point(0, end_index))\n\n        # Check diagonals\n        for direction in [(1, 1), (-1, 1)]:\n            for row in range(self.height):\n                for col in range(self.width):\n                    if self.puzzle[row][col] == word[0]:\n                        current_point = Point(row, col)\n                        for char in word[1:]:\n                            next_point = Point(current_point.x + direction[0], current_point.y + direction[1])\n                            if not (0 <= next_point.x < self.height and 0 <= next_point.y < self.width):\n                                break\n                            if self.puzzle[next_point.x][next_point.y] != char:\n                                break\n                            current_point = next_point\n                        else:\n                            return (Point(row, col), current_point)\n\n        return None\n",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "text",
+        "text": ".F..FFFFFFF..F.FFFFFF...\n====\nFAIL: test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle (word_search_test.WordSearchTest.test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 285, in test_should_fail_to_locate_a_word_that_is_not_in_the_puzzle\n    self.assertEqual(puzzle.search(\"clojure\"), (Point(0, 9), Point(6, 9)))\nAssertionError: Tuples differ: ((0, 0), (6, 0)) != ((0, 9), (6, 9))\n\nFirst differing element 0:\n(0, 0)\n(0, 9)\n\n- ((0, 0), (6, 0))\n?      ^       ^\n\n+ ((0, 9), (6, 9))\n?      ^       ^\n\n\n====\nFAIL: test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid (word_search_test.WordSearchTest.test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 97, in test_should_locate_a_different_left_to_right_word_in_a_ten_line_grid\n    self.assertEqual(puzzle.search(\"fortran\"), (Point(0, 6), Point(6, 6)))\nAssertionError: Tuples differ: ((0, 0), (6, 0)) != ((0, 6), (6, 6))\n\nFirst differing element 0:\n(0, 0)\n(0, 6)\n\n- ((0, 0), (6, 0))\n?      ^       ^\n\n+ ((0, 6), (6, 6))\n?      ^       ^\n\n\n====\nFAIL: test_should_locate_a_left_to_right_word_in_ten_line_grid (word_search_test.WordSearchTest.test_should_locate_a_left_to_right_word_in_ten_line_grid)\n----\nTraceback (most recent call last):\n  File \"word-search/word_search_test.py\", line 61, in test_should_locate_a_left_to_right_word_in_ten_line_grid\n    self.assertEqual(puzzle.search(\"clojure\"), (Point(0, 9), Point(6, 9)))\nAssertionError: Tuples differ: ((0, 0), (6, 0)) != ((0, 9), (6, 9))\n\nFirst differing element 0:\n(0, 0)\n(0, 9)\n####\n\nSee the testing errors above.\nThe tests are correct.\nFix the code in word_search.py to resolve the errors.\n",
+        "need_input": false
+      },
+      {
+        "type": "file",
+        "content": "",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false
+      }
+    ],
+    "sender": "Human",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  },
+  {
+    "items": [
+      {
+        "type": "updated_file",
+        "content": "import itertools\n\nclass Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    def __eq__(self, other):\n        return self.x == other.x and self.y == other.y\n\n    def __repr__(self):\n        return f\"({self.x}, {self.y})\"\n\n\nclass WordSearch:\n    def __init__(self, puzzle):\n        self.puzzle = puzzle\n        self.height = len(puzzle)\n        self.width = len(puzzle[0])\n\n    def search(self, word):\n        # Check rows\n        for i in range(len(self.puzzle)):\n            if word in \"\".join(self.puzzle[i]):\n                start_index = self.puzzle[i].index(word[0])\n                end_index = start_index + len(word) - 1\n                return (Point(start_index, i), Point(end_index, i))\n\n        # Check columns\n        for j in range(len(self.puzzle[0])):\n            column = [row[j] for row in self.puzzle]\n            if word in \"\".join(column):\n                start_index = column.index(word[0])\n                end_index = start_index + len(word) - 1\n                return (Point(j, start_index), Point(j, end_index))\n\n        # Check diagonals\n        for k in range(-self.height+1, self.height):\n            diagonal = [self.puzzle[i+k][i] for i in range(min(self.height, self.width))]\n            if word in \"\".join(diagonal):\n                start_index = diagonal.index(word[0])\n                end_index = start_index + len(word) - 1\n                return (Point(start_index, start_index+k), Point(end_index, end_index+k))\n\n        return None\n",
+        "language": "python",
+        "file_path": "word_search.py",
+        "readonly": false,
+        "error": null,
+        "invalid": false
+      }
+    ],
+    "sender": "AI",
+    "summary": null,
+    "stats": null,
+    "commit_id": null,
+    "discarded": false
+  }
+]
